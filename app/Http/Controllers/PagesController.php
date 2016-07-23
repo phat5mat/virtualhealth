@@ -11,22 +11,7 @@ class PagesController extends Controller
 {
     public function aboutme(){
 
-
-            //Khai báo mảng dữ liệu
-            $lists = array(
-                'Language' => [
-                    'PHP',
-                    'Javascript',
-                    'HTML',
-                    'NodeJS'
-                ],
-                'Framework' => [
-                    'Laravel 5',
-                    'Yii',
-                    'Phalcon'
-                ]
-            );
-            dd($lists); //Sử dụng hàm dd để kiểm tra dữ liệu mảng
+        return view("aboutme");
 
 
     }

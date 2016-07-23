@@ -12,17 +12,16 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
+
+Route::get('/api/v1/doctor/{id?}', 'DoctorsController@index');
+Route::post('/api/v1/doctor', 'DoctorsController@store');
+Route::post('/api/v1/doctor/{id}', 'DoctorsController@update');
+Route::delete('/api/v1/doctor/{id}', 'DoctorsController@destroy');
 
 Route::get('/aboutme', 'PagesController@aboutme');
 Route::get('/doctor/create','PagesController@createView');
 Route::post('/createSuccess  ','PagesController@createAction');
-Route::group(['prefix' => 'vh'],function(){
-    Route::resource('/doctor','DoctorsController');
-});
 
-Route::get('/test', function(){
-    return view('test');
-});
 

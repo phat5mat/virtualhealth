@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Create New Doctor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ URL::asset('app/css/bootstrap.min.css') }}">
+
+
 </head>
 <body>
     <h1>
             Create New Doctor
     </h1>
+    <div class="container">
+        <button class="btn btn-primary">HAHAHAHA</button>
+
+    </div>
 {{ Form::open(['url' => 'createSuccess']) }}
 
     {{ Form::label('username','Username:') }}
