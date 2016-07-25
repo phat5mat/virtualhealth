@@ -8,13 +8,8 @@ use App\Http\Requests;
 
 class DoctorsController extends Controller
 {
-    public function index($id = null){
-        if ($id == null) {
-            $doctors = Doctor::all();
-            return $doctors;
-        } else {
-            return $this->show($id);
-        }
+    public function index(){
+        return Response::json(Doctor::get());
     }
 
     public function show($id)
@@ -42,29 +37,29 @@ class DoctorsController extends Controller
         $doc->docid = $newDoc['docid'];
 
         $doc->save();
-        return 'Doctor record successfully created with id ';
+        return Response::json(array('success' => true));
     }
 
     public function update(Request $request, $id) {
+        $updateDoc = $request->all();
         $doctor = Doctor::find($id);
-        $doctor->docid = $request->input('name');
-        $doctor->docname = $request->input('email');
-        $doctor->docpassword = $request->input('pass');
-        $doctor->docemail = $request->input('email');
-        $doctor->docphone = $request->input('phone');
-        $doctor->docbiography = $request->input('biography');
-        $doctor->docage = $request->input('age');
+        $doctor->docid = $updateDoc['docid'];
+        $doctor->docname = $updateDoc['docname'];
+        $doctor->docpassword = $updateDoc['docpassword'];
+        $doctor->docemail = $updateDoc['docemail'];
+        $doctor->docphone = $updateDoc['docphone'];
         $doctor->save();
 
-        return "Sucess updating user #" . $doctor->id;
+        return "Sucess updating doctor ";
     }
 
     public function destroy($id) {
         $doctor = Doctor::find($id);
         $doctor->delete();
-        return "Doctor record successfully deleted ";
+        return Response::json(array('success' => true));
     }
 
+    
     public function transformCollection($doctors){
         return array_map([$this,'transform'], $doctors->toArray());
 
