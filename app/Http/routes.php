@@ -15,9 +15,8 @@ Route::get('/', function () {
     return view('index');
 });
 
-
-Route::get('/testnav',function(){
-    return view('navbar');
+Route::get('manageDoc',function(){
+    return view('manageDoctors');
 });
 
 Route::group(array('prefix' => 'api'), function() {
