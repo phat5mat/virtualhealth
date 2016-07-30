@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en-US" ng-app="doctorApp" ng-controller="mainController">
+<html lang="en-US" ng-app="doctorMain" ng-controller="doctorController">
 <head>
-    <title>Laravel 5 AngularJS CRUD Example</title>
+    <title>Doctor Management</title>
 
     <link rel="stylesheet" href="<?= asset('app/css/bootstrap.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('app/css/font-awesome/css/font-awesome.min.css') ?>">
@@ -77,7 +77,7 @@
 <script src="<?= asset('app/libs/angular/angular.min.js') ?>"></script>
 <script src="<?= asset('app/js/bootstrap.min.js') ?>"></script>
 <script src="<?= asset('app/js/ui-bootstrap-tpls-2.0.0.js') ?>"></script>
-<script src="<?= asset('app/controller/mainController.js') ?>"></script>
+<script src="<?= asset('app/controller/doctorController.js') ?>"></script>
 <script src="<?= asset('app/js/services/doctorServices.js') ?>"></script>
 <script src="<?= asset('app/js/app.js') ?>"></script>
 </html>

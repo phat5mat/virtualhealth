@@ -8,6 +8,12 @@ use App\Http\Requests;
 
 class DoctorsController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('jwt.auth');
+    }
+
     public function index(){
         return Response::json(Doctor::get());
     }

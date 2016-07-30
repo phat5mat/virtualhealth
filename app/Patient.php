@@ -4,10 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Doctor extends Model
+class Patient extends Model
 {
-    protected $table = 'doctors';
+    protected $table = 'patient';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    
 }

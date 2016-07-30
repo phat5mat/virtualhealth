@@ -1,6 +1,6 @@
-var mainApp = angular.module('mainApp', []);
+var mainApp = angular.module('doctorApp', []);
 
- mainApp.controller('mainController', function($scope, $http, $window,  docServices) {
+ mainApp.controller('doctorController', function($scope, $http, $window,  docServices) {
 var upId = null;
      $scope.loading = true;
      docServices.get()
