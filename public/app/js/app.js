@@ -3,6 +3,6 @@
  */
 var doctorApp = angular.module('doctorMain', ['doctorApp', 'doctorServices']);
 
-var userApp = angular.module('userMain', ['userApp', 'userServices','facultyServices']);
+var userApp = angular.module('userMain', ['userApp', 'userServices','facultyServices','ui.router']);
 
 var patientApp = angular.module('patientMain', ['patientApp', 'patientServices']);

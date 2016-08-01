@@ -3,7 +3,9 @@
  */
 var mainApp = angular.module('userApp', []);
 
-mainApp.controller('userController', function($scope, $http, $window, userServices, facultyServices ,$filter) {
+mainApp.controller('userController', function($scope, $location,
+                                              $http, $window, userServices,
+                                              facultyServices ,$filter) {
     var upId = null;
     
 
@@ -38,7 +40,9 @@ mainApp.controller('userController', function($scope, $http, $window, userServic
             .success(function(data) {
                 userServices.get()
                     .success(function(userData) {
-                        console.log('Success');
+                        $scope.patForm = false;
+                        $scope.docForm = false;
+                        $scope.successPage = true;
                     });
             })
             .error(function(e) {
@@ -86,4 +90,8 @@ mainApp.controller('userController', function($scope, $http, $window, userServic
     }
 
 
+    $scope.goLogin = function(){
+        $window.location.href = 'http://localhost/VirtualHealth/public/login';
+
+    }
 });

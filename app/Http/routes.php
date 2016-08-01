@@ -19,6 +19,10 @@ Route::get('/signup', function () {
     return view('Signup');
 });
 
+Route::get('/login', function () {
+    return view('Login');
+});
+
 Route::group(array('prefix' => 'api'), function() {
 
     Route::get('authenticate', 'AuthenticateController@index');

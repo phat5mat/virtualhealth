@@ -34,7 +34,10 @@ app.factory('userServices',function($http,API_URL){
                 data:  $.param(userData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
-        }
+        },
+        
+
+     
     }
 })
 
