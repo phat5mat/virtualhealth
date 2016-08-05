@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US" ng-app="doctorMain" ng-controller="doctorController">
+<html lang="en-US" ng-app="doctorApp" ng-controller="doctorController">
 <head>
     <title>Doctor Management</title>
 
@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="<?= asset('app/css/font-awesome/css/font-awesome.min.css') ?>">
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <div ng-include="'template/navbar.html'" ></div>
+    <div ng-include="'app/template/navbar.html'" ></div>
 </head>
 <body>
 <h2>Doctors Database</h2>
@@ -27,10 +27,10 @@
         <tbody>
         <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
         <tr ng-repeat="doctor in doctors" ng-hide="loading">
-            <td>{{ doctor.docid }}</td>
-            <td>{{ doctor.docname }}</td>
-            <td>{{ doctor.docemail }}</td>
-            <td>{{ doctor.docphone }}</td>
+            <td>{{ doctor.id }}</td>
+            <td>{{ doctor.name }}</td>
+            <td>{{ doctor.email }}</td>
+            <td>{{ doctor.phone }}</td>
 
             <td>
                 <button class="btn btn-default btn-detail" ng-click="fillUpdate(doctor)">Edit</button>
@@ -39,28 +39,6 @@
         </tr>
         </tbody>
     </table>
-
-    <form ng-submit="saveDoc()" name="doctorForm">
-
-        Username: <input type="text" name="docid" ng-model="doctor.docid" required><br/>
-        Password: <input type="password" name="docpassword" ng-model="doctor.docpassword" required><br/>
-        Name: <input type="text" ng-model="doctor.docname" name="docname" required><br/>
-        Email: <input type="email" ng-model="doctor.docemail" name="docemail" required><br/>
-        Phone: <input type="tel" ng-model="doctor.docphone" name="docphone" required><br/>
-        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-        <button type="submit" class="btn btn-primary" ng-disabled="doctorForm.$invalid">Save</button>
-    </form>
-
-    <form ng-submit="updateDoc()" name="doctorForm">
-
-        Username: <input type="text" name="docid" ng-model="doctor.docid" required><br/>
-        Password: <input type="password" name="docpassword" ng-model="doctor.docpassword" required><br/>
-        Name: <input type="text" ng-model="doctor.docname" name="docname" required><br/>
-        Email: <input type="email" ng-model="doctor.docemail" name="docemail" required><br/>
-        Phone: <input type="tel" ng-model="doctor.docphone" name="docphone" required><br/>
-        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-        <button type="submit" class="btn btn-warning" ng-disabled="doctorForm.$invalid">Update</button>
-    </form>
 
 </div>
 
@@ -79,5 +57,5 @@
 <script src="<?= asset('app/js/ui-bootstrap-tpls-2.0.0.js') ?>"></script>
 <script src="<?= asset('app/controller/doctorController.js') ?>"></script>
 <script src="<?= asset('app/js/services/doctorServices.js') ?>"></script>
-<script src="<?= asset('app/js/app.js') ?>"></script>
+
 </html>

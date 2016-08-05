@@ -1,0 +1,40 @@
+
+<h2>Doctors Database</h2>
+<div>
+    <!-- Table-to-load-the-data Part -->
+    <table class="table" ng-init="loadUsers()" ng-if="!error" >
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact No</th>
+
+            <th><button id="btn-add" class="btn btn-primary btn-xs" ng-click="toggle('add', 0)">Add New Doctor</button></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+        <tr ng-repeat="user in users" ng-hide="loading">
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone }}</td>
+
+            <td>
+                <button class="btn btn-default btn-detail" ng-click="fillUpdate(user)">Edit</button>
+                <button class="btn btn-danger btn-delete" ng-click="removeUser(user.id,user.role)">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+    <div class="alert alert-danger" ng-if="error">
+        <strong>There was an error: </strong> {{error}}
+        <br>Please go back and login again
+    </div>
+
+
+</div>
+

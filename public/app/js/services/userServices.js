@@ -5,7 +5,7 @@ var app = angular.module('userServices', [])
     .constant('API_URL', 'http://localhost/VirtualHealth/public/api/');
 
 
-app.factory('userServices',function($http,API_URL){
+app.service('userServices',function($http,API_URL){
     return {
         get : function(){
             return $http.get(API_URL + "user");
@@ -20,10 +20,12 @@ app.factory('userServices',function($http,API_URL){
             });
         },
 
-        destroy : function(id){
+        destroy : function(id,role){
             return $http({
                 method: 'DELETE',
-                url: API_URL + "user/" + id
+                url: API_URL + "user/" + id,
+                data: $.param(role),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
 

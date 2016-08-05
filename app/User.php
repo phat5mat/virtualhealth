@@ -21,6 +21,14 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
+    public function doctor(){
+        return $this->hasOne('App\Doctor','users');
+    }
+
+    public function patient(){
+        return $this->hasOne('App\Patient','users');
+    }
+
     protected $table = 'users';
     protected $primaryKey = 'id';
     protected $fillable = ['username', 'name','password','email','phone','avatar','balance','dateofbirth'];

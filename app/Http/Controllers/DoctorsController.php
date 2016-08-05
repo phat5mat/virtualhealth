@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Doctor;
+use App\User;
 use Response;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -11,15 +12,19 @@ class DoctorsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('jwt.auth');
+        $this->middleware('jwt.auth');  
     }
 
     public function index(){
-        return Response::json(Doctor::get());
+        $userList = User::all();
+
+    
+        return $userList;
     }
 
     public function show($id)
     {
+
         $doctor = Doctor::find($id);
 
         if (!$doctor) {

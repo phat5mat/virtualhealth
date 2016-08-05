@@ -1,0 +1,19 @@
+    <div class="container">
+        <form name="loginForm"  class="form-signin">
+            <h3 class="form-signin-heading">Login</h3>
+            <input ng-model="username" class="form-control" required placeholder="Username">
+            <input ng-model="password" type="password" class="form-control" required placeholder="Password">
+            <div>
+                <button name="login" ng-disabled="loginForm.$invalid"
+                        ng-click="login()" class="btn btn-lg btn-primary btn-block">Log in</button>
+            </div>
+        </form>
+    </div>
+    <div class="container form-signin">
+        <button name="signup"
+                ui-sref="signup" class="btn btn-lg btn-warning btn-block">Sign up</button>
+    </div>
+
+
+
+

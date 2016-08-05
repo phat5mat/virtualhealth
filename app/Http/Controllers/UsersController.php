@@ -13,12 +13,16 @@ class UsersController extends Controller
 {
     public function __construct()
     {
+        $this->middleware('jwt.auth', ['except' => ['store']]);
 
     }
 
+   
+
     public function index()
     {
-       return User::all();
+       $userList = User::all(); 
+        return $userList;
     }
 
     public function store(Request $request) {
@@ -55,6 +59,7 @@ class UsersController extends Controller
     }
 
     public function update(Request $request, $id) {
+
         $updateUser = $request->all();
         $user = User::find($id);
 
@@ -67,7 +72,17 @@ class UsersController extends Controller
         return "Sucess updating user ";
     }
 
-    public function destroy($id) {
+    public function destroy(Request $request,$id) {
+        $role = $request->all();
+        if($role = 0){
+            $patient = User::find($id)->patient;
+            $patient->delete();
+        }
+        if($role = 1){
+            $doctor = User::find($id)->doctor;
+            $doctor->delete();
+        }
+
         $user = User::find($id);
         $user->delete();
         return Response::json(array('success delete user ' + $id => true));

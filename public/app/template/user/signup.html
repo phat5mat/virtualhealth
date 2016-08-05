@@ -1,0 +1,152 @@
+<div class="container" ng-show="selectRole" ng-init="selectRole = true">
+    <div class="row">
+        <div class="col-md-12 text-center"><h3><strong>Register as</strong></h3></div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <button ng-click="showPatForm(); user.role = 0">Patient</button>
+        </div>
+        <div class="col-md-6 text-center">
+            <button ng-click="showDocForm(); user.role = 1">Doctor</button>
+        </div>
+
+    </div>
+
+</div>
+
+<form class="form-group" ng-show="patForm" ng-init="patForm = false"  ng-submit="register()" name="patientForm">
+    <div class="container" style="max-width: 600px">
+        <div >
+
+            <div class="page-header" >
+                <h3 style="text-align: center">Patient Signup Form</h3>
+            </div>
+            <table class="table ">
+                <tbody>
+                <tr>
+                    <td class="col-md-2"><strong>Username: </strong></td>
+                    <td class="col-md-10"><input class="form-control" ng-model="user.username" name="username" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Password: </strong></td>
+                    <td class="col-md-10"><input class="form-control" type="password" ng-model="user.password" name="password" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Name: </strong></td>
+                    <td class="col-md-10"><input class="form-control" ng-model="user.name" name="name" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Phone number: </strong></td>
+                    <td class="col-md-10"><input class="form-control" ng-model="user.phone" name="phone" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Email: </strong></td>
+                    <td class="col-md-10"><input class="form-control" type="email" ng-model="user.email" name="email" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Date of Birth: </strong></td>
+                    <td class="col-md-10"><input  type="date"
+                                                 ng-model="user.dateinput"
+                                                 min="1920-01-01" max="1995-01-01"
+                                                 name="dateofbirth" required></td>
+                </tr>
+
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-md-1">
+                    <button class="btn btn-warning btn-lg" ng-click="backForm()">Back</button>
+                </div>
+                <div class="col-md-7">
+                    <button name="submit" ng-disabled="patientForm.$invalid"
+                            type="submit" class="btn btn-primary btn-lg pull-right">Register</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</form>
+
+<form ng-show="docForm" ng-init="docForm = false" ng-submit="register()" name="doctorForm">
+    <div class="container" style="max-width: 600px">
+        <div>
+
+            <div class="page-header">
+                <h3 style="text-align: center">Doctor Signup Form</h3>
+            </div>
+            <table class="table ">
+                <tbody>
+                <tr>
+                    <td class="col-md-2"><strong>Username: </strong></td>
+                    <td class="col-md-10"><input class="form-control" ng-model="user.username" name="username" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Password: </strong></td>
+                    <td class="col-md-10"><input class="form-control" type="password" ng-model="user.password" name="password" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Name: </strong></td>
+                    <td class="col-md-10"><input class="form-control" ng-model="user.name" name="name" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Phone number: </strong></td>
+                    <td class="col-md-10"><input class="form-control" ng-model="user.phone" name="phone" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Email: </strong></td>
+                    <td class="col-md-10"><input class="form-control" type="email" ng-model="user.email" name="email" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Date of Birth: </strong></td>
+                    <td class="col-md-10"><input type="date"
+                                                 ng-model="user.dateinput"
+                                                 min="1920-01-01" max="1995-01-01"
+                                                 name="dateofbirth" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Faculty: </strong></td>
+                    <td class="col-md-10"><select class="form-control" ng-model="user.faculty" ng-options="f.name for f in facList" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Professional: </strong></td>
+                    <td class="col-md-10"><input class="form-control" ng-model="user.pro" name="email" required></td>
+                </tr>
+                <tr>
+                    <td class="col-md-2"><strong>Certification: </strong></td>
+                    <td class="col-md-10"><input class="form-control" ng-model="user.cert" name="email" required></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-md-1">
+                    <button class="btn btn-warning btn-lg" ng-click="backForm()">Back</button>
+                </div>
+
+                <div class="col-md-7">
+                    <button name="submit" ng-disabled="doctorForm.$invalid"
+                            type="submit" class="btn btn-primary btn-lg pull-right">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="container" ng-show="successPage" style="max-width: 600px"   >
+    <div>
+        <div class="page-header bg-success text-center">
+            <h2>
+                <b>Registration Successful</b>
+            </h2>
+        </div>
+        <div class="row">
+            Welcome {{ user.name }}!
+        </div>
+        <div class="row">
+            <h3>Thank you for registering, now you can login into Virtual Healthcare </h3>
+        </div>
+        <div class="row">
+            <button class="btn btn-primary btn-lg" ui-sref="login">Login</button>
+        </div>
+    </div>
+</div>

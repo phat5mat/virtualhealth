@@ -1,4 +1,4 @@
-var mainApp = angular.module('doctorApp', []);
+var mainApp = angular.module('doctorApp', ['doctorServices']);
 
  mainApp.controller('doctorController', function($scope, $http, $window,  docServices) {
 var upId = null;

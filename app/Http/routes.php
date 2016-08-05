@@ -15,23 +15,18 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/signup', function () {
-    return view('Signup');
-});
 
-Route::get('/login', function () {
-    return view('Login');
-});
 
 Route::group(array('prefix' => 'api'), function() {
 
-    Route::get('authenticate', 'AuthenticateController@index');
     Route::post('authenticate', 'AuthenticateController@authenticate');
-    Route::get('authenticate/doctor', 'AuthenticateController@getAuthenticatedUser');
+    Route::get('authenticate/user', 'AuthenticateController@getAuthenticatedUser');
     
     Route::get('fac', 'FacultyController@show');
     Route::resource('doctor', 'DoctorsController');
     Route::resource('user', 'UsersController');
+    Route::resource('patient', 'PatientsController');
+
     Route::get('manageDoc',function(){
         return view('manageDoctors');
     });
