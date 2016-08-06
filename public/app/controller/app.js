@@ -5,7 +5,7 @@
 
     'use strict';
 
-    angular.module('authModule', ['ui.router', 'satellizer'])
+    angular.module('authModule', ['ui.router', 'satellizer','ngMaterial'])
         .config(function($stateProvider, $urlRouterProvider, $authProvider,$httpProvider, $provide) {
 
             function logoutRedirect($q,$injector){
@@ -99,7 +99,12 @@
                 .state('home.pat',{
                     templateUrl: '../public/app/template/home.pat.html',
                 })
-            
+                .state('room',{
+                    url: '/room',
+                    templateUrl: '../public/app/template/appointment/room.html',
+                    controller: 'roomController'
+
+                })
         })
         .run(function($rootScope){
             if(localStorage.getItem('satellizer_token')) {

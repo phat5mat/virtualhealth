@@ -1,0 +1,31 @@
+<h3>Room Management</h3>
+<div>
+    <!-- Table-to-load-the-data Part -->
+    <table class="table" >
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Size</th>
+            </tr>
+        </thead>
+        <tbody>
+        <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+        <tr ng-repeat="doctor in doctors" ng-hide="loading">
+            <td>{{ room.name }}</td>
+            <td>{{ room.startdate }}</td>
+            <td>{{ room.enddate }}</td>
+            <td>{{ room.size }}</td>
+
+            <td>
+                <button class="btn btn-default btn-detail" ng-click="fillUpdate(doctor)">Edit</button>
+                <button class="btn btn-danger btn-delete" ng-click="removeDoc(doctor.docid)">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <md-button class="md-primary md-raised" ng-click="showPrompt(   )"  >
+        Prompt Dialog
+    </md-button>
+</div>
