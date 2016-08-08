@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="authMain">
+<html ng-app="mainApp">
 <head>
     <title>Virtual Healthcare</title>
     <meta charset="utf-8">
@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="app/css/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="app/css/signin.css">
     <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/custom.css">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div ng-include="'app/template/navbar.html'" ng-controller="authController" ></div>
 </head>
@@ -32,7 +34,11 @@
 <script src="app/controller/authController.js"></script>
 <script src="app/controller/userController.js"></script>
 <script src="app/controller/roomController.js"></script>
+<script src="app/controller/patientController.js"></script>
+<script src="app/controller/doctorController.js"></script>
 <script src="app/js/services/userServices.js"></script>
+<script src="app/js/services/patientServices.js"></script>
+<script src="app/js/services/doctorServices.js"></script>
 <script src="app/js/services/facultyServices.js"></script>
 <script src="app/js/services/roomServices.js"></script>
 

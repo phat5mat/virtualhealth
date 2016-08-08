@@ -26,6 +26,10 @@ Route::group(array('prefix' => 'api'), function() {
     Route::resource('doctor', 'DoctorsController');
     Route::resource('user', 'UsersController');
     Route::resource('patient', 'PatientsController');
+    Route::resource('room', 'RoomController');
+    Route::get('docbyuser/{user}','DoctorsController@findByUser');
+    Route::get('patbyuser/{user}','PatientsController@findByUser');
+
 
     Route::get('manageDoc',function(){
         return view('manageDoctors');

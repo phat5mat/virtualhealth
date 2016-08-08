@@ -9,13 +9,14 @@ var app = angular.module('roomServices', [])
 app.service('roomServices',function($http,API_URL){
     return {
         get : function(){
-            return $http.get(API_URL + "user");
+            return $http.get(API_URL + "room");
         },
 
+        
         save : function(roomData){
             return $http({
                 method: 'POST',
-                url: API_URL + "user",
+                url: API_URL + "room",
                 data:  $.param(roomData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
@@ -24,7 +25,7 @@ app.service('roomServices',function($http,API_URL){
         destroy : function(id,role){
             return $http({
                 method: 'DELETE',
-                url: API_URL + "user/" + id,
+                url: API_URL + "room/" + id,
                 data: $.param(role),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
@@ -33,7 +34,7 @@ app.service('roomServices',function($http,API_URL){
         update : function(id,roomData){
             return  $http({
                 method: 'POST',
-                url: API_URL + "user/" + id,
+                url: API_URL + "room/" + id,
                 data:  $.param(roomData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });

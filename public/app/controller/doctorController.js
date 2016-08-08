@@ -1,6 +1,6 @@
 var mainApp = angular.module('doctorApp', ['doctorServices']);
 
- mainApp.controller('doctorController', function($scope, $http, $window,  docServices) {
+ mainApp.controller('doctorController', function($scope, $http, $window, docServices) {
 var upId = null;
      $scope.loading = true;
      docServices.get()
@@ -68,8 +68,6 @@ var upId = null;
              });
      }
 
-     $scope.goManageDoc = function(){
-         $window.location.href = 'http://localhost/VirtualHealth/public/api/manageDoc';
-     }
+  
 
     });

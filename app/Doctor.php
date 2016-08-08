@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Doctor extends Model
 {
+
     public function room(){
         return $this->hasMany('App\Room','doctor');
     }

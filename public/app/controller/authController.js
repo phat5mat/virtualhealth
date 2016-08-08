@@ -6,9 +6,10 @@
 'use strict';
 
 angular
-    .module('authMain')
+    .module('mainApp')
     .controller('authController',['$scope','$auth','$state','$location','$http','$rootScope','$window',
-        function ($scope,$auth,$state,$location,$http,$rootScope,$window){
+        'patientServices','doctorServices',
+        function ($scope,$auth,$state,$location,$http,$rootScope,$window,patientServices,doctorServices){
 
             $scope.login = function() {
 
@@ -34,21 +35,39 @@ angular
                     // Set the stringified user data into local storage
                     localStorage.setItem('user', user);
 
-                    // The user's authenticated state gets flipped to
-                    // true so we can now show parts of the UI that rely
-                    // on the user being logged in
+                    // The user's authenticated turn into true
                     $rootScope.authenticated = true;
 
-                    // Putting the user's data on $rootScope allows
-                    // us to access it anywhere across the app
+                    // Set current user data to rootScope that help accessing through the app
                     $rootScope.currentUser = response.data.user;
 
-                    // Everything worked out so we can now redirect to
-                    // the users state to view the data
+                    //Check user's role and store user data to localStorage and rootScope
+                    // handle if user is patient
                     if($rootScope.currentUser['role'] ==  0)
+                    {
+                        patientServices.findByUser($rootScope.currentUser['id'])
+                            .then(function(response){
+                                var patUser = response.data;
+                                $rootScope.patUser = patUser;
+                                localStorage.setItem('patUser',JSON.stringify(patUser));
+                            },function(e){
+                                console.log(e.data.error);
+                            });
                         $state.go('home.pat');
-                    else
+                    }
+
+                     // handle if user is doctor
+                    else{
+                        doctorServices.findByUser($rootScope.currentUser['id'])
+                            .then(function(response){
+                                var docUser = response.data;
+                                $rootScope.docUser = docUser;
+                                localStorage.setItem('docUser',JSON.stringify(docUser));
+                            },function(e){
+                                console.log(e.data.error);
+                            });
                         $state.go('home.doc');
+                    }
                 });
             }
 
@@ -56,8 +75,12 @@ angular
                 $auth.logout().then(function(){
                     $state.go('login');
                     localStorage.removeItem('user');
+                    localStorage.removeItem('docUser');
+                    localStorage.removeItem('patUser');
                     $rootScope.authenticated = false;
                     $rootScope.currentUser = null;
+                    $rootScope.docUser = null;
+                    $rootScope.patUser = null;
 
                 },function(e){
                     console.log(e);

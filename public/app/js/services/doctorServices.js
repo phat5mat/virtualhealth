@@ -2,10 +2,17 @@ var app = angular.module('doctorServices', [])
     .constant('API_URL', 'http://localhost/VirtualHealth/public/api/');
 
 
-app.factory('docServices',function($http,API_URL){
+app.factory('doctorServices',function($http,API_URL){
     return {
         get : function(){
             return $http.get(API_URL + "doctor");
+        },
+
+        findByUser : function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "docbyuser/" + id
+            });
         },
 
         save : function(docData){

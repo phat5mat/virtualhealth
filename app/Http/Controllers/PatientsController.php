@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Patient;
+use App\User;
 
 use App\Http\Requests;
 
@@ -27,6 +28,20 @@ class PatientsController extends Controller
 
         $patient = Patient::find($id);
 
+        if (!$patient) {
+            return Response::json([
+                'error' => [
+                    'message' => 'Doctor does not exist'
+                ]
+            ], 404);
+        }else{
+            return $patient;
+        }
+    }
+
+    public function findByUser($id){
+        $user = User::find($id);
+        $patient = $user->patient;
         if (!$patient) {
             return Response::json([
                 'error' => [

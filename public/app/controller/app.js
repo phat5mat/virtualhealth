@@ -5,7 +5,7 @@
 
     'use strict';
 
-    angular.module('authModule', ['ui.router', 'satellizer','ngMaterial'])
+    angular.module('authModule', ['ui.router', 'satellizer','ngMaterial','ui.bootstrap'])
         .config(function($stateProvider, $urlRouterProvider, $authProvider,$httpProvider, $provide) {
 
             function logoutRedirect($q,$injector){
@@ -24,6 +24,8 @@
                                 // in our array, we know we need to authenticate the user so
                                 // we can remove the current user from local storage
                                 localStorage.removeItem('user');
+                                localStorage.removeItem('docUser');
+                                localStorage.removeItem('patUser');
                                 $rootScope.authenticated = false;
                                 $rootScope.currentUser = null;
                                 // Send the user to the auth state so they can login
@@ -98,12 +100,27 @@
                 })
                 .state('home.pat',{
                     templateUrl: '../public/app/template/home.pat.html',
+                    controller: 'patientController',
                 })
                 .state('room',{
                     url: '/room',
                     templateUrl: '../public/app/template/appointment/room.html',
-                    controller: 'roomController'
-
+                    controller: 'roomController',
+                    onEnter: function($rootScope,$state,$timeout){
+                        if($rootScope.currentUser == null){
+                            return null;
+                        }else{
+                            if($rootScope.currentUser['role'] == 1){
+                                $timeout(function() {
+                                    return null;
+                                });
+                            }else {
+                                $timeout(function() {
+                                    $state.go('home.pat');
+                                });
+                            }
+                        }
+                    }
                 })
         })
         .run(function($rootScope){
@@ -111,12 +128,18 @@
 
                 $rootScope.authenticated = true;
                 $rootScope.currentUser = JSON.parse(localStorage.getItem('user'));
+                var role = $rootScope.currentUser['role'];
+                if(role == 0)
+                    $rootScope.patUser = JSON.parse(localStorage.getItem('patUser'));
+                if(role == 1)
+                    $rootScope.docUser = JSON.parse(localStorage.getItem('docUser'));
+
             }
-
-
       
         });
 
-var userApp = angular.module('authMain', ['authModule', 'userServices','facultyServices','ui.router']);
+angular.module('mainApp', ['authModule', 'userServices',
+    'doctorServices','patientServices','facultyServices','roomServices','ui.router']);
+
 
 

@@ -1,1 +1,24 @@
 <h3>Pat Home</h3>
+<table class="table" ng-init="loadDoctors()" >
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Contact No</th>
+        <th>Professional</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+    <tr ng-repeat="doctor in doctors" ng-hide="loading">
+        <td>{{ doctor.id }}</td>
+        <td>{{ doctor.name }}</td>
+        <td>{{ doctor.email }}</td>
+        <td>{{ doctor.phone }}</td>
+        <td>{{ doctor.doctor.professional }}</td>
+
+    </tr>
+    </tbody>
+</table>

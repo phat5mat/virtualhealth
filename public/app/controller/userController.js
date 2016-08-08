@@ -2,7 +2,7 @@
  * Created by REN on 7/28/2016.
  */
 
-var userApp = angular.module('authMain');
+var userApp = angular.module('mainApp');
     userApp.controller('userController',['$scope','$location','$http','userServices','facultyServices','$filter','$state','$auth',
         function ($scope,$location,$http,userServices,facultyServices,$filter,$state,$auth) {
 

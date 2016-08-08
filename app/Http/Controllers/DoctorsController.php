@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Doctor;
 use App\User;
+use PhpParser\Comment\Doc;
 use Response;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -16,17 +17,28 @@ class DoctorsController extends Controller
     }
 
     public function index(){
-        $userList = User::all();
-
-    
-        return $userList;
+        $doctors = User::where('role',1)->with('doctor')->get();
+        return $doctors;
     }
 
     public function show($id)
     {
-
         $doctor = Doctor::find($id);
 
+        if (!$doctor) {
+            return Response::json([
+                'error' => [
+                    'message' => 'Doctor does not exist'
+                ]
+            ], 404);
+        }else{
+            return $doctor;
+        }
+    }
+
+    public function findByUser($id){
+        $user = User::find($id);
+        $doctor = $user->doctor;
         if (!$doctor) {
             return Response::json([
                 'error' => [

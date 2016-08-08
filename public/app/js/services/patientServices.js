@@ -5,12 +5,18 @@ var app = angular.module('patientServices', [])
     .constant('API_URL', 'http://localhost/VirtualHealth/public/api/');
 
 
-app.factory('patServices',function($http,API_URL){
+app.factory('patientServices',function($http,API_URL){
     return {
         get : function(){
             return $http.get(API_URL + "doctor");
         },
 
+        findByUser : function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "patbyuser/" + id
+            });
+        },
         save : function(patData){
             return $http({
                 method: 'POST',
