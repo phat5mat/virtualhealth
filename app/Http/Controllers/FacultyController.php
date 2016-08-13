@@ -9,6 +9,8 @@ use App\Http\Requests;
 
 class FacultyController extends Controller
 {
+    
+    
     public function show()
     {
         return Faculty::all();

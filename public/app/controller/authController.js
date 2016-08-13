@@ -8,11 +8,12 @@
 angular
     .module('mainApp')
     .controller('authController',['$scope','$auth','$state','$location','$http','$rootScope','$window',
-        'patientServices','doctorServices',
-        function ($scope,$auth,$state,$location,$http,$rootScope,$window,patientServices,doctorServices){
+        'patientServices','doctorServices','$mdToast',
+        function ($scope,$auth,$state,$location,$http,$rootScope,$window,patientServices,doctorServices,
+                  $mdToast){
 
             $scope.login = function() {
-
+                $scope.loading = true;
                 var credentials = {
                     username: $scope.username,
                     password: $scope.password
@@ -50,6 +51,7 @@ angular
                                 var patUser = response.data;
                                 $rootScope.patUser = patUser;
                                 localStorage.setItem('patUser',JSON.stringify(patUser));
+                                $mdToast.show($mdToast.simple().textContent('Welcome backl!'));
                             },function(e){
                                 console.log(e.data.error);
                             });
@@ -63,12 +65,15 @@ angular
                                 var docUser = response.data;
                                 $rootScope.docUser = docUser;
                                 localStorage.setItem('docUser',JSON.stringify(docUser));
+                                $mdToast.show($mdToast.simple().textContent('Welcome back!'));
                             },function(e){
                                 console.log(e.data.error);
                             });
                         $state.go('home.doc');
                     }
                 });
+                $scope.loading = false;
+
             }
 
             $scope.signout = function(){

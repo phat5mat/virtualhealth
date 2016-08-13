@@ -13,6 +13,10 @@ class Doctor extends Model
     public function appointment(){
         return $this->hasManyThrough('App\Appointment','App\Room','doctor','room');
     }
+    
+    public function user(){
+        return $this->belongsTo('App\User','users');
+    }
 
     protected $table = 'doctors';
     protected $primaryKey = 'id';

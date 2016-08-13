@@ -5,7 +5,10 @@
         </div>
         <ul class="nav navbar-nav navbar-left">
             <li>
-                <a ui-sref="room" ng-show="docUser != null">Room Management</a>
+                <a ui-sref="room.manageRoom" ng-show="docUser != null">Room Management</a>
+            </li>
+            <li>
+                <a ui-sref="appoint" ng-show="patUser != null">Appointment Management</a>
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right " ng-show="currentUser != null">

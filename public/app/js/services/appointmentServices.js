@@ -1,12 +1,15 @@
 /**
+ * Created by REN on 8/10/2016.
+ */
+/**
  * Created by REN on 8/5/2016.
  */
 
-var app = angular.module('roomServices', [])
+var app = angular.module('appointmentServices', [])
     .constant('API_URL', 'http://localhost/VirtualHealth/public/api/');
 
 
-app.service('roomServices',function($http,API_URL){
+app.service('appointmentServices',function($http,API_URL){
     return {
         get : function(){
             return $http.get(API_URL + "room");
@@ -19,14 +22,20 @@ app.service('roomServices',function($http,API_URL){
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
-        
-        
-        
-        save : function(roomData){
+
+        patientappoint: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "patAppointmentList/" + id,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
+
+        save : function(appData){
             return $http({
                 method: 'POST',
-                url: API_URL + "room",
-                data:  $.param(roomData),
+                url: API_URL + "appointment",
+                data:  $.param(appData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
@@ -34,16 +43,16 @@ app.service('roomServices',function($http,API_URL){
         destroy : function(id){
             return $http({
                 method: 'DELETE',
-                url: API_URL + "room/" + id,
+                url: API_URL + "appointment/" + id,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
 
-        update : function(id,roomData){
+        update : function(id,appData){
             return  $http({
-                method: 'PUT',
-                url: API_URL + "room/" + id,
-                data:  $.param(roomData),
+                method: 'POST',
+                url: API_URL + "appointment/" + id,
+                data:  $.param(appData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },

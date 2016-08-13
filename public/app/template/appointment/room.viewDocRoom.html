@@ -1,0 +1,92 @@
+
+<div>
+    <!-- Table-to-load-the-data Part -->
+    <h3>Patient Room Page</h3>
+    <table class="table" ng-init="loadRoombyID()">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Size</th>
+            <th>Available Slot</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+        <tr ng-repeat="room in docRooms" ng-hide="loading" ng-click="showMakeAppointmentDialog($event,room)">
+            <td>{{ room.name }}</td>
+            <td>{{ room.startDate }}</td>
+            <td>{{ room.endDate }}</td>
+            <td>{{ room.roomSize }}</td>
+            <td>{{ room.available }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script type="text/ng-template" id="makeAppointmentDialog.html">
+    <md-dialog aria-label="Create New Room">
+        <form class="form-group"
+              ng-submit="makeAppointment()" name="roomForm">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Make an Appointment</h2>
+                    <md-button class="md-icon-button" ng-click="cancel()">
+                        X
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-dialog-content>
+                <div class="md-dialog-content">
+                    <table class="table no-border">
+                        <tbody>
+                        <tr>
+                            <td><strong>Name: </strong></td>
+                        </tr>
+                        <tr>
+                            <td>{{ roomDetails.name }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>Start From:</strong></td>
+                        </tr>
+                        <tr>
+                            <td>{{ roomDetails.startDate }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>Closing At:</strong></td>
+                        </tr>
+                        <tr>
+                            <td>{{ roomDetails.endDate }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>Room Size: </strong></td>
+                        </tr>
+                        <tr>
+                            <td>{{ roomDetails.roomSize }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>Available Slot: </strong></td>
+                        </tr>
+                        <tr>
+                            <td>{{ roomDetails.available }}</td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <button class="btn btn-primary" ng-disabled="roomDetails.available <= 0" type="submit">
+                        <div ng-show="roomDetails.available > 0">Make an Appointment</div>
+                        <div ng-show="roomDetails.available <= 0">Room is full</div>
+                    </button>
+                </div>
+            </md-dialog-content>
+
+        </form>
+    </md-dialog>
+</script>

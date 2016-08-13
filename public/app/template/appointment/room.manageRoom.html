@@ -1,0 +1,116 @@
+<div>
+    <h3>Doctor Room Page</h3>
+
+    <!-- Table-to-load-the-data Part -->
+    <table class="table" ng-init="loadRoom()">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Size</th>
+        </tr>
+        </thead>
+        <tbody>
+        <p class="text-center" ng-show="loading"><span class="fa fa-refresh fa-5x fa-spin"></span></p>
+        <tr ng-repeat="room in rooms" ng-hide="loading" >
+            <td>{{ room.name }}</td>
+            <td>{{ room.startDate }}</td>
+            <td>{{ room.endDate }}</td>
+            <td>{{ room.roomSize }}</td>
+
+            <td>
+                <button class="btn btn-default btn-detail" ng-click="fillUpdate(doctor)">Edit</button>
+                <button class="btn btn-danger btn-delete" ng-click="removeRoom(room.id)">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <md-button class="md-primary md-raised" ng-click="showRoomDialog($event)"  >
+        Create New Room
+    </md-button>
+</div>
+
+<script type="text/ng-template" id="createRoomDialog.html">
+    <md-dialog aria-label="Create New Room">
+        <form class="form-group"
+              ng-submit="createRoom()" name="roomForm">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Create New Room</h2>
+                    <md-button class="md-icon-button" ng-click="cancel()">
+                        X
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-dialog-content>
+                <div class="md-dialog-content">
+                    <table class="table no-border">
+                        <tbody>
+                        <tr>
+                            <td><strong>Name: </strong></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control"  ng-model="room.name" name="name" required></td>
+                        </tr>
+
+                        <tr>
+                            <td class="col-md-2"><strong>Start From: </strong></td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-6">
+                                <p class="input-group">
+                                    <input type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                                           ng-model="room.startDateobj" is-open="startDatePicker.opened" datepicker-options="dateOptions"
+                                           ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
+                                           formatMonth="MM"/>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+                                </p>
+                            </td>
+                            <td class="col-md-6">
+                                <div uib-timepicker ng-model="startTime" ng-change="changed()" hour-step="1"
+                                     show-meridian="true" show-spinners="false" ></div>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td class="col-md-2"><strong>Closing At: </strong></td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-6">
+                                <p class="input-group">
+                                    <input type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                                           ng-model="room.endDateobj" is-open="endDatePicker.opened" datepicker-options="dateOptions"
+                                           ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+                                </p>
+                            </td>
+                            <td class="col-md-6">
+                                <div uib-timepicker ng-model="endTime" ng-change="changed()" hour-step="1"
+                                     show-meridian="true" show-spinners="false"></div>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td><strong>Room Size: </strong></td>
+                        </tr>
+                        <tr>
+                            <td ><input type="number" min="1" max="100" class="form-control" ng-model="room.roomSize" name="size" required></td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <button class="btn btn-primary" ng-disabled="roomForm.$invalid" type="submit">Save</button>
+                </div>
+            </md-dialog-content>
+
+        </form>
+    </md-dialog>
+</script>

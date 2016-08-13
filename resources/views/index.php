@@ -35,11 +35,13 @@
 <script src="app/controller/userController.js"></script>
 <script src="app/controller/roomController.js"></script>
 <script src="app/controller/patientController.js"></script>
-<script src="app/controller/doctorController.js"></script>
+<script src="app/controller/doctorController.js"></script>  
 <script src="app/js/services/userServices.js"></script>
 <script src="app/js/services/patientServices.js"></script>
 <script src="app/js/services/doctorServices.js"></script>
 <script src="app/js/services/facultyServices.js"></script>
 <script src="app/js/services/roomServices.js"></script>
+<script src="app/js/services/appointmentServices.js"></script>
+
 
 </html>

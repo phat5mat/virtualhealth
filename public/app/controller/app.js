@@ -11,18 +11,22 @@
             function logoutRedirect($q,$injector){
                 return {
                     responseError: function (reason) {
+
+                        // because of using of these services inside the config so we need to
+                        // inject it here in order to use it
                         var $state = $injector.get('$state');
                         var $rootScope = $injector.get('$rootScope');
 
+                        // declare list of reasons that token can get
                         var rejectionReasons = ['token_not_provided', 'token_expired', 'token_absent', 'token_invalid'];
 
                         angular.forEach(rejectionReasons, function(value, key) {
 
                             if(reason.data.error === value) {
 
-                                // If we get a rejection corresponding to one of the reasons
-                                // in our array, we know we need to authenticate the user so
-                                // we can remove the current user from local storage
+                                // if we get rejection by these reasons or any errors about users
+                                // the user data will be remove from local storage and authenticated
+                                // with current user are also set to null
                                 localStorage.removeItem('user');
                                 localStorage.removeItem('docUser');
                                 localStorage.removeItem('patUser');
@@ -65,16 +69,22 @@
                         }
                     }
                 })
+
+                // redirect to user management page
                 .state('users', {
                     url: '/users',
                     templateUrl: '../public/app/template/user/userView.html',
                     controller: 'userController'
                 })
+
+                //redirect to sign up page
                 .state('signup',{
                     url: '/signup',
                     templateUrl: '../public/app/template/user/signup.html',
                     controller: 'userController'
             })
+
+                // redirect to home page
                 .state('home',{
                     url: '/home',
                     templateUrl: '../public/app/template/home.html',
@@ -95,13 +105,19 @@
                         }
                     }
                 })
+
+                // redirect to doctor home page
                 .state('home.doc',{
                     templateUrl: '../public/app/template/home.doc.html',
                 })
+
+                // redirect to patient home page
                 .state('home.pat',{
                     templateUrl: '../public/app/template/home.pat.html',
                     controller: 'patientController',
                 })
+
+                // redirect to room list page
                 .state('room',{
                     url: '/room',
                     templateUrl: '../public/app/template/appointment/room.html',
@@ -112,17 +128,69 @@
                         }else{
                             if($rootScope.currentUser['role'] == 1){
                                 $timeout(function() {
-                                    return null;
+                                    $state.go('room.manageRoom');
                                 });
                             }else {
                                 $timeout(function() {
-                                    $state.go('home.pat');
+                                    $state.go('room.viewDocRoom');
                                 });
                             }
                         }
                     }
+                    
+                })
+
+                // redirect to selected doctor room list page
+                .state('room.viewDocRoom',{
+                    templateUrl: '../public/app/template/appointment/room.viewDocRoom.html',
+                    controller: 'roomController',
+                    params: {
+                        selectedDoc: null
+                    }
+
+            })
+
+                // redirect to doctor room management page
+                .state('room.manageRoom',{
+                    templateUrl: '../public/app/template/appointment/room.manageRoom.html',
+                    controller: 'roomController',
+                    params: {
+                        selectedDoc: null
+                    }
+
+                })
+                .state('appoint',{
+                    templateUrl: '../public/app/template/appointment/appoint.html',
+                    controller: 'roomController',
+                    params: {
+                        selectedDoc: null
+                    },
+                    onEnter: function($rootScope,$state,$timeout){
+                        if($rootScope.currentUser == null){
+                            return null;
+                        }else{
+                            if($rootScope.currentUser['role'] == 1){
+                                $timeout(function() {
+                                    $state.go('home.doc');
+                                });
+                            }else {
+                                $timeout(function() {
+                                    $state.go('appoint.manageAppointment');
+                                });
+                            }
+                        }
+                    }
+
+                })
+                .state('appoint.manageAppointment',{
+                    templateUrl: '../public/app/template/appointment/appoint.manageAppointment.html',
+                    params: {
+                        selectedDoc: null
+                    }
+
                 })
         })
+        // auto execute this function after module get called
         .run(function($rootScope){
             if(localStorage.getItem('satellizer_token')) {
 
@@ -138,8 +206,9 @@
       
         });
 
+// define main application which contains all of services and modules.
 angular.module('mainApp', ['authModule', 'userServices',
-    'doctorServices','patientServices','facultyServices','roomServices','ui.router']);
+    'doctorServices','patientServices','facultyServices','roomServices','appointmentServices','ui.router']);
 
 
 

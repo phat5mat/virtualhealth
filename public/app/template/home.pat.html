@@ -12,7 +12,7 @@
     </thead>
     <tbody>
     <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
-    <tr ng-repeat="doctor in doctors" ng-hide="loading">
+    <tr ng-repeat="doctor in doctors" ng-hide="loading" ng-click="selectDoctor($event,doctor)">
         <td>{{ doctor.id }}</td>
         <td>{{ doctor.name }}</td>
         <td>{{ doctor.email }}</td>
@@ -22,3 +22,53 @@
     </tr>
     </tbody>
 </table>
+
+
+<script type="text/ng-template" id="viewDoctorDetailsDialog.html">
+    <md-dialog aria-label="Doctor Informations" ng-init="test()">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>{{ doctorDetails.name }}</h2>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    X
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ doctorDetails.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Date of Birth</td>
+                        <td>{{ doctorDetails.dateofbirth }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{ doctorDetails.email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>{{ doctorDetails.phone }}</td>
+                    </tr>
+                    <tr>
+                        <td>Faculty</td>
+                        <td>{{ doctorDetails.doctor.faculty }}</td>
+                    </tr>
+                    <tr>
+                        <td>Professional</td>
+                        <td>{{ doctorDetails.doctor.professional }}</td>
+                    </tr>
+                    <tr>
+                        <td>Biography</td>
+                        <td>{{ doctorDetails.doctor.biography }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-primary btn-block" ng-click="makeAppointment()">View {{ doctorDetails.name }}
+             Room</button>
+        </md-dialog-content>
+    </md-dialog>
+</script>

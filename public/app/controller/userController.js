@@ -8,6 +8,7 @@ var userApp = angular.module('mainApp');
 
             var upId = null;
 
+            
         $scope.loadUsers = function(){
             userServices.get()
             .then(function(userData) {

@@ -11,7 +11,8 @@
         "barryvdh/laravel-debugbar": "^2.2",
         "fzaninotto/faker": "^1.6",
         "twbs/bootstrap": "^3.3",
-        "tymon/jwt-auth": "0.*.*"
+        "tymon/jwt-auth": "0.*.*",
+        "znck/belongs-to-through": "^2.2"
 
     },
     "require-dev": {

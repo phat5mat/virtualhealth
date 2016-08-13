@@ -1,0 +1,24 @@
+<h3>Pat Home</h3>
+<table class="table" ng-init="loadAppointment()" >
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Doctor</th>
+        <th>Room</th>
+        <th>Status</th>
+        <th>Slot Number</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+    <tr ng-repeat="appoint in appointments" ng-hide="loading" >
+        <td>{{ appoint.id }}</td>
+        <td>{{ appoint.room.doctor.user.name }}</td>
+        <td>{{ appoint.room.name }}</td>
+        <td>{{ appoint.status }}</td>
+        <td>{{ appoint.slot }}</td>
+
+    </tr>
+    </tbody>
+</table>

@@ -13,9 +13,10 @@ class PatientsController extends Controller
 
     public function __construct()
     {
-
+        $this->middleware('jwt.auth');
     }
-
+    
+    
     public function index(){
         $userList = User::all();
 

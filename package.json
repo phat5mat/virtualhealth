@@ -8,5 +8,28 @@
     "gulp": "^3.9.1",
     "laravel-elixir": "^5.0.0",
     "bootstrap-sass": "^3.0.0"
+  },
+  "name": "vhnode",
+  "description": "Virtual Health Chat Application",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phat5mat/virtualhealth.git"
+  },
+  "keywords": [
+    "chatapp"
+  ],
+  "author": "ren",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phat5mat/virtualhealth/issues"
+  },
+  "homepage": "https://github.com/phat5mat/virtualhealth#readme",
+  "dependencies": {
+    "node-persist": "0.0.12"
   }
 }
