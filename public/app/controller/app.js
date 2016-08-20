@@ -189,6 +189,39 @@
                     }
 
                 })
+
+                .state('manage',{
+                    templateUrl: '../public/app/template/user/manage.html',
+                    controller: 'userController',
+                    onEnter: function($rootScope,$state,$timeout){
+                        if($rootScope.currentUser == null){
+                            return null;
+                        }else{
+                            if($rootScope.currentUser['role'] == 1){
+                                $timeout(function() {
+                                    $state.go('manage.doc');
+                                });
+                            }else {
+                                $timeout(function() {
+                                    $state.go('manage.pat');
+                                });
+                            }
+                        }
+                    }
+
+                })
+
+                .state('manage.pat',{
+                    templateUrl: '../public/app/template/user/manage.pat.html',
+                    controller: 'patientController'
+                    
+                })
+
+                .state('manage.doc',{
+                    templateUrl: '../public/app/template/user/manage.doc.html',
+                    controller: 'doctorController'
+                })
+
         })
         // auto execute this function after module get called
         .run(function($rootScope){
@@ -203,6 +236,7 @@
                     $rootScope.docUser = JSON.parse(localStorage.getItem('docUser'));
 
             }
+            
       
         });
 

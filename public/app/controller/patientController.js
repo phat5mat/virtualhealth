@@ -5,12 +5,32 @@
  * Created by REN on 7/28/2016.
  */
 
-var userApp = angular.module('mainApp');
-userApp.controller('patientController',['$scope','$location',
+var app = angular.module('mainApp');
+app.controller('patientController',['$scope','$location',
     '$http','userServices','facultyServices','doctorServices','$state','$auth','$mdDialog',
-    '$mdMedia',
+    '$mdMedia','patientServices','$rootScope',
     function ($scope,$location,$http,userServices,facultyServices,doctorServices,$state,$auth,$mdDialog
-    ,$mdMedia) {
+    ,$mdMedia,patientServices,$rootScope) {
+
+        $scope.patientDetails = function(){
+            $scope.patient = {
+                name: null,
+                email: null,
+                phone: null,
+                balance: null,
+                dateofbirth: null
+            }
+
+            var user = JSON.parse(localStorage.getItem('user'));
+            $scope.patient.name = user['name'];
+            $scope.patient.email = user['email'];
+            $scope.patient.phone = user['phone'];
+            $scope.patient.balance = user['balance'];
+            $scope.patient.dateofbirth = user['dateofbirth'];
+
+        }
+        
+
 
         $scope.loadDoctors = function(){
             doctorServices.get().
@@ -41,7 +61,7 @@ userApp.controller('patientController',['$scope','$location',
                 });
         }
 
-        function viewDoctorDialogController($scope,$mdDialog,$state,$rootScope,passDoctor){
+        function viewDoctorDialogController($scope,$mdDialog,$state,passDoctor){
             // Dialog toggle
             $scope.doctorDetails = passDoctor;
 

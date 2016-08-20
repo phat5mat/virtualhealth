@@ -1,9 +1,30 @@
-var mainApp = angular.module('doctorApp', ['doctorServices']);
+var app = angular.module('mainApp');
 
- mainApp.controller('doctorController', function($scope, $http, $window, docServices,$mdToast) {
+app.controller('doctorController',['$scope','$http','$window','doctorServices','$mdToast'
+     , function($scope, $http, $window, doctorServices,$mdToast) {
 var upId = null;
      $scope.loading = true;
-     docServices.get()
+
+
+     $scope.doctorDetails = function(){
+         $scope.doctor = {
+             name: null,
+             email: null,
+             phone: null,
+             balance: null,
+             dateofbirth: null
+         }
+
+         var user = JSON.parse(localStorage.getItem('user'));
+         $scope.doctor.name = user['name'];
+         $scope.doctor.email = user['email'];
+         $scope.doctor.phone = user['phone'];
+         $scope.doctor.balance = user['balance'];
+         $scope.doctor.dateofbirth = user['dateofbirth'];
+
+     }
+
+     doctorServices.get()
             .success(function(docData) {
                 $scope.doctors = docData;
                 $scope.loading = false;
@@ -12,7 +33,7 @@ var upId = null;
 
      $scope.saveDoc = function() {
             $scope.loading = true;
-            docServices.save($scope.doctor)
+         doctorServices.save($scope.doctor)
                 .success(function(data) {
 
                     docServices.get()
@@ -29,7 +50,7 @@ var upId = null;
 
      $scope.removeDoc = function(id) {
             $scope.loading = true;
-            docServices.destroy(id)
+         doctorServices.destroy(id)
                 .success(function(data) {
                     docServices.get()
                         .success(function(docData) {
@@ -55,7 +76,7 @@ var upId = null;
      }
 
      $scope.updateDoc = function(){
-         docServices.update(upId,$scope.doctor)
+         doctorServices.update(upId,$scope.doctor)
              .success(function (data) {
                  docServices.get()
                      .success(function(docData) {
@@ -70,4 +91,4 @@ var upId = null;
 
     
 
-    });
+    }]);

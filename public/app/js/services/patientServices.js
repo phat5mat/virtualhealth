@@ -10,7 +10,7 @@ app.factory('patientServices',function($http,API_URL){
         get : function(){
             return $http.get(API_URL + "doctor");
         },
-
+        
         findByUser : function(id){
             return $http({
                 method: 'GET',

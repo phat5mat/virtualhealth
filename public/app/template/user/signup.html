@@ -131,11 +131,11 @@
     </div>
 </form>
 
-<div class="container" ng-show="successPage" style="max-width: 600px"   >
+<div class="container" ng-show="successPatient" style="max-width: 600px"   >
     <div>
         <div class="page-header bg-success text-center">
             <h2>
-                <b>Registration Successful</b>
+                <b>Patient Registration Successful</b>
             </h2>
         </div>
         <div class="row">
@@ -149,3 +149,24 @@
         </div>
     </div>
 </div>
+
+<div class="container" ng-show="successDoctor" style="max-width: 600px"   >
+    <div>
+        <div class="page-header bg-success text-center">
+            <h2>
+                <b>Doctor Registration Request Received</b>
+            </h2>
+        </div>
+        <div class="row">
+            Welcome {{ user.name }}!
+        </div>
+        <div class="row">
+            <h3>Thank you for registering as doctor, now you can login into Virtual Healthcare
+           but you can not access Doctor's functions yet until your Doctor request is approved by staff. </h3>
+        </div>
+        <div class="row">
+            <button class="btn btn-primary btn-lg" ui-sref="login">Login</button>
+        </div>
+    </div>
+</div>
+

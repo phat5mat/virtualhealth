@@ -8,9 +8,9 @@
 angular
     .module('mainApp')
     .controller('authController',['$scope','$auth','$state','$location','$http','$rootScope','$window',
-        'patientServices','doctorServices','$mdToast',
+        'patientServices','doctorServices','$mdToast','$timeout',
         function ($scope,$auth,$state,$location,$http,$rootScope,$window,patientServices,doctorServices,
-                  $mdToast){
+                  $mdToast,$timeout){
 
             $scope.login = function() {
                 $scope.loading = true;
@@ -91,5 +91,8 @@ angular
                     console.log(e);
                 })
             }
+
+
+            
            
         }]);

@@ -54,10 +54,12 @@ var userApp = angular.module('mainApp');
             $scope.user.dateofbirth = dateFilter;
             userServices.save($scope.user)
                 .then(function(data) {
-                    $scope.patForm = false;
-                    $scope.docForm = false;
-                    $scope.successPage = true;
-
+                        $scope.patForm = false;
+                        $scope.docForm = false;
+                    if($scope.user.role == 0)
+                        $scope.successPatient = true;
+                    if($scope.user.role == 1)
+                        $scope.successDoctor = true;
                 },
                     function(e) {
                         console.log(e);

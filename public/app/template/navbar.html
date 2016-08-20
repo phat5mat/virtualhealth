@@ -5,20 +5,24 @@
         </div>
         <ul class="nav navbar-nav navbar-left">
             <li>
-                <a ui-sref="room.manageRoom" ng-show="docUser != null">Room Management</a>
+                <a href="#" ui-sref="room.manageRoom" ui-sref-active="disabledClick" ng-show="docUser != null">Room Management</a>
             </li>
             <li>
-                <a ui-sref="appoint" ng-show="patUser != null">Appointment Management</a>
+                <a href="#"  ui-sref="appoint" ui-sref-active="disabledClick" ng-show="patUser != null">Appointment Management</a>
             </li>
         </ul>
-        <ul class="nav navbar-nav navbar-right " ng-show="currentUser != null">
+        <ul class="btn-group nav navbar-nav navbar-right " uib-dropdown ng-show="currentUser != null">
             <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="">Welcome, {{currentUser.name}}</a>
-                <ul class="dropdown-menu">
-                    <li><a ng-click="signout()" >Logout</a></li>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="">Welcome, {{currentUser.name}}
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                    <li role="menuitem"><a href="#" ui-sref="manage" ui-sref-active="disabledClick" >Account Management</a></li>
+                    <li role="menuitem"><a href="#" ng-click="signout()" >Logout</a></li>
                 </ul>
+
             </li>
         </ul>
+
 
         <ul class="nav navbar-nav navbar-right" ng-show="currentUser == null">
             <li><a ui-sref="login" >Log in</a></li>

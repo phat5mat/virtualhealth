@@ -30,6 +30,10 @@
   },
   "homepage": "https://github.com/phat5mat/virtualhealth#readme",
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.0",
+    "multer": "^1.2.0",
     "node-persist": "0.0.12"
   }
 }
