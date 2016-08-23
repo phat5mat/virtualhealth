@@ -28,6 +28,8 @@
 <script src="node_modules/satellizer/dist/satellizer.js"></script>
 <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
 <script src="app/js/ui-bootstrap-tpls-2.0.0.js"></script>
+<script src="https://cdn.pubnub.com/pubnub-3.7.14.min.js"></script>
+<script src="https://cdn.pubnub.com/webrtc/webrtc.js"></script>
 
 
 <script src="app/controller/app.js"></script>

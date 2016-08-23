@@ -1,0 +1,24 @@
+
+
+<div class="container">
+<div class="row">
+    <input ng-model="roomName">
+    <button ng-click="subcribe()">Subcribe channel {{ roomName }}</button>
+</div>
+
+    <div class="row">
+        <ul>
+            <li ng-repeat="message in chatContent ">
+                <p>{{ message }}</p>
+            </li>
+        </ul>
+    </div>
+    <div id="videoBox"></div>
+
+    <form ng-submit="sendMessage()">
+        <input ng-model="messageContent" type="text" placeholder="Type your message" />
+        <button type="submit">Send</button>
+    </form>
+    <button ng-click="subcribePhone()">Login</button>
+    <button ng-click="call()">Video Call</button>
+</div>

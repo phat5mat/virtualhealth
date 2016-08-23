@@ -59,7 +59,8 @@ angular
                     }
 
                      // handle if user is doctor
-                    else{
+                    if($rootScope.currentUser['role'] ==  1)
+                    {
                         doctorServices.findByUser($rootScope.currentUser['id'])
                             .then(function(response){
                                 var docUser = response.data;
@@ -71,6 +72,23 @@ angular
                             });
                         $state.go('home.doc');
                     }
+                    
+                    // handle if user is staff
+                    if($rootScope.currentUser['role'] ==  3)
+                    {
+                        doctorServices.findByUser($rootScope.currentUser['id'])
+                            .then(function(response){
+                                var docUser = response.data;
+                                $rootScope.docUser = docUser;
+                                localStorage.setItem('docUser',JSON.stringify(docUser));
+                                $mdToast.show($mdToast.simple().textContent('Welcome back!'));
+                            },function(e){
+                                console.log(e.data.error);
+                            });
+                        $state.go('home.doc');
+                    }
+                    
+                    
                 });
                 $scope.loading = false;
 

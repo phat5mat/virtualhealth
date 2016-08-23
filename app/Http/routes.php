@@ -29,7 +29,8 @@ Route::group(array('prefix' => 'api'), function() {
     Route::resource('room', 'RoomController');
     Route::resource('appointment', 'AppointmentsController');
 
-    Route::get('docbyuser/{user}','DoctorsController@findByUser');
+    Route::get('docbyuser/{user}','DoctorsController@findDocByUser');
+    Route::get('docbyrequest','DoctorsController@findUnactiveDoc');
     Route::get('patbyuser/{user}','PatientsController@findByUser');
     Route::get('findbydoctor/{doctor}','RoomController@findByDoctor');
     Route::get('patAppointmentList/{patients}','AppointmentsController@patAppointmentList');

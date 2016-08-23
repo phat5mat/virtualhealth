@@ -36,7 +36,7 @@ class DoctorsController extends Controller
         }
     }
 
-    public function findByUser($id){
+    public function findDocByUser($id){
         $user = User::find($id);
         $doctor = $user->doctor;
         if (!$doctor) {
@@ -48,6 +48,12 @@ class DoctorsController extends Controller
         }else{
             return $doctor;
         }
+    }
+
+    public function findUnactiveDoc(){
+        $requestDoc = Doctor::where('status',0)->with('user')->get();
+
+        return $requestDoc;
     }
 
     public function store(Request $request) {

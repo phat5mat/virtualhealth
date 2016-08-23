@@ -2,8 +2,8 @@
  * Created by REN on 7/28/2016.
  */
 
-var userApp = angular.module('mainApp');
-    userApp.controller('userController',['$scope','$location','$http','userServices','facultyServices','$filter','$state','$auth',
+var app = angular.module('mainApp');
+app.controller('userController',['$scope','$location','$http','userServices','facultyServices','$filter','$state','$auth',
         function ($scope,$location,$http,userServices,facultyServices,$filter,$state,$auth) {
 
             var upId = null;

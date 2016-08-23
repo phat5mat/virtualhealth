@@ -221,6 +221,10 @@
                     templateUrl: '../public/app/template/user/manage.doc.html',
                     controller: 'doctorController'
                 })
+                .state('exam',{
+                    templateUrl: '../public/app/template/examination/exam.html',
+                    controller: 'doctorController'
+                })
 
         })
         // auto execute this function after module get called

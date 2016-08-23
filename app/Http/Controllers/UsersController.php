@@ -17,7 +17,9 @@ class UsersController extends Controller
 
     }
 
-   
+   public function findUserByDoc(Request $request){
+       
+   }
 
     public function index()
     {

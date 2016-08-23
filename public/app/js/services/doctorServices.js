@@ -15,6 +15,13 @@ app.factory('doctorServices',function($http,API_URL){
             });
         },
 
+        findByRequest : function(){
+            return $http({
+                method: 'GET',
+                url: API_URL + "docbyrequest/"
+            })
+        }, 
+
         save : function(docData){
             return $http({
                 method: 'POST',

@@ -11,6 +11,15 @@ app.service('userServices',function($http,API_URL){
             return $http.get(API_URL + "user");
         },
 
+        findUserByDoc : function(docData){
+            return $http({
+                method: 'GET',
+                url: API_URL + "finduserbydoc",
+                data:  $.param(docData),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
+
         save : function(userData){
             return $http({
                 method: 'POST',
