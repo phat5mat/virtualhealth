@@ -5,6 +5,22 @@ app.controller('doctorController',['$scope','$http','$window','doctorServices','
 var upId = null;
      $scope.loading = true;
 
+        doctorServices.get()
+            .success(function(docData) {
+                $scope.doctors = docData;
+                $scope.loading = false;
+            });
+
+        var pubnub = new PUBNUB({
+            publish_key   : 'pub-c-3074e899-a4e2-401c-8fa3-5007d7e7ff06',
+            subscribe_key : 'sub-c-b73974e4-65c7-11e6-b99b-02ee2ddab7fe',
+            uuid: JSON.parse(localStorage.getItem('user'))['username'],
+            ssl: true
+        })
+
+        $scope.chatContent = [];
+        var videoBox = document.getElementById("videoBox");
+
 
      $scope.doctorDetails = function(){
          $scope.doctor = {
@@ -23,12 +39,6 @@ var upId = null;
          $scope.doctor.dateofbirth = user['dateofbirth'];
 
      }
-
-     doctorServices.get()
-            .success(function(docData) {
-                $scope.doctors = docData;
-                $scope.loading = false;
-            });
 
 
      $scope.saveDoc = function() {
@@ -75,6 +85,7 @@ var upId = null;
          }
      }
 
+
      $scope.updateDoc = function(){
          doctorServices.update(upId,$scope.doctor)
              .success(function (data) {
@@ -89,18 +100,8 @@ var upId = null;
              });
      }
 
-        var pubnub = new PUBNUB({
-            publish_key   : 'pub-c-3074e899-a4e2-401c-8fa3-5007d7e7ff06',
-            subscribe_key : 'sub-c-b73974e4-65c7-11e6-b99b-02ee2ddab7fe',
-            uuid: JSON.parse(localStorage.getItem('user'))['username'],
-            ssl: true
-        })
 
-
-        $scope.chatContent = [];
-        var videoBox = document.getElementById("videoBox");
-
-       $scope.subcribe = function(){
+     $scope.subcribe = function(){
            console.log('Subcribing.....')
 
            pubnub.subscribe({
@@ -128,7 +129,8 @@ var upId = null;
 
        }
 
-        $scope.sendMessage = function(){
+
+     $scope.sendMessage = function(){
             if (!$scope.messageContent || $scope.messageContent === '') {
                 return;
             }
@@ -148,7 +150,8 @@ var upId = null;
 
         }
 
-        $scope.subcribePhone = function () {
+
+     $scope.subcribePhone = function () {
             var phone = window.phone = PHONE({
                 number        : $scope.roomName, // listen on username line else Anonymous
                 publish_key   : 'pub-c-3074e899-a4e2-401c-8fa3-5007d7e7ff06', // Your Pub Key
@@ -167,7 +170,8 @@ var upId = null;
             });
         }
 
-        $scope.call = function (){
+        
+     $scope.call = function (){
             phone.dial($scope.roomName);
         }
 

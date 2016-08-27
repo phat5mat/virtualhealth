@@ -11,12 +11,15 @@ app.factory('patientServices',function($http,API_URL){
             return $http.get(API_URL + "doctor");
         },
         
+        
         findByUser : function(id){
             return $http({
                 method: 'GET',
                 url: API_URL + "patbyuser/" + id
             });
         },
+        
+        
         save : function(patData){
             return $http({
                 method: 'POST',
@@ -26,6 +29,7 @@ app.factory('patientServices',function($http,API_URL){
             });
         },
 
+        
         destroy : function(id){
             return $http({
                 method: 'DELETE',
@@ -33,6 +37,7 @@ app.factory('patientServices',function($http,API_URL){
             });
         },
 
+        
         update : function(id,patData){
             return  $http({
                 method: 'POST',

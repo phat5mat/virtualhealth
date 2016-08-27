@@ -16,11 +16,13 @@ class DoctorsController extends Controller
         $this->middleware('jwt.auth');  
     }
 
+    
     public function index(){
         $doctors = User::where('role',1)->with('doctor')->get();
         return $doctors;
     }
 
+    
     public function show($id)
     {
         $doctor = Doctor::find($id);
@@ -36,6 +38,7 @@ class DoctorsController extends Controller
         }
     }
 
+    
     public function findDocByUser($id){
         $user = User::find($id);
         $doctor = $user->doctor;
@@ -50,12 +53,38 @@ class DoctorsController extends Controller
         }
     }
 
+    
     public function findUnactiveDoc(){
         $requestDoc = Doctor::where('status',0)->with('user')->get();
-
         return $requestDoc;
     }
 
+    
+    public function checkRequest(){
+        $requestDoc = Doctor::where('status',0)->get();
+        if(!$requestDoc)
+            return 0;
+        else
+            return $requestDoc->count();
+    }
+
+    
+    public function approveRequest($id){
+        $doctor = Doctor::find($id);
+        $doctor->status = 1;
+        $doctor->save();
+        return "Sucess updating doctor ";
+    }
+
+    
+    public function rejectRequest($id){
+        $doctor = Doctor::find($id);
+        $doctor->status = 2;
+        $doctor->save();
+        return "Sucess updating doctor ";
+    }
+    
+    
     public function store(Request $request) {
         $newDoc = $request->all();
         $doc = new Doctor;
@@ -69,6 +98,7 @@ class DoctorsController extends Controller
         return Response::json(array('success' => true));
     }
 
+    
     public function update(Request $request, $id) {
         $updateDoc = $request->all();
         $doctor = Doctor::find($id);
@@ -82,6 +112,7 @@ class DoctorsController extends Controller
         return "Sucess updating doctor ";
     }
 
+    
     public function destroy($id) {
         $doctor = Doctor::find($id);
         $doctor->delete();
@@ -94,14 +125,14 @@ class DoctorsController extends Controller
 
     }
 
+    
     public function transform($doctor){
         return [
             'ID' => $doctor['docid'],
             'Name' => $doctor['docname']
         ];
     }
-
-
+    
 
 }
 

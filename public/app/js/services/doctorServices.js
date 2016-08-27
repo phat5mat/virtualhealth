@@ -15,12 +15,38 @@ app.factory('doctorServices',function($http,API_URL){
             });
         },
 
+
         findByRequest : function(){
             return $http({
                 method: 'GET',
-                url: API_URL + "docbyrequest/"
+                url: API_URL + "docbyrequest"
             })
-        }, 
+        },
+
+
+        checkRequest : function(){
+            return $http({
+                method: 'GET',
+                url: API_URL + "checkrequest"
+            })
+        },
+
+
+        approveRequest : function(id){
+            return $http({
+                method: 'PUT',
+                url: API_URL + "approverequest/" + id
+            })
+        },
+
+        
+        rejectRequest : function(id){
+            return $http({
+                method: 'PUT',
+                url: API_URL + "rejectrequest/" + id
+            })
+        },
+        
 
         save : function(docData){
             return $http({
@@ -31,6 +57,7 @@ app.factory('doctorServices',function($http,API_URL){
             });
         },
 
+
         destroy : function(id){
             return $http({
                 method: 'DELETE',
@@ -38,6 +65,7 @@ app.factory('doctorServices',function($http,API_URL){
             });
         },
 
+        
         update : function(id,docData){
           return  $http({
                 method: 'POST',

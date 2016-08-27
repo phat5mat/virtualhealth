@@ -12,6 +12,7 @@ app.factory('facultyServices',function($http,API_URL){
             return $http.get(API_URL + "fac");
         },
 
+        
         save : function(facData){
             return $http({
                 method: 'POST',
@@ -21,6 +22,7 @@ app.factory('facultyServices',function($http,API_URL){
             });
         },
 
+        
         destroy : function(id){
             return $http({
                 method: 'DELETE',
@@ -28,6 +30,7 @@ app.factory('facultyServices',function($http,API_URL){
             });
         },
 
+        
         update : function(id,facData){
             return  $http({
                 method: 'POST',

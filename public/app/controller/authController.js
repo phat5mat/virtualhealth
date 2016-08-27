@@ -11,7 +11,7 @@ angular
         'patientServices','doctorServices','$mdToast','$timeout',
         function ($scope,$auth,$state,$location,$http,$rootScope,$window,patientServices,doctorServices,
                   $mdToast,$timeout){
-
+    
             $scope.login = function() {
                 $scope.loading = true;
                 var credentials = {
@@ -74,7 +74,7 @@ angular
                     }
                     
                     // handle if user is staff
-                    if($rootScope.currentUser['role'] ==  3)
+                    if($rootScope.currentUser['role'] == 2)
                     {
                         doctorServices.findByUser($rootScope.currentUser['id'])
                             .then(function(response){
@@ -85,7 +85,7 @@ angular
                             },function(e){
                                 console.log(e.data.error);
                             });
-                        $state.go('home.doc');
+                        $state.go('home.staff');
                     }
                     
                     
@@ -94,6 +94,7 @@ angular
 
             }
 
+            
             $scope.signout = function(){
                 $auth.logout().then(function(){
                     $state.go('login');
@@ -109,8 +110,6 @@ angular
                     console.log(e);
                 })
             }
-
-
             
            
         }]);

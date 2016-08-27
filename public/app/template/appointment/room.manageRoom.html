@@ -12,7 +12,7 @@
         </tr>
         </thead>
         <tbody>
-        <p class="text-center" ng-show="loading"><span class="fa fa-refresh fa-5x fa-spin"></span></p>
+        <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
         <tr ng-repeat="room in rooms" ng-hide="loading" >
             <td>{{ room.name }}</td>
             <td>{{ room.startDate }}</td>

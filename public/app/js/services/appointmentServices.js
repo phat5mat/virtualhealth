@@ -15,6 +15,7 @@ app.service('appointmentServices',function($http,API_URL){
             return $http.get(API_URL + "room");
         },
 
+        
         findbydoctor: function(id){
             return $http({
                 method: 'GET',
@@ -23,6 +24,7 @@ app.service('appointmentServices',function($http,API_URL){
             });
         },
 
+        
         patientappoint: function(id){
             return $http({
                 method: 'GET',
@@ -31,6 +33,7 @@ app.service('appointmentServices',function($http,API_URL){
             });
         },
 
+        
         save : function(appData){
             return $http({
                 method: 'POST',
@@ -40,6 +43,7 @@ app.service('appointmentServices',function($http,API_URL){
             });
         },
 
+        
         destroy : function(id){
             return $http({
                 method: 'DELETE',
@@ -48,6 +52,7 @@ app.service('appointmentServices',function($http,API_URL){
             });
         },
 
+        
         update : function(id,appData){
             return  $http({
                 method: 'POST',

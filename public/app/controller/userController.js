@@ -24,11 +24,13 @@ app.controller('userController',['$scope','$location','$http','userServices','fa
                 $state.go('signup');
             }
 
+            
         $scope.showPatForm = function(){
             $scope.patForm = true;
             $scope.selectRole = false;
         }
 
+            
         $scope.showDocForm = function(){
             $scope.docForm = true;
             $scope.selectRole = false;
@@ -40,14 +42,14 @@ app.controller('userController',['$scope','$location','$http','userServices','fa
 
         }
 
+            
         $scope.backForm = function(){
             $scope.docForm = false;
             $scope.patForm = false;
             $scope.selectRole = true;
         }
 
-
-
+            
         $scope.register = function() {
             $scope.loading = true;
             var dateFilter = $filter('date')($scope.user.dateinput, 'yyyy-MM-dd');
@@ -65,8 +67,8 @@ app.controller('userController',['$scope','$location','$http','userServices','fa
                         console.log(e);
                 });
         };
-
-
+            
+            
         $scope.removeUser = function(id,role) {
             $scope.loading = true;
             userServices.destroy(id,role)

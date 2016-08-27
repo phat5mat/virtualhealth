@@ -12,6 +12,7 @@ app.service('roomServices',function($http,API_URL){
             return $http.get(API_URL + "room");
         },
 
+        
         findbydoctor: function(id){
             return $http({
                 method: 'GET',
@@ -19,7 +20,6 @@ app.service('roomServices',function($http,API_URL){
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
-        
         
         
         save : function(roomData){
@@ -31,6 +31,7 @@ app.service('roomServices',function($http,API_URL){
             });
         },
 
+        
         destroy : function(id){
             return $http({
                 method: 'DELETE',
@@ -39,6 +40,7 @@ app.service('roomServices',function($http,API_URL){
             });
         },
 
+        
         update : function(id,roomData){
             return  $http({
                 method: 'PUT',
@@ -47,8 +49,6 @@ app.service('roomServices',function($http,API_URL){
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
-
-
 
     }
 })

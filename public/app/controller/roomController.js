@@ -3,8 +3,8 @@
  */
 var app = angular.module('mainApp');
 app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia','$state','$stateParams',
-    'appointmentServices','$rootScope',
-    function ($scope,$mdDialog,roomServices,$mdMedia,$state,$stateParams,appointmentServices,$rootScope) {
+    'appointmentServices','$rootScope','$mdToast',
+    function ($scope,$mdDialog,roomServices,$mdMedia,$state,$stateParams,appointmentServices,$rootScope,$mdToast) {
 
         $scope.loading = true;
         // Load all room
@@ -38,6 +38,7 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
 
         }
 
+        
         $scope.loadAppointment = function(){
             try {
                 appointmentServices.patientappoint($rootScope.patUser['id'])
@@ -54,8 +55,7 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
                 $state.go('home.pat');
             }
         }
-
-
+        
         // Show Create new Room dialog
         $scope.showRoomDialog = function(ev) {
             var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
@@ -77,6 +77,7 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
                 });
         }
 
+        
         $scope.showMakeAppointmentDialog = function(ev,room) {
             var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
 
@@ -113,8 +114,7 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
                     console.log(e);
                 });
         };
-
-
+        
         // Controller of create room dialog
         function createRoomController($scope,$mdDialog,$rootScope,$filter){
             // Dialog toggle

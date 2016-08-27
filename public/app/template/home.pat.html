@@ -11,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+    <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
     <tr ng-repeat="doctor in doctors" ng-hide="loading" ng-click="selectDoctor($event,doctor)">
         <td>{{ doctor.id }}</td>
         <td>{{ doctor.name }}</td>

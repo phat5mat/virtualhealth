@@ -17,6 +17,7 @@
                         var $state = $injector.get('$state');
                         var $rootScope = $injector.get('$rootScope');
 
+
                         // declare list of reasons that token can get
                         var rejectionReasons = ['token_not_provided', 'token_expired', 'token_absent', 'token_invalid'];
 
@@ -73,7 +74,7 @@
                 // redirect to user management page
                 .state('users', {
                     url: '/users',
-                    templateUrl: '../public/app/template/user/userView.html',
+                    templateUrl: '../public/app/template/user/viewUser.html',
                     controller: 'userController'
                 })
 
@@ -97,9 +98,15 @@
                                 $timeout(function() {
                                     $state.go('home.pat');
                                 });
-                            }else {
+                            }
+                            if($rootScope.currentUser['role'] == 1){
                                 $timeout(function() {
                                     $state.go('home.doc');
+                                });
+                            }
+                            if($rootScope.currentUser['role'] == 2){
+                                $timeout(function() {
+                                    $state.go('home.staff');
                                 });
                             }
                         }
@@ -115,6 +122,11 @@
                 .state('home.pat',{
                     templateUrl: '../public/app/template/home.pat.html',
                     controller: 'patientController',
+                })
+
+                .state('home.staff',{
+                    templateUrl: '../public/app/template/home.staff.html',
+                    controller: 'staffController',
                 })
 
                 // redirect to room list page
@@ -225,6 +237,23 @@
                     templateUrl: '../public/app/template/examination/exam.html',
                     controller: 'doctorController'
                 })
+                
+
+                .state('viewRequest',{
+                    templateUrl: '../public/app/template/user/viewRequest.html',
+                    controller: 'staffController',
+                   
+                })
+
+                .state('reviewDoctor',{
+                    templateUrl: '../public/app/template/user/reviewDoctor.html',
+                    controller: 'staffController',
+                    params: {
+                        doctor: null
+                    }
+                })
+
+
 
         })
         // auto execute this function after module get called

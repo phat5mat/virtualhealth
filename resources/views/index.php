@@ -9,15 +9,18 @@
     <link rel="stylesheet" href="app/css/signin.css">
     <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/custom.css">
-
+    <style type="text/css">
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+    </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div ng-include="'app/template/navbar.html'" ng-controller="authController" ></div>
 </head>
-<body >
-<h1 class="text-center"> WELCOME TO VIRTUAL HEALTHCARE </h1>
+<body>
+<h1 class="text-center ng-cloak"> WELCOME TO VIRTUAL HEALTHCARE </h1>
 
-<div ui-view></div>
-</body>
+<div class="ng-cloak" ui-view></div>
 
 <script src="app/js/jquery.min.js"></script>
 <script src="node_modules/angular/angular.js"></script>
@@ -37,13 +40,14 @@
 <script src="app/controller/userController.js"></script>
 <script src="app/controller/roomController.js"></script>
 <script src="app/controller/patientController.js"></script>
-<script src="app/controller/doctorController.js"></script>  
+<script src="app/controller/doctorController.js"></script>
+<script src="app/controller/staffController.js"></script>
 <script src="app/js/services/userServices.js"></script>
 <script src="app/js/services/patientServices.js"></script>
 <script src="app/js/services/doctorServices.js"></script>
 <script src="app/js/services/facultyServices.js"></script>
 <script src="app/js/services/roomServices.js"></script>
 <script src="app/js/services/appointmentServices.js"></script>
-
+</body>
 
 </html>

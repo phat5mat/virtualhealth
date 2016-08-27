@@ -30,8 +30,7 @@ app.controller('patientController',['$scope','$location',
 
         }
         
-
-
+        
         $scope.loadDoctors = function(){
             doctorServices.get().
                 then(function(response){
@@ -41,6 +40,7 @@ app.controller('patientController',['$scope','$location',
             })
         };
 
+        
         $scope.selectDoctor = function(ev,doctor) {
             var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
             $mdDialog.show({
@@ -61,6 +61,7 @@ app.controller('patientController',['$scope','$location',
                 });
         }
 
+        
         function viewDoctorDialogController($scope,$mdDialog,$state,passDoctor){
             // Dialog toggle
             $scope.doctorDetails = passDoctor;

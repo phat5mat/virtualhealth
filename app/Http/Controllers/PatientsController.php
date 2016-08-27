@@ -24,6 +24,7 @@ class PatientsController extends Controller
         return $userList;
     }
 
+    
     public function show($id)
     {
 
@@ -40,6 +41,7 @@ class PatientsController extends Controller
         }
     }
 
+    
     public function findByUser($id){
         $user = User::find($id);
         $patient = $user->patient;
@@ -54,6 +56,7 @@ class PatientsController extends Controller
         }
     }
 
+    
     public function store(Request $request) {
         $newDoc = $request->all();
         $doc = new Patient;
@@ -67,6 +70,7 @@ class PatientsController extends Controller
         return Response::json(array('success' => true));
     }
 
+    
     public function update(Request $request, $id) {
         $updateDoc = $request->all();
         $doctor = Patient::find($id);
@@ -80,6 +84,7 @@ class PatientsController extends Controller
         return "Sucess updating doctor ";
     }
 
+    
     public function destroy($id) {
         $patient = Patient::where('users',$id)->get();  
         $patient->delete();

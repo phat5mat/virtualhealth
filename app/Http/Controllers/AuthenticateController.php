@@ -14,13 +14,7 @@ class AuthenticateController extends Controller
         $this->middleware('jwt.auth', ['except' => ['authenticate']]);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
- 
-
+    
     public function authenticate(Request $request)
     {
 
@@ -40,6 +34,7 @@ class AuthenticateController extends Controller
         return response()->json(compact('token'));
     }
 
+    
     public function getAuthenticatedUser()
     {
         try {

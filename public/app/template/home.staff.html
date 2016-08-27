@@ -1,9 +1,8 @@
-<h3>Staff Home</h3>
-<div class="container">
-    <div class="jumbotron">
-        <h3>
-            New Doctor Request Received!!
-        </h3>
-    </div>
+<head></head>
+<p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
+<div class="container" ng-hide="loading" ng-init="checkRequest()">
+    <h3>Staff Home</h3>
+    <h3 class="ng-cloak" ng-hide="req == 0" >{{ req }} New Doctor Request Received</h3>
+    <button ui-sref="viewRequest">Review</button>
 </div>
 

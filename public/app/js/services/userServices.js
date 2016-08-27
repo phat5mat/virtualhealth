@@ -11,6 +11,7 @@ app.service('userServices',function($http,API_URL){
             return $http.get(API_URL + "user");
         },
 
+        
         findUserByDoc : function(docData){
             return $http({
                 method: 'GET',
@@ -19,7 +20,8 @@ app.service('userServices',function($http,API_URL){
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
-
+        
+        
         save : function(userData){
             return $http({
                 method: 'POST',
@@ -29,6 +31,7 @@ app.service('userServices',function($http,API_URL){
             });
         },
 
+        
         destroy : function(id,role){
             return $http({
                 method: 'DELETE',
@@ -38,6 +41,7 @@ app.service('userServices',function($http,API_URL){
             });
         },
 
+        
         update : function(id,userData){
             return  $http({
                 method: 'POST',
@@ -46,8 +50,6 @@ app.service('userServices',function($http,API_URL){
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
-        
-
      
     }
 })

@@ -31,10 +31,12 @@ Route::group(array('prefix' => 'api'), function() {
 
     Route::get('docbyuser/{user}','DoctorsController@findDocByUser');
     Route::get('docbyrequest','DoctorsController@findUnactiveDoc');
+    Route::get('checkrequest','DoctorsController@checkRequest');
+    Route::put('approverequest/{doctor}','DoctorsController@approveRequest');
+    Route::put('rejectrequest/{doctor}','DoctorsController@rejectRequest');
     Route::get('patbyuser/{user}','PatientsController@findByUser');
     Route::get('findbydoctor/{doctor}','RoomController@findByDoctor');
     Route::get('patAppointmentList/{patients}','AppointmentsController@patAppointmentList');
-
 
     Route::get('manageDoc',function(){
         return view('manageDoctors');
