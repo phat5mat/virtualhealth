@@ -1,0 +1,378 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'angular',
+1 verbose cli   'statellizer',
+1 verbose cli   'angular-ui-router',
+1 verbose cli   'bootstrap' ]
+2 info using npm@2.15.8
+3 info using node@v4.4.7
+4 verbose install initial load of E:\xampp\htdocs\VirtualHealth\package.json
+5 verbose installManyTop reading scoped package data from E:\xampp\htdocs\VirtualHealth\node_modules\bootstrap\package.json
+6 verbose readDependencies loading dependencies from E:\xampp\htdocs\VirtualHealth\package.json
+7 silly cache add args [ 'angular', null ]
+8 verbose cache add spec angular
+9 silly cache add args [ 'statellizer', null ]
+10 verbose cache add spec statellizer
+11 silly cache add args [ 'angular-ui-router', null ]
+12 verbose cache add spec angular-ui-router
+13 verbose install bootstrap is installed as 3.3.6
+14 silly cache add args [ 'bootstrap', null ]
+15 verbose cache add spec bootstrap
+16 silly cache add parsed spec Result {
+16 silly cache add   raw: 'angular',
+16 silly cache add   scope: null,
+16 silly cache add   name: 'angular',
+16 silly cache add   rawSpec: '',
+16 silly cache add   spec: 'latest',
+16 silly cache add   type: 'tag' }
+17 silly addNamed angular@latest
+18 verbose addNamed "latest" is being treated as a dist-tag for angular
+19 info addNameTag [ 'angular', 'latest' ]
+20 silly mapToRegistry name angular
+21 silly mapToRegistry using default registry
+22 silly mapToRegistry registry https://registry.npmjs.org/
+23 silly mapToRegistry data Result {
+23 silly mapToRegistry   raw: 'angular',
+23 silly mapToRegistry   scope: null,
+23 silly mapToRegistry   name: 'angular',
+23 silly mapToRegistry   rawSpec: '',
+23 silly mapToRegistry   spec: 'latest',
+23 silly mapToRegistry   type: 'tag' }
+24 silly mapToRegistry uri https://registry.npmjs.org/angular
+25 verbose addNameTag registry:https://registry.npmjs.org/angular not in flight; fetching
+26 silly cache add parsed spec Result {
+26 silly cache add   raw: 'statellizer',
+26 silly cache add   scope: null,
+26 silly cache add   name: 'statellizer',
+26 silly cache add   rawSpec: '',
+26 silly cache add   spec: 'latest',
+26 silly cache add   type: 'tag' }
+27 silly addNamed statellizer@latest
+28 verbose addNamed "latest" is being treated as a dist-tag for statellizer
+29 info addNameTag [ 'statellizer', 'latest' ]
+30 silly mapToRegistry name statellizer
+31 silly mapToRegistry using default registry
+32 silly mapToRegistry registry https://registry.npmjs.org/
+33 silly mapToRegistry data Result {
+33 silly mapToRegistry   raw: 'statellizer',
+33 silly mapToRegistry   scope: null,
+33 silly mapToRegistry   name: 'statellizer',
+33 silly mapToRegistry   rawSpec: '',
+33 silly mapToRegistry   spec: 'latest',
+33 silly mapToRegistry   type: 'tag' }
+34 silly mapToRegistry uri https://registry.npmjs.org/statellizer
+35 verbose addNameTag registry:https://registry.npmjs.org/statellizer not in flight; fetching
+36 silly cache add parsed spec Result {
+36 silly cache add   raw: 'angular-ui-router',
+36 silly cache add   scope: null,
+36 silly cache add   name: 'angular-ui-router',
+36 silly cache add   rawSpec: '',
+36 silly cache add   spec: 'latest',
+36 silly cache add   type: 'tag' }
+37 silly addNamed angular-ui-router@latest
+38 verbose addNamed "latest" is being treated as a dist-tag for angular-ui-router
+39 info addNameTag [ 'angular-ui-router', 'latest' ]
+40 silly mapToRegistry name angular-ui-router
+41 silly mapToRegistry using default registry
+42 silly mapToRegistry registry https://registry.npmjs.org/
+43 silly mapToRegistry data Result {
+43 silly mapToRegistry   raw: 'angular-ui-router',
+43 silly mapToRegistry   scope: null,
+43 silly mapToRegistry   name: 'angular-ui-router',
+43 silly mapToRegistry   rawSpec: '',
+43 silly mapToRegistry   spec: 'latest',
+43 silly mapToRegistry   type: 'tag' }
+44 silly mapToRegistry uri https://registry.npmjs.org/angular-ui-router
+45 verbose addNameTag registry:https://registry.npmjs.org/angular-ui-router not in flight; fetching
+46 silly cache add parsed spec Result {
+46 silly cache add   raw: 'bootstrap',
+46 silly cache add   scope: null,
+46 silly cache add   name: 'bootstrap',
+46 silly cache add   rawSpec: '',
+46 silly cache add   spec: 'latest',
+46 silly cache add   type: 'tag' }
+47 silly addNamed bootstrap@latest
+48 verbose addNamed "latest" is being treated as a dist-tag for bootstrap
+49 info addNameTag [ 'bootstrap', 'latest' ]
+50 silly mapToRegistry name bootstrap
+51 silly mapToRegistry using default registry
+52 silly mapToRegistry registry https://registry.npmjs.org/
+53 silly mapToRegistry data Result {
+53 silly mapToRegistry   raw: 'bootstrap',
+53 silly mapToRegistry   scope: null,
+53 silly mapToRegistry   name: 'bootstrap',
+53 silly mapToRegistry   rawSpec: '',
+53 silly mapToRegistry   spec: 'latest',
+53 silly mapToRegistry   type: 'tag' }
+54 silly mapToRegistry uri https://registry.npmjs.org/bootstrap
+55 verbose addNameTag registry:https://registry.npmjs.org/bootstrap not in flight; fetching
+56 verbose request uri https://registry.npmjs.org/angular
+57 verbose request no auth needed
+58 info attempt registry request try #1 at 20:38:52
+59 verbose request id fea0193335519df0
+60 http request GET https://registry.npmjs.org/angular
+61 verbose request uri https://registry.npmjs.org/statellizer
+62 verbose request no auth needed
+63 info attempt registry request try #1 at 20:38:52
+64 http request GET https://registry.npmjs.org/statellizer
+65 verbose request uri https://registry.npmjs.org/angular-ui-router
+66 verbose request no auth needed
+67 info attempt registry request try #1 at 20:38:52
+68 http request GET https://registry.npmjs.org/angular-ui-router
+69 verbose request uri https://registry.npmjs.org/bootstrap
+70 verbose request no auth needed
+71 info attempt registry request try #1 at 20:38:52
+72 verbose etag "4HTTUXKGSVAH22OSVXLXG14PS"
+73 http request GET https://registry.npmjs.org/bootstrap
+74 http 200 https://registry.npmjs.org/bootstrap
+75 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+75 verbose headers   etag: '"F99DA34869QIRS8GH0YNIAN4"',
+75 verbose headers   'content-type': 'application/json',
+75 verbose headers   'content-encoding': 'gzip',
+75 verbose headers   'cache-control': 'max-age=300',
+75 verbose headers   'content-length': '9664',
+75 verbose headers   'accept-ranges': 'bytes',
+75 verbose headers   date: 'Mon, 01 Aug 2016 13:38:36 GMT',
+75 verbose headers   via: '1.1 varnish',
+75 verbose headers   age: '56',
+75 verbose headers   connection: 'keep-alive',
+75 verbose headers   'x-served-by': 'cache-hkg6824-HKG',
+75 verbose headers   'x-cache': 'HIT',
+75 verbose headers   'x-cache-hits': '4',
+75 verbose headers   'x-timer': 'S1470058716.093367,VS0,VE0',
+75 verbose headers   vary: 'Accept-Encoding' }
+76 silly get cb [ 200,
+76 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+76 silly get     etag: '"F99DA34869QIRS8GH0YNIAN4"',
+76 silly get     'content-type': 'application/json',
+76 silly get     'content-encoding': 'gzip',
+76 silly get     'cache-control': 'max-age=300',
+76 silly get     'content-length': '9664',
+76 silly get     'accept-ranges': 'bytes',
+76 silly get     date: 'Mon, 01 Aug 2016 13:38:36 GMT',
+76 silly get     via: '1.1 varnish',
+76 silly get     age: '56',
+76 silly get     connection: 'keep-alive',
+76 silly get     'x-served-by': 'cache-hkg6824-HKG',
+76 silly get     'x-cache': 'HIT',
+76 silly get     'x-cache-hits': '4',
+76 silly get     'x-timer': 'S1470058716.093367,VS0,VE0',
+76 silly get     vary: 'Accept-Encoding' } ]
+77 verbose get saving bootstrap to C:\Users\REN\AppData\Roaming\npm-cache\registry.npmjs.org\bootstrap\.cache.json
+78 verbose correctMkdir C:\Users\REN\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+79 silly addNameTag next cb for bootstrap with tag latest
+80 silly addNamed bootstrap@3.3.7
+81 verbose addNamed "3.3.7" is a plain semver version for bootstrap
+82 silly mapToRegistry name bootstrap
+83 silly mapToRegistry using default registry
+84 silly mapToRegistry registry https://registry.npmjs.org/
+85 silly mapToRegistry data Result {
+85 silly mapToRegistry   raw: 'bootstrap',
+85 silly mapToRegistry   scope: null,
+85 silly mapToRegistry   name: 'bootstrap',
+85 silly mapToRegistry   rawSpec: '',
+85 silly mapToRegistry   spec: 'latest',
+85 silly mapToRegistry   type: 'tag' }
+86 silly mapToRegistry uri https://registry.npmjs.org/bootstrap
+87 verbose addRemoteTarball https://registry.npmjs.org/bootstrap/-/bootstrap-3.3.7.tgz not in flight; adding
+88 verbose addRemoteTarball [ 'https://registry.npmjs.org/bootstrap/-/bootstrap-3.3.7.tgz',
+88 verbose addRemoteTarball   '5a389394549f23330875a3b150656574f8a9eb71' ]
+89 info retry fetch attempt 1 at 20:38:52
+90 info attempt registry request try #1 at 20:38:52
+91 http fetch GET https://registry.npmjs.org/bootstrap/-/bootstrap-3.3.7.tgz
+92 http fetch 200 https://registry.npmjs.org/bootstrap/-/bootstrap-3.3.7.tgz
+93 http 404 https://registry.npmjs.org/statellizer
+94 verbose headers { 'content-type': 'application/json',
+94 verbose headers   'cache-control': 'max-age=0',
+94 verbose headers   'content-length': '2',
+94 verbose headers   'accept-ranges': 'bytes',
+94 verbose headers   date: 'Mon, 01 Aug 2016 13:38:36 GMT',
+94 verbose headers   via: '1.1 varnish',
+94 verbose headers   age: '0',
+94 verbose headers   connection: 'keep-alive',
+94 verbose headers   'x-served-by': 'cache-hkg6825-HKG',
+94 verbose headers   'x-cache': 'MISS',
+94 verbose headers   'x-cache-hits': '0',
+94 verbose headers   'x-timer': 'S1470058716.134752,VS0,VE196',
+94 verbose headers   vary: 'Accept-Encoding' }
+95 silly get cb [ 404,
+95 silly get   { 'content-type': 'application/json',
+95 silly get     'cache-control': 'max-age=0',
+95 silly get     'content-length': '2',
+95 silly get     'accept-ranges': 'bytes',
+95 silly get     date: 'Mon, 01 Aug 2016 13:38:36 GMT',
+95 silly get     via: '1.1 varnish',
+95 silly get     age: '0',
+95 silly get     connection: 'keep-alive',
+95 silly get     'x-served-by': 'cache-hkg6825-HKG',
+95 silly get     'x-cache': 'MISS',
+95 silly get     'x-cache-hits': '0',
+95 silly get     'x-timer': 'S1470058716.134752,VS0,VE196',
+95 silly get     vary: 'Accept-Encoding' } ]
+96 http 200 https://registry.npmjs.org/angular-ui-router
+97 verbose headers { server: 'CouchDB/1.6.1 (Erlang OTP/R16B03)',
+97 verbose headers   etag: '"C77COF9P0WECWYGGPFWSQO6DE"',
+97 verbose headers   'content-type': 'application/json',
+97 verbose headers   'content-encoding': 'gzip',
+97 verbose headers   'cache-control': 'max-age=300',
+97 verbose headers   'content-length': '7906',
+97 verbose headers   'accept-ranges': 'bytes',
+97 verbose headers   date: 'Mon, 01 Aug 2016 13:38:36 GMT',
+97 verbose headers   via: '1.1 varnish',
+97 verbose headers   age: '0',
+97 verbose headers   connection: 'keep-alive',
+97 verbose headers   'x-served-by': 'cache-hkg6823-HKG',
+97 verbose headers   'x-cache': 'MISS',
+97 verbose headers   'x-cache-hits': '0',
+97 verbose headers   'x-timer': 'S1470058716.135935,VS0,VE196',
+97 verbose headers   vary: 'Accept-Encoding' }
+98 silly get cb [ 200,
+98 silly get   { server: 'CouchDB/1.6.1 (Erlang OTP/R16B03)',
+98 silly get     etag: '"C77COF9P0WECWYGGPFWSQO6DE"',
+98 silly get     'content-type': 'application/json',
+98 silly get     'content-encoding': 'gzip',
+98 silly get     'cache-control': 'max-age=300',
+98 silly get     'content-length': '7906',
+98 silly get     'accept-ranges': 'bytes',
+98 silly get     date: 'Mon, 01 Aug 2016 13:38:36 GMT',
+98 silly get     via: '1.1 varnish',
+98 silly get     age: '0',
+98 silly get     connection: 'keep-alive',
+98 silly get     'x-served-by': 'cache-hkg6823-HKG',
+98 silly get     'x-cache': 'MISS',
+98 silly get     'x-cache-hits': '0',
+98 silly get     'x-timer': 'S1470058716.135935,VS0,VE196',
+98 silly get     vary: 'Accept-Encoding' } ]
+99 verbose get saving angular-ui-router to C:\Users\REN\AppData\Roaming\npm-cache\registry.npmjs.org\angular-ui-router\.cache.json
+100 verbose correctMkdir C:\Users\REN\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+101 silly addNameTag next cb for angular-ui-router with tag latest
+102 silly addNamed angular-ui-router@0.3.1
+103 verbose addNamed "0.3.1" is a plain semver version for angular-ui-router
+104 silly mapToRegistry name angular-ui-router
+105 silly mapToRegistry using default registry
+106 silly mapToRegistry registry https://registry.npmjs.org/
+107 silly mapToRegistry data Result {
+107 silly mapToRegistry   raw: 'angular-ui-router',
+107 silly mapToRegistry   scope: null,
+107 silly mapToRegistry   name: 'angular-ui-router',
+107 silly mapToRegistry   rawSpec: '',
+107 silly mapToRegistry   spec: 'latest',
+107 silly mapToRegistry   type: 'tag' }
+108 silly mapToRegistry uri https://registry.npmjs.org/angular-ui-router
+109 verbose addRemoteTarball https://registry.npmjs.org/angular-ui-router/-/angular-ui-router-0.3.1.tgz not in flight; adding
+110 verbose addRemoteTarball [ 'https://registry.npmjs.org/angular-ui-router/-/angular-ui-router-0.3.1.tgz',
+110 verbose addRemoteTarball   '914678eeeb4545defc786cf12d0d1994246a3e8a' ]
+111 info retry fetch attempt 1 at 20:38:52
+112 info attempt registry request try #1 at 20:38:52
+113 http fetch GET https://registry.npmjs.org/angular-ui-router/-/angular-ui-router-0.3.1.tgz
+114 silly fetchAndShaCheck shasum 5a389394549f23330875a3b150656574f8a9eb71
+115 verbose addTmpTarball C:\Users\REN\AppData\Local\Temp\npm-4660-aef6dae8\registry.npmjs.org\bootstrap\-\bootstrap-3.3.7.tgz not in flight; adding
+116 verbose addTmpTarball already have metadata; skipping unpack for bootstrap@3.3.7
+117 verbose correctMkdir C:\Users\REN\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+118 silly cache afterAdd bootstrap@3.3.7
+119 verbose afterAdd C:\Users\REN\AppData\Roaming\npm-cache\bootstrap\3.3.7\package\package.json not in flight; writing
+120 verbose correctMkdir C:\Users\REN\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+121 verbose afterAdd C:\Users\REN\AppData\Roaming\npm-cache\bootstrap\3.3.7\package\package.json written
+122 http 200 https://registry.npmjs.org/angular
+123 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+123 verbose headers   etag: '"8L9EQYMKQSKEQK56SBDNZGX1T"',
+123 verbose headers   'content-type': 'application/json',
+123 verbose headers   'content-encoding': 'gzip',
+123 verbose headers   'cache-control': 'max-age=300',
+123 verbose headers   'content-length': '16138',
+123 verbose headers   'accept-ranges': 'bytes',
+123 verbose headers   date: 'Mon, 01 Aug 2016 13:38:36 GMT',
+123 verbose headers   via: '1.1 varnish',
+123 verbose headers   age: '0',
+123 verbose headers   connection: 'keep-alive',
+123 verbose headers   'x-served-by': 'cache-hkg6821-HKG',
+123 verbose headers   'x-cache': 'HIT',
+123 verbose headers   'x-cache-hits': '1',
+123 verbose headers   'x-timer': 'S1470058716.142727,VS0,VE824',
+123 verbose headers   vary: 'Accept-Encoding' }
+124 silly get cb [ 200,
+124 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+124 silly get     etag: '"8L9EQYMKQSKEQK56SBDNZGX1T"',
+124 silly get     'content-type': 'application/json',
+124 silly get     'content-encoding': 'gzip',
+124 silly get     'cache-control': 'max-age=300',
+124 silly get     'content-length': '16138',
+124 silly get     'accept-ranges': 'bytes',
+124 silly get     date: 'Mon, 01 Aug 2016 13:38:36 GMT',
+124 silly get     via: '1.1 varnish',
+124 silly get     age: '0',
+124 silly get     connection: 'keep-alive',
+124 silly get     'x-served-by': 'cache-hkg6821-HKG',
+124 silly get     'x-cache': 'HIT',
+124 silly get     'x-cache-hits': '1',
+124 silly get     'x-timer': 'S1470058716.142727,VS0,VE824',
+124 silly get     vary: 'Accept-Encoding' } ]
+125 verbose get saving angular to C:\Users\REN\AppData\Roaming\npm-cache\registry.npmjs.org\angular\.cache.json
+126 verbose correctMkdir C:\Users\REN\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+127 silly addNameTag next cb for angular with tag latest
+128 silly addNamed angular@1.5.8
+129 verbose addNamed "1.5.8" is a plain semver version for angular
+130 silly mapToRegistry name angular
+131 silly mapToRegistry using default registry
+132 silly mapToRegistry registry https://registry.npmjs.org/
+133 silly mapToRegistry data Result {
+133 silly mapToRegistry   raw: 'angular',
+133 silly mapToRegistry   scope: null,
+133 silly mapToRegistry   name: 'angular',
+133 silly mapToRegistry   rawSpec: '',
+133 silly mapToRegistry   spec: 'latest',
+133 silly mapToRegistry   type: 'tag' }
+134 silly mapToRegistry uri https://registry.npmjs.org/angular
+135 verbose addRemoteTarball https://registry.npmjs.org/angular/-/angular-1.5.8.tgz not in flight; adding
+136 verbose addRemoteTarball [ 'https://registry.npmjs.org/angular/-/angular-1.5.8.tgz',
+136 verbose addRemoteTarball   '925a5392b8c212d09572dc446db7e01264e094cb' ]
+137 info retry fetch attempt 1 at 20:38:53
+138 info attempt registry request try #1 at 20:38:53
+139 http fetch GET https://registry.npmjs.org/angular/-/angular-1.5.8.tgz
+140 http fetch 200 https://registry.npmjs.org/angular-ui-router/-/angular-ui-router-0.3.1.tgz
+141 http fetch 200 https://registry.npmjs.org/angular/-/angular-1.5.8.tgz
+142 silly fetchAndShaCheck shasum 914678eeeb4545defc786cf12d0d1994246a3e8a
+143 verbose addTmpTarball C:\Users\REN\AppData\Local\Temp\npm-4660-aef6dae8\registry.npmjs.org\angular-ui-router\-\angular-ui-router-0.3.1.tgz not in flight; adding
+144 verbose addTmpTarball already have metadata; skipping unpack for angular-ui-router@0.3.1
+145 verbose correctMkdir C:\Users\REN\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+146 silly cache afterAdd angular-ui-router@0.3.1
+147 verbose afterAdd C:\Users\REN\AppData\Roaming\npm-cache\angular-ui-router\0.3.1\package\package.json not in flight; writing
+148 verbose correctMkdir C:\Users\REN\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+149 verbose afterAdd C:\Users\REN\AppData\Roaming\npm-cache\angular-ui-router\0.3.1\package\package.json written
+150 silly fetchAndShaCheck shasum 925a5392b8c212d09572dc446db7e01264e094cb
+151 verbose addTmpTarball C:\Users\REN\AppData\Local\Temp\npm-4660-aef6dae8\registry.npmjs.org\angular\-\angular-1.5.8.tgz not in flight; adding
+152 verbose addTmpTarball already have metadata; skipping unpack for angular@1.5.8
+153 verbose correctMkdir C:\Users\REN\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+154 silly cache afterAdd angular@1.5.8
+155 verbose afterAdd C:\Users\REN\AppData\Roaming\npm-cache\angular\1.5.8\package\package.json not in flight; writing
+156 verbose correctMkdir C:\Users\REN\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+157 verbose afterAdd C:\Users\REN\AppData\Roaming\npm-cache\angular\1.5.8\package\package.json written
+158 verbose stack Error: Registry returned 404 for GET on https://registry.npmjs.org/statellizer
+158 verbose stack     at makeError (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:264:12)
+158 verbose stack     at CachingRegistryClient.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:242:14)
+158 verbose stack     at Request._callback (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:172:14)
+158 verbose stack     at Request.self.callback (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:200:22)
+158 verbose stack     at emitTwo (events.js:87:13)
+158 verbose stack     at Request.emit (events.js:172:7)
+158 verbose stack     at Request.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:1067:10)
+158 verbose stack     at emitOne (events.js:82:20)
+158 verbose stack     at Request.emit (events.js:169:7)
+158 verbose stack     at IncomingMessage.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:988:12)
+159 verbose statusCode 404
+160 verbose pkgid statellizer
+161 verbose cwd E:\xampp\htdocs\VirtualHealth\public
+162 error Windows_NT 10.0.10586
+163 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "angular" "statellizer" "angular-ui-router" "bootstrap"
+164 error node v4.4.7
+165 error npm  v2.15.8
+166 error code E404
+167 error 404 Registry returned 404 for GET on https://registry.npmjs.org/statellizer
+167 error 404
+167 error 404 'statellizer' is not in the npm registry.
+167 error 404 You should bug the author to publish it (or use the name yourself!)
+167 error 404
+167 error 404 Note that you can also install from a
+167 error 404 tarball, folder, http url, or git url.
+168 verbose exit [ 1, true ]

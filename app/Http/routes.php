@@ -35,6 +35,7 @@ Route::group(array('prefix' => 'api'), function() {
     Route::put('approverequest/{doctor}','DoctorsController@approveRequest');
     Route::put('rejectrequest/{doctor}','DoctorsController@rejectRequest');
     Route::get('patbyuser/{user}','PatientsController@findByUser');
+    Route::get('patbyroom/{room}','PatientsController@findByRoom');
     Route::get('findbydoctor/{doctor}','RoomController@findByDoctor');
     Route::get('patAppointmentList/{patients}','AppointmentsController@patAppointmentList');
 

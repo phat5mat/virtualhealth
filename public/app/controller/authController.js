@@ -78,9 +78,9 @@ angular
                     {
                         doctorServices.findByUser($rootScope.currentUser['id'])
                             .then(function(response){
-                                var docUser = response.data;
-                                $rootScope.docUser = docUser;
-                                localStorage.setItem('docUser',JSON.stringify(docUser));
+                                var staffUser = response.data;
+                                $rootScope.staffUser = staffUser;
+                                localStorage.setItem('staffUser',JSON.stringify(staffUser));
                                 $mdToast.show($mdToast.simple().textContent('Welcome back!'));
                             },function(e){
                                 console.log(e.data.error);
@@ -93,7 +93,6 @@ angular
                 $scope.loading = false;
 
             }
-
             
             $scope.signout = function(){
                 $auth.logout().then(function(){
@@ -101,6 +100,8 @@ angular
                     localStorage.removeItem('user');
                     localStorage.removeItem('docUser');
                     localStorage.removeItem('patUser');
+                    localStorage.removeItem('staffUser');
+                    localStorage.removeItem('satellizer_token');
                     $rootScope.authenticated = false;
                     $rootScope.currentUser = null;
                     $rootScope.docUser = null;

@@ -19,6 +19,13 @@ app.factory('patientServices',function($http,API_URL){
             });
         },
         
+        findByRoom : function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "patbyroom/" + id
+            }); 
+        },
+        
         
         save : function(patData){
             return $http({

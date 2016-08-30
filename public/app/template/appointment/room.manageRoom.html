@@ -13,14 +13,12 @@
         </thead>
         <tbody>
         <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
-        <tr ng-repeat="room in rooms" ng-hide="loading" >
+        <tr ng-repeat="room in rooms" ng-hide="loading" ng-click="selectRoom(room)">
             <td>{{ room.name }}</td>
             <td>{{ room.startDate }}</td>
             <td>{{ room.endDate }}</td>
             <td>{{ room.roomSize }}</td>
-
             <td>
-                <button class="btn btn-default btn-detail" ng-click="fillUpdate(doctor)">Edit</button>
                 <button class="btn btn-danger btn-delete" ng-click="removeRoom(room.id)">Delete</button>
             </td>
         </tr>

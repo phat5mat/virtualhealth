@@ -1,0 +1,100 @@
+<div class="container">
+    <h3>Room Details</h3>
+<div class="row">
+    <div class="col-md-6 roomDetailsBlock">
+        <!-- Table-to-load-the-data Part -->
+        <table class="table" ng-init="loadRoomDetails()">
+            <tbody>
+            <tr>
+                <td class="col-md-2">
+                    Name
+                </td>
+                <td class="col-md-4">
+                    {{ roomDetails2.name }}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-2">
+                    Start Date
+                </td>
+                <td class="col-md-4">
+                    {{ roomDetails2.startDate }}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-2">
+                    End Date
+                </td>
+                <td class="col-md-4">
+                    {{ roomDetails2.endDate }}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-2">
+                    Size
+                </td>
+                <td class="col-md-4">
+                    {{ roomDetails2.roomSize }}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-2">
+                    Available
+                </td>
+                <td class="col-md-4">
+                    {{ roomDetails2.available }}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-6 ">
+        <!-- Table-to-load-the-data Part -->
+        <table class="table">
+            <tbody>
+            <tr>
+                <td class="col-md-2">
+                    Clock Start
+                </td>
+                <td class="col-md-4">
+
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-2">
+                    Clock Start
+                </td>
+                <td class="col-md-4">
+
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-2">
+                    Button
+                </td>
+                <td class="col-md-4">
+
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    <div class="row col-md-12">
+
+            <div ui-view="exam"></div>
+
+    </div>
+
+
+</div>
+

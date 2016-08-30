@@ -12,6 +12,9 @@ class Appointment extends Model
     public function room(){
         return $this->belongsTo('App\Room','room');
     }
+    public function patient(){
+        return $this->belongsTo('App\Patient','patients');
+    }
 
    
     protected $table = 'appointment';

@@ -8,12 +8,6 @@ app.controller('staffController',['$scope','$location','$http','userServices','d
     function ($scope,$location,$http,userServices,doctorServices,$filter,$state,$auth,$stateParams,$mdToast,$q) {
 
         $scope.loading = true;
-        var defer = $q.defer();
-        defer.promise.then(function(){
-            
-        })
-
-        defer.resolve();
         $scope.loadRequest = function(){
             doctorServices.findByRequest()
                 .then(function(userData) {

@@ -3,13 +3,14 @@
  */
 var app = angular.module('mainApp');
 app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia','$state','$stateParams',
-    'appointmentServices','$rootScope','$mdToast',
-    function ($scope,$mdDialog,roomServices,$mdMedia,$state,$stateParams,appointmentServices,$rootScope,$mdToast) {
+    'appointmentServices','$rootScope','$mdToast','patientServices',
+    function ($scope,$mdDialog,roomServices,$mdMedia,$state,$stateParams,appointmentServices,$rootScope,$mdToast
+        ,patientServices) {
 
         $scope.loading = true;
         // Load all room
         $scope.loadRoom = function(){
-            roomServices.get()
+            roomServices.findbydoctor($rootScope.docUser['id'])
                 .then(function(roomData) {
                         $scope.rooms = roomData.data;
                         $scope.loading = false;
@@ -17,18 +18,51 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
                     function(e){
                         $scope.error = e;
                     })};
+
+
+        $scope.loadRoomDetails = function(){
+               $scope.roomDetails2 = $stateParams.selectedRoom;
+        }
+
+        $scope.loadRoomPatients = function(){
+            if(!localStorage.getItem('selectRoom'))
+            {
+                try{
+                    localStorage.setItem('selectRoom',$stateParams.selectedRoom.id);
+                    patientServices.findByRoom($stateParams.selectedRoom.id)
+                        .then(function(patientsData){
+                            $scope.roomPatients = patientsData.data;
+                            angular.forEach($scope.roomPatients,function(user, key) {
+                                var age = new Date().getFullYear() -
+                                    $scope.roomPatients[key].patient.user.dateofbirth.substring(0,4);
+                                $scope.roomPatients[key].patient.user.age = age
+                            });
+                            $scope.loading = false;
+                        },function(e){
+                            console.log(e)
+                        })
+                    localStorage.removeItem('selectRoom');
+                    localStorage.removeItem('selectRoom');
+                }
+                catch (e){
+                    $state.go('room.manageRoom')
+                }
+            }
+
+        }
         
+
         // Load selected doctor's room list
         $scope.loadRoombyID = function(){
             try {
                 $selectedDoc = $stateParams.selectedDoc.doctor;
                 roomServices.findbydoctor($selectedDoc['id'])
                     .then(function(roomData){
-                            $scope.docRooms = roomData.data;
+                            $scope.docRooms = roomData.data
                             $scope.loading = false;
                         },
                         function(e){
-                            console.log(e.data.error);
+                            console.log(e)
                         })
             }
             catch (e){
@@ -114,7 +148,33 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
                     console.log(e);
                 });
         };
-        
+
+        // redirect to selected room details page
+        $scope.selectRoom = function(room) {
+           $state.go('room.roomDetails',{selectedRoom: room})
+        }
+
+        $scope.selectPatient = function(pat){
+            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
+
+            $mdDialog.show({
+                    locals: {passRoom: room},
+                    controller: makeAppointmentController,
+                    templateUrl: 'makeAppointmentDialog.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: useFullScreen
+
+                })
+                .then(function (answer) {
+                }, function () {
+                })
+                .finally(function(){
+                    $scope.loadRoom();
+                });
+        }
+
         // Controller of create room dialog
         function createRoomController($scope,$mdDialog,$rootScope,$filter){
             // Dialog toggle
@@ -214,5 +274,16 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
 
             }
         }
+
+        function reviewPatient($scope,$mdDialog,$rootScope,$filter,passPatient,$mdToast){
+            // Dialog toggle
+            $scope.roomDetails = passPatient;
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+
+        }
+        
+        
     }]);
 

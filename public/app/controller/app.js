@@ -31,6 +31,8 @@
                                 localStorage.removeItem('user');
                                 localStorage.removeItem('docUser');
                                 localStorage.removeItem('patUser');
+                                localStorage.removeItem('staffUser');
+                                localStorage.removeItem('satellizer_token');
                                 $rootScope.authenticated = false;
                                 $rootScope.currentUser = null;
                                 // Send the user to the auth state so they can login
@@ -92,7 +94,7 @@
                     controller: 'userController',
                     onEnter: function($rootScope,$state,$timeout){
                         if($rootScope.currentUser == null){
-                            return null;
+                                return null;
                         }else{
                             if($rootScope.currentUser['role'] == 0){
                                 $timeout(function() {
@@ -136,7 +138,7 @@
                     controller: 'roomController',
                     onEnter: function($rootScope,$state,$timeout){
                         if($rootScope.currentUser == null){
-                            return null;
+                            $state.go('login');
                         }else{
                             if($rootScope.currentUser['role'] == 1){
                                 $timeout(function() {
@@ -154,6 +156,7 @@
 
                 // redirect to selected doctor room list page
                 .state('room.viewDocRoom',{
+                    url: '/viewRoom',
                     templateUrl: '../public/app/template/appointment/room.viewDocRoom.html',
                     controller: 'roomController',
                     params: {
@@ -164,30 +167,56 @@
 
                 // redirect to doctor room management page
                 .state('room.manageRoom',{
+                    url: '/manageRoom',
                     templateUrl: '../public/app/template/appointment/room.manageRoom.html',
-                    controller: 'roomController',
+                    controller: 'roomController'
+                })
+
+                // redirect to selected room details
+                .state('room.roomDetails',{
+                    url: '/roomDetails',
                     params: {
-                        selectedDoc: null
+                        selectedRoom: null
+                    },
+
+                    views:{
+                        '': {
+                            templateUrl: '../public/app/template/appointment/room.roomDetails.html',
+                            controller: 'roomController',
+                            params: {
+                                selectedRoom: null
+                            }
+                        },
+                        'exam@room.roomDetails': {
+                            templateUrl: '../public/app/template/examination/exam.html',
+                            controller: 'examController'
+                        }
                     }
 
                 })
+
+
                 .state('appoint',{
+                    url: '/appointment',
                     templateUrl: '../public/app/template/appointment/appoint.html',
                     controller: 'roomController',
-                    params: {
-                        selectedDoc: null
-                    },
                     onEnter: function($rootScope,$state,$timeout){
                         if($rootScope.currentUser == null){
-                            return null;
+                            $state.go('login');
                         }else{
                             if($rootScope.currentUser['role'] == 1){
                                 $timeout(function() {
                                     $state.go('home.doc');
                                 });
-                            }else {
+                            }
+                            if($rootScope.currentUser['role'] == 0){
                                 $timeout(function() {
                                     $state.go('appoint.manageAppointment');
+                                });
+                            }
+                            if($rootScope.currentUser['role'] == 2){
+                                $timeout(function() {
+                                    $state.go('home.staff');
                                 });
                             }
                         }
@@ -195,19 +224,18 @@
 
                 })
                 .state('appoint.manageAppointment',{
+                    url: '/manageAppointment',
                     templateUrl: '../public/app/template/appointment/appoint.manageAppointment.html',
-                    params: {
-                        selectedDoc: null
-                    }
 
                 })
 
                 .state('manage',{
+                    url: '/manageAccount',
                     templateUrl: '../public/app/template/user/manage.html',
                     controller: 'userController',
                     onEnter: function($rootScope,$state,$timeout){
                         if($rootScope.currentUser == null){
-                            return null;
+                            $state.go('login');
                         }else{
                             if($rootScope.currentUser['role'] == 1){
                                 $timeout(function() {
@@ -233,19 +261,17 @@
                     templateUrl: '../public/app/template/user/manage.doc.html',
                     controller: 'doctorController'
                 })
-                .state('exam',{
-                    templateUrl: '../public/app/template/examination/exam.html',
-                    controller: 'doctorController'
-                })
                 
-
+                
                 .state('viewRequest',{
+                    url: '/viewRequest',
                     templateUrl: '../public/app/template/user/viewRequest.html',
-                    controller: 'staffController',
+                    controller: 'staffController'
                    
                 })
 
                 .state('reviewDoctor',{
+                    url: '/requestDetails',
                     templateUrl: '../public/app/template/user/reviewDoctor.html',
                     controller: 'staffController',
                     params: {
@@ -267,6 +293,8 @@
                     $rootScope.patUser = JSON.parse(localStorage.getItem('patUser'));
                 if(role == 1)
                     $rootScope.docUser = JSON.parse(localStorage.getItem('docUser'));
+                if(role == 2)
+                    $rootScope.staffUser = JSON.parse(localStorage.getItem('staffUser'));
 
             }
             

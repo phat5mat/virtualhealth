@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Patient;
 use App\User;
+use App\Appointment;
 
 use App\Http\Requests;
 
@@ -56,6 +57,18 @@ class PatientsController extends Controller
         }
     }
 
+    public function findByRoom($id){
+        $patient = Appointment::where('room',$id)->with('patient')->with('patient.user')->get();
+        if (!$patient) {
+            return Response::json([
+                'error' => [
+                    'message' => 'Doctor does not exist'
+                ]
+            ], 404);
+        }else{
+            return $patient;
+        }
+    }
     
     public function store(Request $request) {
         $newDoc = $request->all();

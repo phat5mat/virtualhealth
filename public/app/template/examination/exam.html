@@ -1,24 +1,69 @@
 
+    <div class="col-md-4 roomPatientsBlock pull-left">
+        <div class="col-md-4 contactsBar">
+            <h3 class="text-center">Patients List</h3>
+        </div>
+        <table class="table contactsContent " ng-init="loadRoomPatients()">
+            <tbody ng-repeat="pat in roomPatients"  ng-click="selectPatient(pat)">
 
-<div class="container">
-<div class="row">
-    <input ng-model="roomName">
-    <button ng-click="subcribe()">Subcribe channel {{ roomName }}</button>
-</div>
+            <tr>
+                <td class="col-md-2">
+                    Name
+                </td>
+                <td class="col-md-2">
+                    {{ pat.patient.user.name }}
+                </td>
+            </tr>
 
-    <div class="row">
-        <ul>
-            <li ng-repeat="message in chatContent ">
-                <p>{{ message }}</p>
-            </li>
-        </ul>
+            <tr>
+                <td class="col-md-2">
+                    Age
+                </td>
+                <td class="col-md-2">
+                    {{ pat.patient.user.age }}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-2">
+                    Slot
+                </td>
+                <td class="col-md-2">
+                    {{ pat.slot }}
+                </td>
+            </tr>
+
+
+            </tbody>
+        </table>
     </div>
-    <div id="videoBox"></div>
 
-    <form ng-submit="sendMessage()">
-        <input ng-model="messageContent" type="text" placeholder="Type your message" />
-        <button type="submit">Send</button>
-    </form>
-    <button ng-click="subcribePhone()">Login</button>
-    <button ng-click="call()">Video Call</button>
-</div>
+
+    <div class="col-md-2">
+        <button class="btn btn-success glyphicon nextbutton" ng-click="nextPatient()">
+            <strong>NEXT</strong> <span class="glyphicon glyphicon-circle-arrow-right" ></span>
+        </button>
+    </div>
+
+
+    <div class="row col-md-6 pull-right" ng-init="subcribe()">
+        <div class="row">
+            <ul>
+                <li ng-repeat="message in chatContent ">
+                    <p>{{ message }}</p>
+                </li>
+            </ul>
+        </div>
+        <div id="videoBox"></div>
+
+        <form ng-submit="sendMessage()">
+            <input ng-model="messageContent" type="text" placeholder="Type your message" />
+            <button type="submit">Send</button>
+        </form>
+        <button ng-click="subcribePhone()">Login</button>
+        <button ng-click="call()">Video Call</button>
+    </div>
+
+
+
+
