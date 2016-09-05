@@ -33,6 +33,14 @@ app.service('appointmentServices',function($http,API_URL){
             });
         },
 
+        getslotnumber: function(slot){
+            return $http({
+                method:'POST',
+                url: API_URL + "getslotnumber",
+                data: $.param(slot),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            })
+        },
         
         save : function(appData){
             return $http({

@@ -10,24 +10,32 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
         $scope.loading = true;
         // Load all room
         $scope.loadRoom = function(){
-            roomServices.findbydoctor($rootScope.docUser['id'])
-                .then(function(roomData) {
-                        $scope.rooms = roomData.data;
-                        $scope.loading = false;
-                    },
-                    function(e){
-                        $scope.error = e;
-                    })};
+            if($rootScope.docUser != null){
+                try{
+                    roomServices.findroombydoctor($rootScope.docUser['id'])
+                        .then(function(roomData) {
+                                $scope.rooms = roomData.data;
+                                $scope.loading = false;
+                            },
+                            function(e){
+                                $scope.error = e;
+                            })
+                }
+                catch(e){
+                    console.log(e);
+                }
+            }
+
+        };
 
 
-        $scope.loadRoomDetails = function(){
-               $scope.roomDetails2 = $stateParams.selectedRoom;
-        }
+        
 
         $scope.loadRoomPatients = function(){
             if(!localStorage.getItem('selectRoom'))
             {
                 try{
+
                     localStorage.setItem('selectRoom',$stateParams.selectedRoom.id);
                     patientServices.findByRoom($stateParams.selectedRoom.id)
                         .then(function(patientsData){
@@ -42,7 +50,6 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
                             console.log(e)
                         })
                     localStorage.removeItem('selectRoom');
-                    localStorage.removeItem('selectRoom');
                 }
                 catch (e){
                     $state.go('room.manageRoom')
@@ -53,10 +60,10 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
         
 
         // Load selected doctor's room list
-        $scope.loadRoombyID = function(){
+        $scope.loadRoombyDoctor = function(){
             try {
                 $selectedDoc = $stateParams.selectedDoc.doctor;
-                roomServices.findbydoctor($selectedDoc['id'])
+                roomServices.findroombydoctor($selectedDoc['id'])
                     .then(function(roomData){
                             $scope.docRooms = roomData.data
                             $scope.loading = false;
@@ -67,7 +74,8 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
             }
             catch (e){
                 // go to home page when error occur or user refresh the page
-                $state.go('home.pat');
+                $state.go('home');
+
             }
 
         }
@@ -79,6 +87,7 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
                     .then(function(appointData){
                             $scope.appointments = appointData.data;
                             $scope.loading = false;
+
                         },
                         function(e){
                             console.log(e.data.error);
@@ -91,7 +100,7 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
         }
         
         // Show Create new Room dialog
-        $scope.showRoomDialog = function(ev) {
+        $scope.showCreateRoomDialog = function(ev) {
             var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
 
             $mdDialog.show({
@@ -127,9 +136,6 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
                 })
                 .then(function (answer) {
                 }, function () {
-                })
-                .finally(function(){
-                    $scope.loadRoom();
                 });
         }
         
@@ -151,7 +157,8 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
 
         // redirect to selected room details page
         $scope.selectRoom = function(room) {
-           $state.go('room.roomDetails',{selectedRoom: room})
+            $state.go('exam',{selectedRoom: room})
+            
         }
 
         $scope.selectPatient = function(pat){
@@ -169,9 +176,6 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
                 })
                 .then(function (answer) {
                 }, function () {
-                })
-                .finally(function(){
-                    $scope.loadRoom();
                 });
         }
 

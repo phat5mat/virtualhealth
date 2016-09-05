@@ -49,7 +49,7 @@ class PatientsController extends Controller
         if (!$patient) {
             return Response::json([
                 'error' => [
-                    'message' => 'Doctor does not exist'
+                    'message' => 'Patient does not exist'
                 ]
             ], 404);
         }else{
@@ -62,6 +62,20 @@ class PatientsController extends Controller
         if (!$patient) {
             return Response::json([
                 'error' => [
+                    'message' => 'Patient does not exist'
+                ]
+            ], 404);
+        }else{
+            return $patient;
+        }
+    }
+
+
+    public function findByUsername($id){
+        $patient = User::where('room',$id)->with('patient')->with('patient.user')->get();
+        if (!$patient) {
+            return Response::json([
+                'error' => [
                     'message' => 'Doctor does not exist'
                 ]
             ], 404);
@@ -69,7 +83,7 @@ class PatientsController extends Controller
             return $patient;
         }
     }
-    
+
     public function store(Request $request) {
         $newDoc = $request->all();
         $doc = new Patient;

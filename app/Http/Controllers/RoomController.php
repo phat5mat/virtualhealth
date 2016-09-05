@@ -26,7 +26,7 @@ class RoomController extends Controller
 
     
     public function findByDoctor($id){
-        $roomList = Room::where('doctor',$id)->get();
+        $roomList = Room::where('doctor',$id)->with('doctor.user')->get();
         return $roomList;
     }
     

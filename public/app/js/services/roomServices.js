@@ -12,11 +12,11 @@ app.service('roomServices',function($http,API_URL){
             return $http.get(API_URL + "room");
         },
 
-        
-        findbydoctor: function(id){
+
+        findroombydoctor: function(id){
             return $http({
                 method: 'GET',
-                url: API_URL + "findbydoctor/" + id,
+                url: API_URL + "findroombydoctor/" + id,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },

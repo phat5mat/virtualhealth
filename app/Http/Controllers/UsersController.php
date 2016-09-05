@@ -23,7 +23,21 @@ class UsersController extends Controller
         return $userList;
     }
 
-    
+
+    public function findUserByDoc($id){
+        $doctor = Doctor::where('id',$id)->with('user')->get();
+        if (!$doctor) {
+            return Response::json([
+                'error' => [
+                    'message' => 'Doctor does not exist'
+                ]
+            ], 404);
+        }else{
+            return $doctor;
+        }
+    }
+
+
     public function store(Request $request) {
         $newUser = $request->all();
         $user = new User;

@@ -36,7 +36,7 @@ app.controller('patientController',['$scope','$location',
                 then(function(response){
                $scope.doctors = response.data;
             },function(e){
-                console.log(e.data.error);
+                console.log(e);
             })
         };
 
@@ -57,7 +57,6 @@ app.controller('patientController',['$scope','$location',
                 }, function () {
                 })
                 .finally(function(){
-                    $scope.loadRoom();
                 });
         }
 

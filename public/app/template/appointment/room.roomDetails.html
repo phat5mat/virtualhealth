@@ -19,7 +19,7 @@
                     Start Date
                 </td>
                 <td class="col-md-4">
-                    {{ roomDetails2.startDate }}
+                    {{ roomDetails2.startDate | date:"MM/dd/yyyy 'at' h:mma" }}
                 </td>
             </tr>
 
@@ -28,7 +28,7 @@
                     End Date
                 </td>
                 <td class="col-md-4">
-                    {{ roomDetails2.endDate }}
+                    {{ roomDetails2.endDate | date:"MM/dd/yyyy 'at' h:mma" }}
                 </td>
             </tr>
 
@@ -89,10 +89,10 @@
     </div>
 </div>
 
-    <div class="row col-md-12">
-
-            <div ui-view="exam"></div>
-
+    <div class="row ">
+<div class="col-md-12">
+    <div ui-view="exam"></div>
+</div>
     </div>
 
 

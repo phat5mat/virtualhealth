@@ -12,11 +12,10 @@ app.service('userServices',function($http,API_URL){
         },
 
         
-        findUserByDoc : function(docData){
+        findUserByDoc : function(id){
             return $http({
                 method: 'GET',
-                url: API_URL + "finduserbydoc",
-                data:  $.param(docData),
+                url: API_URL + "finduserbydoc" + id,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },

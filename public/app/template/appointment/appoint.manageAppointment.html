@@ -12,7 +12,7 @@
     </thead>
     <tbody>
     <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
-    <tr ng-repeat="appoint in appointments" ng-hide="loading" >
+    <tr ng-repeat="appoint in appointments" ng-hide="loading" ng-click="selectRoom(appoint.room)" >
         <td>{{ appoint.id }}</td>
         <td>{{ appoint.room.doctor.user.name }}</td>
         <td>{{ appoint.room.name }}</td>

@@ -36,8 +36,11 @@ Route::group(array('prefix' => 'api'), function() {
     Route::put('rejectrequest/{doctor}','DoctorsController@rejectRequest');
     Route::get('patbyuser/{user}','PatientsController@findByUser');
     Route::get('patbyroom/{room}','PatientsController@findByRoom');
-    Route::get('findbydoctor/{doctor}','RoomController@findByDoctor');
+    Route::get('findroombydoctor/{doctor}','RoomController@findByDoctor');
+    
+    Route::get('finduserbydoc/{doctor}','UsersController@findUserByDoc');
     Route::get('patAppointmentList/{patients}','AppointmentsController@patAppointmentList');
+    Route::post('getslotnumber','AppointmentsController@getSlotNumber');
 
     Route::get('manageDoc',function(){
         return view('manageDoctors');

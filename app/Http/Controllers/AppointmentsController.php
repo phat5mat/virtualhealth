@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Appointment;
+use App\User;
 
 use App\Http\Requests;
 use Illuminate\Support\Facades\App;
@@ -35,6 +36,14 @@ class AppointmentsController extends Controller
         return $roomList;
     }
 
+    public function getSlotNumber(Request $request){
+        $data = $request->all();
+        $patient = User::find($data['user']);
+        $patient = $patient->patient;
+        $findQuery = ['patients' => $patient['id'], 'room' => $data['room']];
+        $slot = Appointment::where($findQuery)->get();
+        return $slot;
+    }
     
     public function store(Request $request) {
         $newApp = $request->all();

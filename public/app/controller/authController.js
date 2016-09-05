@@ -101,12 +101,14 @@ angular
                     localStorage.removeItem('docUser');
                     localStorage.removeItem('patUser');
                     localStorage.removeItem('staffUser');
+                    localStorage.removeItem('sub-c-b73974e4-65c7-11e6-b99b-02ee2ddab7feuuid');
+                    localStorage.removeItem('undefineduuid');
                     localStorage.removeItem('satellizer_token');
                     $rootScope.authenticated = false;
                     $rootScope.currentUser = null;
                     $rootScope.docUser = null;
                     $rootScope.patUser = null;
-
+                    
                 },function(e){
                     console.log(e);
                 })

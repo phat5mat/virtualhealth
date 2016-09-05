@@ -118,20 +118,6 @@ class DoctorsController extends Controller
         $doctor->delete();
         return Response::json(array('success' => true));
     }
-
-    
-    public function transformCollection($doctors){
-        return array_map([$this,'transform'], $doctors->toArray());
-
-    }
-
-    
-    public function transform($doctor){
-        return [
-            'ID' => $doctor['docid'],
-            'Name' => $doctor['docname']
-        ];
-    }
     
 
 }

@@ -12,7 +12,7 @@
         </tr>
         </thead>
         <tbody>
-        <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
+        <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
         <tr ng-repeat="room in rooms" ng-hide="loading" ng-click="selectRoom(room)">
             <td>{{ room.name }}</td>
             <td>{{ room.startDate }}</td>
@@ -24,7 +24,7 @@
         </tr>
         </tbody>
     </table>
-    <md-button class="md-primary md-raised" ng-click="showRoomDialog($event)"  >
+    <md-button class="md-primary md-raised" ng-click="showCreateRoomDialog($event)"  >
         Create New Room
     </md-button>
 </div>

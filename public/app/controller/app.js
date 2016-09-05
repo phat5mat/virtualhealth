@@ -144,9 +144,10 @@
                                 $timeout(function() {
                                     $state.go('room.manageRoom');
                                 });
-                            }else {
+                            }
+                            if($rootScope.currentUser['role'] == 2){
                                 $timeout(function() {
-                                    $state.go('room.viewDocRoom');
+                                    $state.go('home.staff');
                                 });
                             }
                         }
@@ -169,37 +170,34 @@
                 .state('room.manageRoom',{
                     url: '/manageRoom',
                     templateUrl: '../public/app/template/appointment/room.manageRoom.html',
-                    controller: 'roomController'
-                })
-
-                // redirect to selected room details
-                .state('room.roomDetails',{
-                    url: '/roomDetails',
-                    params: {
-                        selectedRoom: null
-                    },
-
-                    views:{
-                        '': {
-                            templateUrl: '../public/app/template/appointment/room.roomDetails.html',
-                            controller: 'roomController',
-                            params: {
-                                selectedRoom: null
-                            }
-                        },
-                        'exam@room.roomDetails': {
-                            templateUrl: '../public/app/template/examination/exam.html',
-                            controller: 'examController'
+                    controller: 'roomController',
+                    onEnter: function($rootScope,$state,$timeout){
+                        if($rootScope.currentUser['role'] == 0){
+                            $timeout(function() {
+                                $state.go('home.pat');
+                            });
                         }
                     }
 
                 })
+                
+                .state('exam',{
+                    url: '/exam',
+                    templateUrl: '../public/app/template/examination/exam.html',
+                    controller: 'examController',
+                    params: {
+                        selectedRoom: null
+                    },
 
+                })
 
                 .state('appoint',{
                     url: '/appointment',
                     templateUrl: '../public/app/template/appointment/appoint.html',
                     controller: 'roomController',
+                    params: {
+                        selectedRoom: null
+                    },
                     onEnter: function($rootScope,$state,$timeout){
                         if($rootScope.currentUser == null){
                             $state.go('login');
@@ -226,7 +224,9 @@
                 .state('appoint.manageAppointment',{
                     url: '/manageAppointment',
                     templateUrl: '../public/app/template/appointment/appoint.manageAppointment.html',
-
+                    params: {
+                        selectedRoom: null
+                    },
                 })
 
                 .state('manage',{
@@ -297,6 +297,8 @@
                     $rootScope.staffUser = JSON.parse(localStorage.getItem('staffUser'));
 
             }
+
+          
             
       
         });
