@@ -55,6 +55,10 @@
             </div>
 
             <div class="row" id="patientList">
+                <div ng-hide="enteredPat" ng-init="enteredPat = false">
+                    <h4><strong>Next Number: {{ nextSlot }}</strong> </h4>
+                    <h4><strong>Current Number: {{ currentSlot }}</strong> </h4>
+                </div>
 
                 <div ng-show="docUser" class="col-md-6 roomPatientsBlock pull-left" ng-init="subcribe()">
                     <div class="col-md-4 contactsBar">
@@ -62,7 +66,7 @@
                     </div>
                     <table class="table contactsContent" >
                         <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
-                        <tbody ng-repeat="pat in roomPatients " ng-hide="loading"
+                        <tbody ng-repeat="pat in roomPatients track by pat.id " ng-hide="loading"
                                ng-click="selectPatient(pat)">
                         <tr>
                             <td class="col-md-2">
@@ -96,7 +100,6 @@
 
 
                 <div class="col-md-6 roomDoctorBlock" ng-show="patUser" ng-init="online = false">
-                    <h4><strong>Next Number: {{ nextSlot }}</strong> </h4>
                     <div class="col-md-4 offlineBar" ng-hide="online">
                         <h3 class="text-center">Doctor Currently Offline</h3>
                     </div>
@@ -141,20 +144,24 @@
 
         <div class="col-md-6" ng-init="loadChat = true">
 
-            <div class="row" ng-show="docUser != null">
+            <div class="text-center" class="row" ng-show="docUser != null">
 
-                    <button class="btn btn-success glyphicon"  ng-click="connectNext()">
-                        <strong>NEXT</strong> <span class="glyphicon glyphicon-circle-arrow-right" ></span>
-                    </button>
-                    <div ng-hide="loadChat" class="btn-group" role="group" aria-label="...">
-                        <button class="btn btn-info" ng-show="docUser" ng-click="subcribePhone()">Video Call</button>
-                    </div>
+                 <button ng-show="loadChat" class="btn btn-success"  ng-click="connectNext()">
+                     <strong>Next Patient</strong>
+                 </button>
+                <button class="btn btn-info" ng-show="!loadChat && !video" ng-click="sendVideo()">
+                    <strong>Video Call</strong>
+                </button>
+                <button class="btn btn-info" ng-show="video" ng-click="endCall()">
+                    <strong>End Call</strong>
+                </button>
 
             </div>
             <p class="text-center"  ng-show="loadChat">
                 <span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span>
             </p>
             <p ng-show="patLoadingText"><h4 class="text-center" ng-show="patLoadingText"><strong >Please wait until your number</strong></h4></p>
+            <p ng-show="docLoadingText"><h4 class="text-center" ng-show="docLoadingText"><strong >Invite next patient to begin examination</strong></h4></p>
 
             <div ng-hide="loadChat">
                 <div class="row chatBlock" ng-hide="video">
@@ -170,7 +177,7 @@
                 </div>
                 <div class="row" ng-show="video" ng-init="video = false" id="videoBox"></div>
 
-                <div class="row" >
+                <div class="row" ng-hide="video">
                     <form ng-submit="sendMessage()">
                         <input ng-model="messageContent" class="chatForm" type="text" placeholder="Type your message" />
                         <button class="btn btn-primary" type="submit">Send</button>

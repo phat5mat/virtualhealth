@@ -10,26 +10,50 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
         $scope.chatContent = [];
         var contactObj = null;
         var videoBox = document.getElementById("videoBox");
+        var localVideo = document.getElementById("localVideoBox");
         var currentUser = JSON.parse(localStorage.getItem('user'));
+        $scope.nextSlot = 0;
+        $scope.currentSlot = 0;
         $scope.loading = true;
             if(currentUser.role == 0)
+            {
                 $scope.patLoadingText = true;
+                $scope.docLoadingText = false;
+            }
             else
+            {
+                $scope.docLoadingText = true;
                 $scope.patLoadingText = false;
+            }
 
 
 
-        // Initialize pubnub object which interact pubnub cloud server
-        var pubnub = new PUBNUB({
-            publish_key   : 'pub-c-3074e899-a4e2-401c-8fa3-5007d7e7ff06',
-            subscribe_key : 'sub-c-b73974e4-65c7-11e6-b99b-02ee2ddab7fe',
-            uuid: currentUser,
-            ssl: true
-        })
+
+        if(!$rootScope.alreadySubscribed){
+            console.log('subscribing....');
+            // Initialize pubnub object which interact pubnub cloud server
+            pubnub = new PUBNUB({
+                publish_key   : 'pub-c-3074e899-a4e2-401c-8fa3-5007d7e7ff06',
+                subscribe_key : 'sub-c-b73974e4-65c7-11e6-b99b-02ee2ddab7fe',
+                uuid: currentUser,
+                ssl: true
+            });
+
+            phone = window.phone = PHONE({
+                number        :  $rootScope.currentUser.username, // listen on username line else Anonymous
+                publish_key   : 'pub-c-3074e899-a4e2-401c-8fa3-5007d7e7ff06', // Your Pub Key
+                subscribe_key : 'sub-c-b73974e4-65c7-11e6-b99b-02ee2ddab7fe' // Your Sub Key
+            });
+
+            ctrl = window.ctrl = CONTROLLER(phone);
+            $rootScope.alreadySubscribed = true;
+
+        }
+
 
         $scope.loadRoomDetails = function(){
             $scope.roomDetails2 = $stateParams.selectedRoom;
-        }
+        };
 
         $scope.loadRoomPatients = function(){
             if(!localStorage.getItem('selectRoom'))
@@ -47,49 +71,61 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                             $scope.loading = false;
                         },function(e){
                             console.log(e)
-                        })
+                        });
                     localStorage.removeItem('selectRoom');
                 }
                 catch (e){
                     $state.go('room.manageRoom')
                 }
             }
-        }
+        };
 
         $scope.loadRoomDoctor = function(){
             try{
                 $scope.roomDoctor = $stateParams.selectedRoom.doctor
             }
             catch (e){
-                $state.go('room.manageRoom')
+                if(currentUser.role == 1)
+                    $state.go('room.manageRoom')
+                else
+                    $state.go('appoint')
             }
-        }
+        };
         
         // User subcribe to room channel when they enter the room 
         $scope.subcribe = function(){
-            subcribeRoom()
-            
-        }
+            try{
+                $timeout(function(){
+                    subcribeRoom();
+                    loadCurrentContacts();
+                })
+
+            }
+            catch(e){
+                if(currentUser.role == 1)
+                    $state.go('room.manageRoom')
+                else
+                    $state.go('appoint')
+
+            }
+        };
 
 
         $scope.connectNext = function(){
-            console.log('Subcribing Doctor.....')
-            try{
-                pubnub.publish({
-                    channel : 'room'+$stateParams.selectedRoom.id,
-                    message: {
-                        joinMessenger: true
-                    },
-                    callback : function(m){
-                        console.log(m)
-                    }
-                });
+            if($scope.roomPatients.length == 0){
+                $mdToast.show($mdToast.simple().textContent('There is no any patient in room'));
+            }else{
+                try{
+                    console.log('Subcribing Doctor.....');
+                    subcribeDoc();
+                    sendRoomMessage({joinMessenger: true});
+                    sendRoomMessage({currentSlot: $scope.nextSlot});
 
-            }catch(e){
-                $state.go('room.manageRoom')
+                }catch(e){
+                    $state.go('room.manageRoom')
+                }
             }
-        }
-
+        };
 
         // User send message to other partner
         $scope.sendMessage = function(){
@@ -97,12 +133,10 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                 return;
             }
             var bubbleSpeech = null;
-            console.log('Sending....')
-            console.log($stateParams.selectedRoom)
             if(currentUser.role == 1)
-                bubbleSpeech = 'docSpeech'
+                bubbleSpeech = 'docSpeech';
             else 
-                bubbleSpeech = 'patSpeech'
+                bubbleSpeech = 'patSpeech';
             
             pubnub.publish({
                 channel : 'doc'+$stateParams.selectedRoom.doctor.user.username,
@@ -124,60 +158,66 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
 
         // User subcribe to video call function channel and enable webcam device
         $scope.subcribePhone = function () {
-            var phone = window.phone = PHONE({
-                number        :  $rootScope.currentUser.username, // listen on username line else Anonymous
-                publish_key   : 'pub-c-3074e899-a4e2-401c-8fa3-5007d7e7ff06', // Your Pub Key
-                subscribe_key : 'sub-c-b73974e4-65c7-11e6-b99b-02ee2ddab7fe', // Your Sub Key
-            });
-            phone.ready(function(){
+
+            ctrl.ready(function(){
                 console.log($rootScope.currentUser.username + " Video Ready!!")
-                if(currentUser.role == 1){
-                    pubnub.publish({
-                        channel : 'doc'+$stateParams.selectedRoom.doctor.user.username,
-                        message: {
-                            videoCall: true
-                        },
-                        callback: function(m){
-                            console.log(m)
-                        }
-                    });
-                }
+
             });
-            phone.receive(function(session){
+            ctrl.receive(function(session){
+
                 session.connected(function(session) {
                     $timeout(function(){
-                        session.video.className += "videoBlock"
+                        session.video.className += "videoBlock";
                         videoBox.appendChild(session.video);
                         $scope.video = true;
-                    },2000)
+                    })
                 });
                 session.ended(function(session) {
-                    videoBox.innerHTML='';
-                    $scope.video = false;
-                    session.hangup();
+                    $timeout(function(){
+                        $scope.video = false;
+                        ctrl.getVideoElement(session.number).remove();
+                    })
+
                 });
             });
-        }
 
+            ctrl.unable(function(details){
+                console.log("Phone is unable to initialize.");
+                console.log("Try reloading, or give up.");
+            });
+        };
 
-        $scope.makeCall = function(){
-            if(currentUser.role == 0)
-            {
-                phone.dial($stateParams.selectedRoom.doctor.user.username)
-                console.log('call ' + $stateParams.selectedRoom.doctor.user.username)
+        $scope.sendVideo = function(){
+            $scope.subcribePhone();
+            if(currentUser.role == 1){
+                pubnub.publish({
+                    channel : 'doc'+$stateParams.selectedRoom.doctor.user.username,
+                    message: {
+                        videoCall: true
+                    },
+                    callback: function(m){
+                        console.log(m)
+                    }
+                });
             }
-            else
-            {
-                $timeout(function(){
-                    phone.dial(localStorage.getItem('patInfo'));
-                    console.log('call' + localStorage.getItem('patInfo'))
-                },2000)
+        };
 
-            }
-        }
+
+        $scope.makeCall = function() {
+            console.log('doc call pat');
+            ctrl.dial(localStorage.getItem('patInfo'));
+            console.log('call' + localStorage.getItem('patInfo'))
+        };
+
         
+        $scope.endCall = function(){
+            $scope.video = false;
+            ctrl.hangup();
+        };
+
+
         // function that is called when user join room
-        var joinRoom = function(){
+        var loadCurrentContacts = function(){
             pubnub.here_now({
                 channel: 'room'+$stateParams.selectedRoom.id,
                 state: true,
@@ -186,8 +226,7 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                     $scope.roomPatients = [];
 
                     //get users that already subcribed to channel
-                    var contacts = m['uuids']
-
+                    var contacts = m['uuids'];
                     // get and handle information of each user and push to scope
                     angular.forEach(contacts,function(contact, key){
                             $timeout(function(){
@@ -197,30 +236,64 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                                     // Convert date into age
                                     var age = new Date().getFullYear() -
                                         contactObj.dateofbirth.substring(0,4);
-                                    contactObj.age = age
+                                    contactObj.age = age;
 
                                     // Get slot number
                                     var slot = {
                                         user: contactObj.id,
                                         room: localStorage.getItem('chatRoom')
-                                    }
+                                    };
 
-                                    getNumber(slot)
+                                    getNumber(slot);
 
                                     // Update contacts list
                                     $scope.roomPatients.push(contactObj)
                                 }
                                 if(contactObj.role == 1)
+                                {
                                     $scope.online = true;
-
-
+                                    if(contacts.length == 1)
+                                        $scope.nextSlot = 0
+                                }
                             })
-                    })
+                    });
                     $scope.loading = false;
 
                 }
             });
-        }
+        };
+
+        var updateUserJoinRoom = function(user){
+            $timeout(function(){
+                $scope.loading = true;
+                contactObj = JSON.parse(user);
+                if(contactObj.role == 0)
+                {
+                    // Convert date into age
+                    var age = new Date().getFullYear() -
+                        contactObj.dateofbirth.substring(0,4);
+                    contactObj.age = age;
+
+                    // Get slot number
+                    var slot = {
+                        user: contactObj.id,
+                        room: localStorage.getItem('chatRoom')
+                    };
+
+                    getNumber(slot);
+
+                    // Update contacts list
+                    $scope.roomPatients.push(contactObj)
+                }
+                if(contactObj.role == 1)
+                    $scope.online = true;
+
+
+                $scope.loading = false;
+
+            })
+        };
+
 
         // get slot number
         var getNumber = function(data){
@@ -231,12 +304,12 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                         if(value.id == data.user){
                             value.slot = appoint.data[0].slot
                         }
-                    })
+                    });
                     filterSlot()
                 },function(e){
                     console.log(e)
                 })
-        }
+        };
 
         // sort slot number
         var filterSlot = function(){
@@ -245,39 +318,63 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                 angular.forEach($scope.roomPatients,function(value, key){
                     if(value.slot < min)
                         min = value.slot
-                })
+                });
                 $scope.nextSlot = min;
             }
-        }
+            else{
+                $scope.nextSlot = 0;
+            }
+        };
 
         // function that is called when user leave room or close browser ( timeout )
-        var leaveRoom = function(user){
+        var leaveRoomTimeout = function(user){
 
             var unsubPubnub = new PUBNUB({
                 publish_key   : 'pub-c-3074e899-a4e2-401c-8fa3-5007d7e7ff06',
                 subscribe_key : 'sub-c-b73974e4-65c7-11e6-b99b-02ee2ddab7fe',
                 uuid: user,
                 ssl: true
-            })
+            });
 
-                unsubPubnub.unsubscribe({
-                    channel : 'room'+$stateParams.selectedRoom.id
-                });
-
-
+            unsubPubnub.unsubscribe({
+                channel : 'room'+$stateParams.selectedRoom.id
+            });
 
             angular.forEach($scope.roomPatients,function(value, key){
                 if(value.username == user.username){
                     $timeout(function(){
-                        $scope.roomPatients.splice(key,1)
+                        $scope.roomPatients.splice(key,1);
                         if(value.role == 1)
                             $scope.online = false;
                         console.log(value.username + " Has Left Room!!")
+                        $timeout(function(){
+                            loadCurrentContacts()
+                        },1000)
                     })
                 }
-            })
-            joinRoom()
-        }
+            });
+
+
+        };
+
+        var leaveRoom = function(user){
+
+            $scope.nextSlot = 'Loading...';
+            angular.forEach($scope.roomPatients,function(value, key){
+                if(value.username == user.username){
+                    $timeout(function(){
+                        $scope.roomPatients.splice(key,1);
+                        if(value.role == 1)
+                            $scope.online = false;
+                        filterSlot();
+                        console.log(value.username + " Has Left Room!!")
+                    })
+                }
+
+            });
+
+
+        };
 
         var leaveDoctor = function(user){
 
@@ -285,17 +382,29 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                 channel : 'doc'+$stateParams.selectedRoom.doctor.user.username
             });
 
-            console.log('Disconnect with ' + $stateParams.selectedRoom.doctor.user.username)
-            $scope.loadChat = true;
-        }
+            $timeout(function(){
+                $scope.currentSlot = 0;
+                $scope.loadChat = true;
+                localStorage.removeItem('patInfo');
+            });
+            console.log(user.username + ' Disconnect');
+            if(currentUser.role == 1)
+            {
+                $scope.docLoadingText = true;
+                $scope.video = false;
+            }
+            if(currentUser.role == 0)
+            {
+                $scope.patLoadingText = true;
+                $scope.video = false;
+            }
+        };
 
         var subcribeDoc = function(){
             pubnub.subscribe({
                 channel : 'doc'+$stateParams.selectedRoom.doctor.user.username,
-                heartbeat : 10,
-
                 presence : function(m){
-                    var action = m.action
+                    var action = m.action;
                     if(action == 'join')
                     {
                         if(currentUser.role == 0)
@@ -304,26 +413,24 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                                 channel : 'doc'+$stateParams.selectedRoom.doctor.user.username,
                                 message: {
                                     patInfo: currentUser.username
-                                },
-                                callback : function(m){
-                                    console.log(m)
                                 }
+
                             });
+                            $scope.enteredPat = true;
                         }
                     }
                     if(action == 'leave' || action == 'timeout')
                         leaveDoctor(JSON.parse(m['uuid']))
                 },
                 message : function( message, env, channel ){
-                    console.log(message)
                     // RECEIVED A MESSAGE.
                     if(message['patInfo']){
                         localStorage.setItem('patInfo',message.patInfo)
                     }
                     if(message['videoCall']){
+                        console.log('video request');
                         if(currentUser.role == 0){
-                            console.log('test')
-                            $scope.subcribePhone()
+                            $scope.subcribePhone();
                             var confirm = $mdDialog.confirm()
                                 .title('Doctor is calling you!!!')
                                 .textContent('All of the banks have agreed to forgive you your debts.')
@@ -349,6 +456,7 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                         }
                     }
                     if(message['videoCallAccept']){
+                        if(currentUser.role == 1)
                             $scope.makeCall()
                     }
                     if(message['videoCallReject']){
@@ -359,59 +467,115 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                     });
                 },
                 connect : function(){
-                    console.log("Connected to " + $stateParams.selectedRoom.doctor.user.username)
-                    $scope.loadChat = false;
-                    $scope.patLoadingText = false;
+                    $timeout(function(){
+                        console.log("Connected to " + $stateParams.selectedRoom.doctor.user.username);
+                        $scope.loadChat = false;
+                        $scope.patLoadingText = false;
+                        $scope.docLoadingText = false;
+                    });
 
                 },
                 disconnect : function(){
-                    console.log("Disconnected")
-                    $scope.loadChat = true;
-                    $scope.patLoadingText = true;
+                    if(currentUser.role == 1)
+                    {
+                        console.log("Disconnected");
+                        alert('Internet is Disconnected')
+                        $scope.loadChat = true;
+                        $scope.docLoadingText = true;
+                    }
+                    if(currentUser.role == 0)
+                    {
+                        console.log("Disconnected");
+                        alert('Internet is Disconnected')
+                        $scope.loadChat = true;
+                        $scope.patLoadingText = true;
+                    }
+
                 },
                 reconnect : function(){
                     console.log("Reconnected")
+                    $scope.loadChat = false;
+                    $scope.patLoadingText = false;
+                    $scope.docLoadingText = false;
                 },
                 error : function(){
                     console.log("Network Error")
-                },
+                }
             })
-        }
+        };
 
         var subcribeRoom = function(){
-            console.log('Subcribing Room.....')
+            console.log('Subcribing Room.....');
             try{
-                localStorage.setItem('chatRoom',$stateParams.selectedRoom.id)
+                localStorage.setItem('chatRoom',$stateParams.selectedRoom.id);
                 pubnub.subscribe({
                     channel : 'room'+$stateParams.selectedRoom.id,
 
                     // heart beat get user's state for every 10 seconds
-                    heartbeat : 10,
+                    heartbeat : 13,
+                    heartbeat_interval: 6,
 
                     // handle user's action
                     presence : function(m){
-                        var action = m.action
+                        var action = m.action;
                         if(action == 'join')
-                            joinRoom()
-                        if(action == 'leave' || action == 'timeout')
-                            leaveRoom(JSON.parse(m['uuid']))
+                        {
+                            console.log(m.uuid)
+                            updateUserJoinRoom(m.uuid);
+                            if(currentUser.role == 1)
+                            {
+                                if(localStorage.getItem('patInfo'))
+                                    sendRoomMessage({currentSlot: $scope.currentSlot});
+                                else
+                                    sendRoomMessage({currentSlot: 0});
 
+                            }
+
+                        }
+                        if(action == 'timeout')
+                            leaveRoomTimeout(JSON.parse(m['uuid']));
+                        if(action == 'leave')
+                            leaveRoom(JSON.parse(m['uuid']))
 
 
                     },
                     message : function( message, env, channel ){
                         // RECEIVED A MESSAGE.
-                        console.log(message)
                         $timeout(function() {
                             if(message['joinMessenger'])
                             {
-                                subcribeDoc()
                                 if(currentUser.role == 0)
-                                    $mdToast.show($mdToast.simple().textContent('You are now connecting with Doctor!'));
+                                {
+                                    angular.forEach($scope.roomPatients,function(value, key){
+                                        if(value.username == currentUser.username)
+                                        {
+                                            if($scope.nextSlot == value.slot)
+                                            {
+                                                pubnub.unsubscribe({channel : 'room'+$stateParams.selectedRoom.id})
+                                                $scope.currentSlot = value.slot;
+                                                subcribeDoc();
+                                                sendRoomMessage({currentSlot: value.slot});
+                                                $mdToast.show($mdToast.simple().textContent('You are now connecting with Doctor!'));
+                                            }
+                                        }
+                                    })
+
+                                }
+                            }
+
+                            if(message['currentSlot']){
+                                console.log('current ne ne ne')
                                 if(currentUser.role == 1)
+                                {
+                                    $scope.loadChat = false;
+                                    $scope.patLoadingText = false;
+                                    $scope.docLoadingText = false;
+                                    $scope.currentSlot = message['currentSlot'];
                                     $mdToast.show($mdToast.simple().textContent('You are now connecting with Patient !'));
-
-
+                                }
+                                if(currentUser.role == 0){
+                                    $scope.currentSlot = message['currentSlot']
+                                }
                             }
                         });
                     },
@@ -428,11 +592,31 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                     },
                     error : function(){
                         console.log("Network Error")
-                    },
+                    }
                 })
             }catch(e){
                 $state.go('room.manageRoom')
             }
+        };
+
+        var sendRoomMessage = function(msg){
+            pubnub.publish({
+                channel : 'room'+$stateParams.selectedRoom.id,
+                message: msg,
+                callback: function(m){
+                    console.log(msg)
+                }
+            });
+        };
+
+        var sendDocMessage = function(msg){
+            pubnub.publish({
+                channel : 'doc'+$stateParams.selectedRoom.doctor.user.username,
+                message: msg,
+                callback : function(m){
+                    console.log(m)
+                }
+            });
         }
 
     }]);

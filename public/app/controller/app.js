@@ -150,6 +150,7 @@
                                     $state.go('home.staff');
                                 });
                             }
+                            
                         }
                     }
                     
