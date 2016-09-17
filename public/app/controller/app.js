@@ -35,6 +35,8 @@
                                 localStorage.removeItem('satellizer_token');
                                 $rootScope.authenticated = false;
                                 $rootScope.currentUser = null;
+                                $rootScope.patUser = null;
+                                $rootScope.docUser = null;
                                 // Send the user to the auth state so they can login
                                 $state.go('login');
                             }

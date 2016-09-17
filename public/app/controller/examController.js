@@ -1,30 +1,44 @@
 var app = angular.module('mainApp');
 
 app.controller('examController',['$scope','$http','$window','doctorServices','$mdToast','$timeout','patientServices',
-    '$stateParams','$state','$rootScope','userServices','appointmentServices','$mdDialog'
+    '$stateParams','$state','$rootScope','userServices','appointmentServices','$mdDialog','$mdMedia'
     , function($scope, $http, $window, doctorServices,$mdToast,$timeout,patientServices,$stateParams,
-               $state,$rootScope,userServices,appointmentServices,$mdDialog) {
+               $state,$rootScope,userServices,appointmentServices,$mdDialog,$mdMedia) {
 
         // Initialize components
         $scope.roomPatients = [];
         $scope.chatContent = [];
         var contactObj = null;
+        $scope.detailsTab = true;
         var videoBox = document.getElementById("videoBox");
         var localVideo = document.getElementById("localVideoBox");
         var currentUser = JSON.parse(localStorage.getItem('user'));
         $scope.nextSlot = 0;
         $scope.currentSlot = 0;
         $scope.loading = true;
-            if(currentUser.role == 0)
-            {
-                $scope.patLoadingText = true;
-                $scope.docLoadingText = false;
-            }
-            else
-            {
-                $scope.docLoadingText = true;
-                $scope.patLoadingText = false;
-            }
+        $scope.med = {
+            medName: '',
+            medQuantity: ''
+        };
+        $scope.hoverIn = function(){
+            this.hoverEdit = true;
+        };
+
+        $scope.hoverOut = function(){
+            this.hoverEdit = false;
+        };
+        $scope.medicines = [];
+
+        if(currentUser.role == 0)
+        {
+            $scope.patLoadingText = true;
+            $scope.docLoadingText = false;
+        }
+        else
+        {
+            $scope.docLoadingText = true;
+            $scope.patLoadingText = false;
+        }
 
 
 
@@ -49,8 +63,7 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
             $rootScope.alreadySubscribed = true;
 
         }
-
-
+        
         $scope.loadRoomDetails = function(){
             $scope.roomDetails2 = $stateParams.selectedRoom;
         };
@@ -91,14 +104,15 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                     $state.go('appoint')
             }
         };
-        
+
         // User subcribe to room channel when they enter the room 
         $scope.subcribe = function(){
             try{
+                subcribeRoom();
                 $timeout(function(){
-                    subcribeRoom();
                     loadCurrentContacts();
-                })
+                    checkContacts();
+                },2000)
 
             }
             catch(e){
@@ -110,7 +124,6 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
             }
         };
 
-
         $scope.connectNext = function(){
             if($scope.roomPatients.length == 0){
                 $mdToast.show($mdToast.simple().textContent('There is no any patient in room'));
@@ -119,7 +132,6 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                     console.log('Subcribing Doctor.....');
                     subcribeDoc();
                     sendRoomMessage({joinMessenger: true});
-                    sendRoomMessage({currentSlot: $scope.nextSlot});
 
                 }catch(e){
                     $state.go('room.manageRoom')
@@ -135,9 +147,9 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
             var bubbleSpeech = null;
             if(currentUser.role == 1)
                 bubbleSpeech = 'docSpeech';
-            else 
+            else
                 bubbleSpeech = 'patSpeech';
-            
+
             pubnub.publish({
                 channel : 'doc'+$stateParams.selectedRoom.doctor.user.username,
                 message: {
@@ -154,8 +166,7 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
 
 
         }
-
-
+        
         // User subcribe to video call function channel and enable webcam device
         $scope.subcribePhone = function () {
 
@@ -202,19 +213,60 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
             }
         };
 
-
         $scope.makeCall = function() {
             console.log('doc call pat');
-            ctrl.dial(localStorage.getItem('patInfo'));
-            console.log('call' + localStorage.getItem('patInfo'))
+            var patData = JSON.parse(window.localStorage['patInfo']);
+            ctrl.dial(patData['username']);
+            console.log('call' + patData['username'])
         };
-
         
         $scope.endCall = function(){
             $scope.video = false;
             ctrl.hangup();
         };
+            
+        $scope.addMed = function(){
+            $timeout(function(){
+                var medicine = {
+                    name: $scope.med.medName,
+                    quantity: $scope.med.medQuantity
+                }
+                $scope.medicines.push(medicine);
+                $scope.med.medName = '';
+                $scope.med.medQuantity = '';
+            });
 
+        }
+        
+        $scope.removeMed = function(index){
+            $scope.medicines.splice(index,1);
+        }
+        
+        $scope.finishExam = function(ev){
+            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
+
+            $mdDialog.show({
+                    locals: {
+                        passPat: $scope.patDetails,
+                        passPres: $scope.medicines,
+                        passChatLog: $scope.chatContent
+                    },
+                    controller: finishExamController,
+                    templateUrl: 'finishExamDialog.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: useFullScreen
+
+                })
+                .then(function (answer) {
+                }, function () {
+                })
+                .finally(function(){
+
+                });
+        };
+        
 
         // function that is called when user join room
         var loadCurrentContacts = function(){
@@ -229,34 +281,35 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                     var contacts = m['uuids'];
                     // get and handle information of each user and push to scope
                     angular.forEach(contacts,function(contact, key){
-                            $timeout(function(){
-                                contactObj = JSON.parse(contact.uuid);
-                                if(contactObj.role == 0)
-                                {
-                                    // Convert date into age
-                                    var age = new Date().getFullYear() -
-                                        contactObj.dateofbirth.substring(0,4);
-                                    contactObj.age = age;
+                        $timeout(function(){
+                            contactObj = JSON.parse(contact.uuid);
+                            if(contactObj.role == 0)
+                            {
+                                // Convert date into age
+                                var age = new Date().getFullYear() -
+                                    contactObj.dateofbirth.substring(0,4);
+                                contactObj.age = age;
 
-                                    // Get slot number
-                                    var slot = {
-                                        user: contactObj.id,
-                                        room: localStorage.getItem('chatRoom')
-                                    };
+                                // Get slot number
+                                var slot = {
+                                    user: contactObj.id,
+                                    room: localStorage.getItem('chatRoom')
+                                };
 
-                                    getNumber(slot);
+                                getNumber(slot);
 
-                                    // Update contacts list
-                                    $scope.roomPatients.push(contactObj)
-                                }
-                                if(contactObj.role == 1)
-                                {
-                                    $scope.online = true;
-                                    if(contacts.length == 1)
-                                        $scope.nextSlot = 0
-                                }
-                            })
+                                // Update contacts list
+                                $scope.roomPatients.push(contactObj)
+                            }
+                            if(contactObj.role == 1)
+                            {
+                                $scope.online = true;
+                                if(contacts.length == 1)
+                                    $scope.nextSlot = 0
+                            }
+                        })
                     });
+
                     $scope.loading = false;
 
                 }
@@ -288,13 +341,19 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                 if(contactObj.role == 1)
                     $scope.online = true;
 
-
+                checkContacts();
                 $scope.loading = false;
 
             })
         };
 
-
+        var checkContacts = function(){
+            if($scope.roomPatients.length == 0)
+                $scope.showContacts = false;
+            else
+                $scope.showContacts = true;
+        }
+        
         // get slot number
         var getNumber = function(data){
 
@@ -303,6 +362,10 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                     angular.forEach($scope.roomPatients,function(value,key){
                         if(value.id == data.user){
                             value.slot = appoint.data[0].slot
+                        }
+                        if(currentUser.role == 0){
+                            if(currentUser.id == value.id)
+                                $scope.yourSlot = value.slot;
                         }
                     });
                     filterSlot()
@@ -314,12 +377,22 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
         // sort slot number
         var filterSlot = function(){
             if($scope.roomPatients.length != 0){
-                var min = $scope.roomPatients[0].slot;
+                var minArr = [];
                 angular.forEach($scope.roomPatients,function(value, key){
-                    if(value.slot < min)
-                        min = value.slot
+                    if(value.slot != $scope.currentSlot)
+                        minArr.push(value.slot)
                 });
-                $scope.nextSlot = min;
+                var min = minArr[0];
+                if(min == null)
+                    $scope.nextSlot = 0;
+                else{
+                    angular.forEach(minArr,function(value, key){
+                        if(value < min)
+                            min = value
+                        
+                    });
+                    $scope.nextSlot = min;
+                }
             }
             else{
                 $scope.nextSlot = 0;
@@ -328,18 +401,12 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
 
         // function that is called when user leave room or close browser ( timeout )
         var leaveRoomTimeout = function(user){
-
-            var unsubPubnub = new PUBNUB({
-                publish_key   : 'pub-c-3074e899-a4e2-401c-8fa3-5007d7e7ff06',
-                subscribe_key : 'sub-c-b73974e4-65c7-11e6-b99b-02ee2ddab7fe',
-                uuid: user,
-                ssl: true
-            });
-
-            unsubPubnub.unsubscribe({
-                channel : 'room'+$stateParams.selectedRoom.id
-            });
-
+            if(pubnub.get_uuid() == user){
+                console.log(pubnub.get_uuid())
+                pubnub.unsubscribe({
+                    channel : 'room'+$stateParams.selectedRoom.id
+                });
+            }
             angular.forEach($scope.roomPatients,function(value, key){
                 if(value.username == user.username){
                     $timeout(function(){
@@ -348,8 +415,9 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                             $scope.online = false;
                         console.log(value.username + " Has Left Room!!")
                         $timeout(function(){
-                            loadCurrentContacts()
-                        },1000)
+                            loadCurrentContacts();
+                            checkContacts();
+                        },2000)
                     })
                 }
             });
@@ -358,8 +426,13 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
         };
 
         var leaveRoom = function(user){
-
+            if(pubnub.get_uuid() == user){
+                pubnub.unsubscribe({
+                    channel : 'room'+$stateParams.selectedRoom.id
+                });
+            }
             $scope.nextSlot = 'Loading...';
+
             angular.forEach($scope.roomPatients,function(value, key){
                 if(value.username == user.username){
                     $timeout(function(){
@@ -367,6 +440,7 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                         if(value.role == 1)
                             $scope.online = false;
                         filterSlot();
+                        checkContacts();
                         console.log(value.username + " Has Left Room!!")
                     })
                 }
@@ -378,6 +452,7 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
 
         var leaveDoctor = function(user){
 
+            sendRoomMessage({finishExam: true});
             pubnub.unsubscribe({
                 channel : 'doc'+$stateParams.selectedRoom.doctor.user.username
             });
@@ -385,7 +460,10 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
             $timeout(function(){
                 $scope.currentSlot = 0;
                 $scope.loadChat = true;
+                $scope.chatContent = [];
                 localStorage.removeItem('patInfo');
+                $scope.detailsTab = true;
+
             });
             console.log(user.username + ' Disconnect');
             if(currentUser.role == 1)
@@ -410,9 +488,9 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                         if(currentUser.role == 0)
                         {
                             pubnub.publish({
-                                channel : 'doc'+$stateParams.selectedRoom.doctor.user.username,
+                                channel : 'room'+$stateParams.selectedRoom.id,
                                 message: {
-                                    patInfo: currentUser.username
+                                    patInfo: currentUser
                                 }
 
                             });
@@ -424,9 +502,7 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                 },
                 message : function( message, env, channel ){
                     // RECEIVED A MESSAGE.
-                    if(message['patInfo']){
-                        localStorage.setItem('patInfo',message.patInfo)
-                    }
+                    
                     if(message['videoCall']){
                         console.log('video request');
                         if(currentUser.role == 0){
@@ -467,8 +543,12 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                     });
                 },
                 connect : function(){
+                    if(currentUser.role == 1){
+                        sendRoomMessage({currentSlot: $scope.nextSlot});
+                    }
                     $timeout(function(){
                         console.log("Connected to " + $stateParams.selectedRoom.doctor.user.username);
+
                         $scope.loadChat = false;
                         $scope.patLoadingText = false;
                         $scope.docLoadingText = false;
@@ -520,7 +600,6 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                         var action = m.action;
                         if(action == 'join')
                         {
-                            console.log(m.uuid)
                             updateUserJoinRoom(m.uuid);
                             if(currentUser.role == 1)
                             {
@@ -542,6 +621,26 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                     message : function( message, env, channel ){
                         // RECEIVED A MESSAGE.
                         $timeout(function() {
+
+                            if(message['patInfo']){
+                                if(currentUser.role == 1){
+                                    $timeout(function(){
+                                        window.localStorage['patInfo'] = angular.toJson(message['patInfo']);
+                                        patientServices.findByUserWithUser(message['patInfo'].id)
+                                            .then(function(pat){
+                                                $scope.patDetails = pat.data[0];
+                                                var age = new Date().getFullYear() -
+                                                    pat.data[0].dateofbirth.substring(0,4);
+                                                $scope.patDetails.age = age;
+                                            },function(e){
+                                                console.log(e);
+                                            })
+
+                                        $scope.detailsTab = false;
+                                    });
+                                }
+                            }
+                            
                             if(message['joinMessenger'])
                             {
                                 if(currentUser.role == 0)
@@ -551,7 +650,6 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                                         {
                                             if($scope.nextSlot == value.slot)
                                             {
-                                                pubnub.unsubscribe({channel : 'room'+$stateParams.selectedRoom.id})
                                                 $scope.currentSlot = value.slot;
                                                 subcribeDoc();
                                                 sendRoomMessage({currentSlot: value.slot});
@@ -562,20 +660,32 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
 
                                 }
                             }
-
+                            
                             if(message['currentSlot']){
-                                console.log('current ne ne ne')
-                                if(currentUser.role == 1)
-                                {
-                                    $scope.loadChat = false;
-                                    $scope.patLoadingText = false;
-                                    $scope.docLoadingText = false;
-                                    $scope.currentSlot = message['currentSlot'];
-                                    $mdToast.show($mdToast.simple().textContent('You are now connecting with Patient !'));
-                                }
-                                if(currentUser.role == 0){
-                                    $scope.currentSlot = message['currentSlot']
-                                }
+                                    if(currentUser.role == 1)
+                                    {
+                                        $scope.loadChat = false;
+                                        $scope.patLoadingText = false;
+                                        $scope.docLoadingText = false;
+                                        $scope.currentSlot = message['currentSlot'];
+                                        $timeout(function(){
+                                            filterSlot();
+                                        });
+                                        $mdToast.show($mdToast.simple().textContent('You are now connecting with Patient !'));
+                                    }
+                                    if(currentUser.role == 0){
+                                        $scope.currentSlot = message['currentSlot']
+                                        $timeout(function(){
+                                            filterSlot();
+                                        });
+                                    }
+
+                            }
+
+                            if(message['finishExam']){
+                                $timeout(function(){
+                                    $scope.currentSlot = 0;
+                                })
                             }
                         });
                     },
@@ -618,5 +728,38 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                 }
             });
         }
+
+        function finishExamController($scope,$mdDialog,$rootScope,$filter,
+                                           roomServices,$mdToast,passPat,passPres,passChatLog){
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+
+            
+            $timeout(function(){
+                $scope.medicines = passPres;
+                $scope.patDetails = passPat;
+            });
+
+            $scope.checkPres = function() {
+                if (passPres.length != 0)
+                    $scope.showPres = true;
+                else
+                    $scope.showPres = false;
+
+            }
+            
+            
+            $scope.saveExam = function(){
+                angular.forEach(passChatLog,function(value, key){
+                    delete value['bubble'];
+                    delete value['$$hashKey'];
+                })
+                console.log(JSON.stringify(passChatLog))
+            }
+        }
+      
+
+        
 
     }]);

@@ -38,6 +38,7 @@ Route::group(array('prefix' => 'api'), function() {
     Route::put('approverequest/{doctor}','DoctorsController@approveRequest');
     Route::put('rejectrequest/{doctor}','DoctorsController@rejectRequest');
     Route::get('patbyuser/{user}','PatientsController@findByUser');
+    Route::get('patbyuserwith/{user}','PatientsController@findByUserWithUser');
     Route::get('patbyroom/{room}','PatientsController@findByRoom');
     Route::get('findroombydoctor/{doctor}','RoomController@findByDoctor');
     

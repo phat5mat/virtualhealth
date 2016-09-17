@@ -57,6 +57,19 @@ class PatientsController extends Controller
         }
     }
 
+    public function findByUserWithUser($id){
+        $user = User::where('id',$id)->with('patient')->get();
+        if (!$user) {
+            return Response::json([
+                'error' => [
+                    'message' => 'Patient does not exist'
+                ]
+            ], 404);
+        }else{
+            return $user;
+        }
+    }
+    
     public function findByRoom($id){
         $patient = Appointment::where('room',$id)->with('patient')->with('patient.user')->get();
         if (!$patient) {

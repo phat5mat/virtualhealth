@@ -24,7 +24,7 @@
         </tr>
         </tbody>
     </table>
-    <md-button class="md-primary md-raised" ng-click="showCreateRoomDialog($event)"  >
+    <md-button class="md-primary md-raised" ng-click="showCreateRoomDialog($event)">
         Create New Room
     </md-button>
 </div>
@@ -50,7 +50,7 @@
                             <td><strong>Name: </strong></td>
                         </tr>
                         <tr>
-                            <td><input class="form-control"  ng-model="room.name" name="name" required></td>
+                            <td><input class="form-control" ng-model="room.name" name="name" required></td>
                         </tr>
 
                         <tr>
@@ -60,17 +60,19 @@
                             <td class="col-md-6">
                                 <p class="input-group">
                                     <input type="text" class="form-control" uib-datepicker-popup="{{format}}"
-                                           ng-model="room.startDateobj" is-open="startDatePicker.opened" datepicker-options="dateOptions"
+                                           ng-model="room.startDateobj" is-open="startDatePicker.opened"
+                                           datepicker-options="dateOptions"
                                            ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
                                            formatMonth="MM"/>
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+            <button type="button" class="btn btn-default" ng-click="open1()"><i
+                    class="glyphicon glyphicon-calendar"></i></button>
           </span>
                                 </p>
                             </td>
                             <td class="col-md-6">
                                 <div uib-timepicker ng-model="startTime" ng-change="changed()" hour-step="1"
-                                     show-meridian="true" show-spinners="false" ></div>
+                                     show-meridian="true" show-spinners="false"></div>
                             </td>
                         </tr>
 
@@ -82,10 +84,12 @@
                             <td class="col-md-6">
                                 <p class="input-group">
                                     <input type="text" class="form-control" uib-datepicker-popup="{{format}}"
-                                           ng-model="room.endDateobj" is-open="endDatePicker.opened" datepicker-options="dateOptions"
-                                           ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                                           ng-model="room.endDateobj" is-open="endDatePicker.opened"
+                                           datepicker-options="dateOptions"
+                                           ng-required="true" close-text="Close" alt-input-formats="altInputFormats"/>
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+            <button type="button" class="btn btn-default" ng-click="open2()"><i
+                    class="glyphicon glyphicon-calendar"></i></button>
           </span>
                                 </p>
                             </td>
@@ -100,7 +104,8 @@
                             <td><strong>Room Size: </strong></td>
                         </tr>
                         <tr>
-                            <td ><input type="number" min="1" max="100" class="form-control" ng-model="room.roomSize" name="size" required></td>
+                            <td><input type="number" min="1" max="100" class="form-control" ng-model="room.roomSize"
+                                       name="size" required></td>
                         </tr>
 
                         </tbody>

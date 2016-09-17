@@ -1,7 +1,7 @@
 <div class="container">
     <h3>Room Details</h3>
     <div class="row">
-        <div class="col-md-6" >
+        <div class="col-md-4">
             <!-- Table-to-load-the-data Part -->
             <div class="row roomDetailsBlock" id="RoomDetails">
                 <table class="table" ng-init="loadRoomDetails()">
@@ -55,51 +55,154 @@
             </div>
 
             <div class="row" id="patientList">
-                <div ng-hide="enteredPat" ng-init="enteredPat = false">
-                    <h4><strong>Next Number: {{ nextSlot }}</strong> </h4>
-                    <h4><strong>Current Number: {{ currentSlot }}</strong> </h4>
+                <div class="text-center" ng-hide="enteredPat" ng-init="enteredPat = false">
+                    <span><strong>Next Number: {{ nextSlot }}</strong> </span> ||
+                    <span><strong>Current Number: {{ currentSlot }}</strong></span>
+                    <p ng-show="patUser"><strong>Your Number: {{ yourSlot }}</strong></p>
                 </div>
+                <uib-tabset ng-show="docUser" active="activeJustified" justified="true">
+                    <uib-tab index="0" heading="Patient List">
+                        <div ng-hide="showContacts" class="alert alert-warning text-center" role="alert">
+                            <b>There is not any patient in this room.</b>
+                        </div>
+                        <div ng-show="docUser && showContacts" class="col-md-4 roomPatientsBlock pull-left" ng-init="subcribe()">
+                            <table class="table contactsContent">
+                                <p class="text-center" ng-show="loading"><span
+                                        class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
+                                <tbody ng-repeat="pat in roomPatients track by pat.id " ng-hide="loading"
+                                       ng-click="selectPatient(pat)">
+                                <tr>
+                                    <td class="col-md-2">
+                                        Name
+                                    </td>
+                                    <td class="col-md-2">
+                                        {{ pat.name }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-2">
+                                        Age
+                                    </td>
+                                    <td class="col-md-2">
+                                        {{ pat.age }}
+                                    </td>
+                                </tr>
 
-                <div ng-show="docUser" class="col-md-6 roomPatientsBlock pull-left" ng-init="subcribe()">
-                    <div class="col-md-4 contactsBar">
-                        <h4 class="text-center">Patients List</h4>
-                    </div>
-                    <table class="table contactsContent" >
-                        <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
-                        <tbody ng-repeat="pat in roomPatients track by pat.id " ng-hide="loading"
-                               ng-click="selectPatient(pat)">
-                        <tr>
-                            <td class="col-md-2">
-                                Name
-                            </td>
-                            <td class="col-md-2">
-                                {{ pat.name }}
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td class="col-md-2">
+                                        Slot
+                                    </td>
+                                    <td class="col-md-2">
+                                        {{ pat.slot }}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </uib-tab>
+                    <uib-tab disable="detailsTab" index="1" heading="Details">
 
-                        <tr>
-                            <td class="col-md-2">
-                                Age
-                            </td>
-                            <td class="col-md-2">
-                                {{ pat.age }}
-                            </td>
-                        </tr>
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <td class="col-md-2">
+                                    Name
+                                </td>
+                                <td class="col-md-4">
+                                    {{ patDetails.name }}
+                                </td>
+                            </tr>
 
-                        <tr>
-                            <td class="col-md-2">
-                                Slot
-                            </td>
-                            <td class="col-md-2">
-                                {{ pat.slot }}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                            <tr>
+                                <td class="col-md-2">
+                                    Age
+                                </td>
+                                <td class="col-md-4">
+                                    {{ patDetails.age}}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="col-md-2">
+                                    Condition
+                                </td>
+                                <td class="col-md-4">
+                                    {{ patDetails.patient.condition }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="col-md-2">
+                                    Heart Rate
+                                </td>
+                                <td class="col-md-4">
+                                    {{ patDetails.patient.heartrate }}
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </uib-tab>
+                    <uib-tab disable="detailsTab" index="2" heading="Prescription">
+                        <form class="form-group" name="medForm">
+                            <table class="table no-border">
+                                <thead>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                </thead>
+                                <tbody>
+
+                                <tr>
+                                    <td colspan="2" class="col-xs-2">
+                                        <input class="form-control" ng-model="med.medName"
+                                               placeholder="Type Medicine Name" required>
+                                    </td>
+                                    <td class="col-xs-1">
+                                        <input maxlength="2" size="2" class="form-control" type="number"
+                                               ng-model="med.medQuantity" required placeholder="Quantity">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="3">
+                                        <button style="width: 100%;" ng-click="addMed()" class="btn btn-primary"
+                                                type="submit" ng-disabled="medForm.$invalid">Add Medicine
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                        <div class="presTable">
+                            <table id="pres" class="table table-bordered ">
+                                <thead>
+                                <th style="width: 10%">#</th>
+                                <th style="width: 60%">Name</th>
+                                <th style="width: 30%">Quantity</th>
+
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="m in medicines">
+                                    <td><strong>{{ $index+1 }}</strong></td>
+                                    <td><strong>{{ m.name }}</strong></td>
+                                    <td><strong>{{ m.quantity }}</strong>
+                                    <span style="float: right;">
+                                         <a class="button">
+                                            <button ng-click="removeMed($index)" type="button" class="btn btn-danger btn-circle button">
+                                            <i class="glyphicon glyphicon-remove"></i></button>
+                                        </a>
+                                     </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </uib-tab>
+                </uib-tabset>
 
 
-                <div class="col-md-6 roomDoctorBlock" ng-show="patUser" ng-init="online = false">
+                <div class="col-md-4 roomDoctorBlock" ng-show="patUser" ng-init="online = false">
                     <div class="col-md-4 offlineBar" ng-hide="online">
                         <h3 class="text-center">Doctor Currently Offline</h3>
                     </div>
@@ -142,54 +245,175 @@
             </div>
         </div>
 
-        <div class="col-md-6" ng-init="loadChat = true">
+        <div ng-init="loadChat = true">
 
-            <div class="text-center" class="row" ng-show="docUser != null">
+            <div class="col-md-8">
+                <div class="text-center" class="row" ng-show="docUser != null">
 
-                 <button ng-show="loadChat" class="btn btn-success"  ng-click="connectNext()">
-                     <strong>Next Patient</strong>
-                 </button>
-                <button class="btn btn-info" ng-show="!loadChat && !video" ng-click="sendVideo()">
-                    <strong>Video Call</strong>
-                </button>
-                <button class="btn btn-info" ng-show="video" ng-click="endCall()">
-                    <strong>End Call</strong>
-                </button>
+                    <button ng-show="loadChat" class="btn btn-success" ng-click="connectNext()">
+                        <strong>Next Patient</strong>
+                    </button>
 
-            </div>
-            <p class="text-center"  ng-show="loadChat">
-                <span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span>
-            </p>
-            <p ng-show="patLoadingText"><h4 class="text-center" ng-show="patLoadingText"><strong >Please wait until your number</strong></h4></p>
-            <p ng-show="docLoadingText"><h4 class="text-center" ng-show="docLoadingText"><strong >Invite next patient to begin examination</strong></h4></p>
 
-            <div ng-hide="loadChat">
-                <div class="row chatBlock" ng-hide="video">
-                    <ul style="padding:0;">
-                        <li class="chatContentMessage" ng-repeat="message in chatContent">
-                            <div ng-class="message.bubble">
-                                <span><h4>{{ message.userName }}</h4></span>
-                                <p class="MessagesDate">{{ message.sentDate | date:"MM/dd/yyyy 'at' h:mma" }}</p>
-                                <p>{{ message.textMessages }}</p>
-                            </div>
-                        </li>
-                    </ul>
                 </div>
-                <div class="row" ng-show="video" ng-init="video = false" id="videoBox"></div>
+                <p class="text-center" ng-show="loadChat">
+                    <span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span>
+                </p>
+                <p ng-show="patLoadingText"><h4 class="text-center" ng-show="patLoadingText"><strong>Please wait until
+                your number</strong></h4></p>
+                <p ng-show="docLoadingText"><h4 class="text-center" ng-show="docLoadingText"><strong>Invite next patient
+                to begin examination</strong></h4></p>
 
-                <div class="row" ng-hide="video">
-                    <form ng-submit="sendMessage()">
-                        <input ng-model="messageContent" class="chatForm" type="text" placeholder="Type your message" />
-                        <button class="btn btn-primary" type="submit">Send</button>
-                    </form>
+                <div ng-hide="loadChat">
+
+                    <div class="row" class="text-center" style="padding-left: 15px;">
+
+                        <div class="col-md-6 chatBlock" ng-hide="video">
+                            <ul style="padding:0;">
+                                <li class="chatContentMessage" ng-repeat="message in chatContent">
+                                    <div ng-class="message.bubble">
+                                        <span><h4>{{ message.userName }}</h4></span>
+                                        <p class="MessagesDate">{{ message.sentDate | date:"MM/dd/yyyy 'at' h:mma"
+                                            }}</p>
+                                        <p>{{ message.textMessages }}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-6 videoContainer" ng-show="video" ng-init="video = false"
+                             id="videoBox"></div>
+                        <div class="col-md-2">
+                            <button class="btn btn-info" ng-show="!loadChat && !video" ng-click="sendVideo()">
+                                <strong>Video Call</strong>
+                            </button>
+                            <button class="btn btn-info" ng-show="video" ng-click="endCall()">
+                                <strong>End Call</strong>
+                            </button>
+                            <button class="btn btn-success" ng-show="!loadChat" ng-click="finishExam()">
+                                <strong>Finish</strong>
+                            </button>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row" ng-hide="video">
+                        <div class="col-md-6 formContainer">
+                            <form ng-submit="sendMessage()">
+                                <input ng-model="messageContent" class="chatForm" type="text"
+                                       placeholder="Type your message"/>
+                                <span class="chatSubmitBtn"><button class="btn btn-primary" type="submit">Send</button></span>
+                            </form>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
         </div>
     </div>
-
-
 </div>
+
+<script type="text/ng-template" id="finishExamDialog.html">
+    <md-dialog aria-label="Create New Room">
+        <form class="form-group"
+              ng-submit="createRoom()" name="roomForm">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Examination Review</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="cancel()">
+                        X
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-dialog-content>
+                <div class="container" style="width:760px;height:400px;">
+                    <div class="col-md-4">
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <td class="col-md-1">
+                                    Name
+                                </td>
+                                <td class="col-md-3">
+                                    {{ patDetails.name }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="col-md-1">
+                                    Age
+                                </td>
+                                <td class="col-md-3">
+                                    {{ patDetails.age}}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="col-md-1">
+                                    Condition
+                                </td>
+                                <td class="col-md-3">
+                                    {{ patDetails.patient.condition }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="col-md-1">
+                                    Heart Rate
+                                </td>
+                                <td class="col-md-3">
+                                    {{ patDetails.patient.heartrate }}
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class=" col-md-7">
+                        <div ng-show="showPres" ng-init="checkPres()" class="presTable row">
+                            <table class="table table-bordered ">
+                                <thead>
+                                <th style="width: 10%">#</th>
+                                <th style="width: 70%">Name</th>
+                                <th style="width: 20%">Quantity</th>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="m in medicines">
+                                    <td><strong>{{ $index+1 }}</strong></td>
+                                    <td><strong>{{ m.name }}</strong></td>
+                                    <td><strong>{{ m.quantity }}</strong></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div ng-hide="showPres" class="alert alert-warning text-center" role="alert">
+                            <b>This examination doesn't has any medicine.</b>
+                        </div>
+                        <div class="row">
+                            <h4><strong style="color: green;">Examination Result</strong></h4>
+                        </div>
+                        <div class="row">
+                            <textarea rows="4" cols="60" style="max-width: 450px; max-height: 300px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </md-dialog-content>
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <md-button class="md-primary" ng-click="saveExam()" style="margin-right:20px;">
+                    FINISH
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+
+    </form>
+    </md-dialog>
+</script>
 
 
 
