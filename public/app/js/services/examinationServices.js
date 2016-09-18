@@ -15,35 +15,9 @@ var app = angular.module('examinationServices', [])
 app.service('examinationServices',function($http,API_URL){
     return {
         get : function(){
-            return $http.get(API_URL + "room");
+            return $http.get(API_URL + "exam");
         },
-
-
-        findbydoctor: function(id){
-            return $http({
-                method: 'GET',
-                url: API_URL + "findbydoctor/" + id,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            });
-        },
-
-
-        patientappoint: function(id){
-            return $http({
-                method: 'GET',
-                url: API_URL + "patAppointmentList/" + id,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            });
-        },
-
-        getslotnumber: function(slot){
-            return $http({
-                method:'POST',
-                url: API_URL + "getslotnumber",
-                data: $.param(slot),
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            })
-        },
+        
 
         save : function(examData){
             return $http({

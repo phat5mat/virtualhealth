@@ -755,7 +755,11 @@ app.controller('examController',['$scope','$http','$window','doctorServices','$m
                     delete value['bubble'];
                     delete value['$$hashKey'];
                 })
-                console.log(JSON.stringify(passChatLog))
+                var newExam = {
+                    chatLog: JSON.stringify(passChatLog),
+                    result: $scope.examResult,
+                    prescription: passPres
+                }
             }
         }
       
