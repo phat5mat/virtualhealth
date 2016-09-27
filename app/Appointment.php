@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use \Znck\Eloquent\Relations\BelongsToThrough;
 use App\Doctor;
 use App\Room;
+use App\Examination;
 
 class Appointment extends Model
 {
@@ -14,6 +15,10 @@ class Appointment extends Model
     }
     public function patient(){
         return $this->belongsTo('App\Patient','patients');
+    }
+    
+    public function examination(){
+        return $this->belongsTo('App\Examination','examination');
     }
 
    

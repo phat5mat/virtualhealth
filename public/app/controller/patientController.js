@@ -6,29 +6,47 @@
  */
 
 var app = angular.module('mainApp');
+var compareTo = function() {
+    return {
+        require: "ngModel",
+        scope: {
+            otherValue: "=compareTo"
+        },
+        link: function(scope, element, attributes, ngModel) {
+
+            ngModel.$validators.compareTo = function(modelValue) {
+                return modelValue == scope.otherValue;
+            };
+
+            scope.$watch("otherValue", function() {
+                ngModel.$validate();
+            });
+        }
+    };
+};
+app.directive("compareTo", compareTo);
+
 app.controller('patientController',['$scope','$location',
     '$http','userServices','facultyServices','doctorServices','$state','$auth','$mdDialog',
-    '$mdMedia','patientServices','$rootScope',
-    function ($scope,$location,$http,userServices,facultyServices,doctorServices,$state,$auth,$mdDialog
-    ,$mdMedia,patientServices,$rootScope) {
+    '$mdMedia','patientServices','$rootScope','$mdToast','$timeout'
+    ,function ($scope,$location,$http,userServices,facultyServices,doctorServices,$state,$auth,$mdDialog
+    ,$mdMedia,patientServices,$rootScope,$mdToast,$timeout) {
 
-        $scope.patientDetails = function(){
+        var currentUser = $rootScope.currentUser;
+        $scope.loadPatientDetails = function(){
             $scope.patient = {
                 name: null,
                 email: null,
                 phone: null,
                 balance: null,
                 dateofbirth: null
-            }
+            };
+           
+            $scope.patient =  currentUser;
+            $scope.patient.created_at = new Date($scope.patient.created_at);
+            $scope.patient.updated_at = new Date($scope.patient.updated_at);
 
-            var user = JSON.parse(localStorage.getItem('user'));
-            $scope.patient.name = user['name'];
-            $scope.patient.email = user['email'];
-            $scope.patient.phone = user['phone'];
-            $scope.patient.balance = user['balance'];
-            $scope.patient.dateofbirth = user['dateofbirth'];
-
-        }
+        };
         
         
         $scope.loadDoctors = function(){
@@ -58,7 +76,93 @@ app.controller('patientController',['$scope','$location',
                 })
                 .finally(function(){
                 });
-        }
+        };
+
+        $scope.showUpdate = function(){
+            $scope.updateToggle = true;
+            $scope.changePasswordToggle = false;
+            $scope.updateUser = {
+                updateName: currentUser.name,
+                username: currentUser.username,
+                email: currentUser.email,
+                phone: currentUser.phone,
+                dateofbirth: new Date(currentUser.dateofbirth)
+            }
+        };
+
+        $scope.saveUpdate = function(){
+            var confirm = $mdDialog.confirm()
+                .title('Are you sure to save this information?')
+                .textContent('Please choose your option.')
+                .ok('Accept')
+                .cancel('Cancel');
+
+            $mdDialog.show(confirm).then(function() {
+                userServices.update($rootScope.currentUser.id,$scope.updateUser)
+                    .then(function(response){
+                        $mdToast.show($mdToast.simple().textContent('Your information has been updated!!'));
+                        userServices.findUserByID(currentUser.id)
+                            .then(function(response){
+                                $timeout(function(){
+                                    $scope.patient = response.data[0];
+                                    $scope.patient.created_at = new Date($scope.patient.created_at);
+                                    $scope.patient.updated_at = new Date($scope.patient.updated_at);
+                                    $scope.updateUser = null;
+                                    $scope.updateToggle = false;
+                                })
+                            })
+                    },function(e){
+                        console.log(e)
+                    })
+            }, function() {
+
+            });
+
+        };
+        
+        $scope.showChangePassword = function(){
+            $scope.changePasswordToggle = true;
+            $scope.updateToggle = false;
+        };
+        
+
+        $scope.updatePassword = function(){
+            var passData = {
+                user: currentUser.id,
+                pass: $scope.oldpass
+            };
+            var newPassData = {
+                user: currentUser.id,
+                pass: $scope.newpass
+            };
+            userServices.validatePass(passData).
+                then(function(response){
+                if(response.data == "true"){
+                    if($scope.oldpass == $scope.newpass)
+                    {
+                        $scope.wrongPass = true;
+                        $scope.alertPass = 'The new password can not be match with old password'
+                    }else{
+                        $scope.wrongPass = false;
+                        userServices.changePass(newPassData)
+                            .then(function(response){
+                                $scope.changePasswordToggle = false;
+                                $mdToast.show($mdToast.simple().textContent('Your Password has been changed!! ' +
+                                    'Please log in again'));
+                                $rootScope.$emit("signOut", {});
+
+                            },function(e){
+                                console.log(e)
+                            })
+                    }
+                }else{
+                    $scope.alertPass = 'You have entered the wrong old password.'
+                    $scope.wrongPass = true;
+                }
+            },function(e){
+                console.log(e)
+            })
+        };
 
         
         function viewDoctorDialogController($scope,$mdDialog,$state,passDoctor){

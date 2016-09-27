@@ -27,38 +27,7 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
             }
 
         };
-
-
         
-
-        $scope.loadRoomPatients = function(){
-            if(!localStorage.getItem('selectRoom'))
-            {
-                try{
-
-                    localStorage.setItem('selectRoom',$stateParams.selectedRoom.id);
-                    patientServices.findByRoom($stateParams.selectedRoom.id)
-                        .then(function(patientsData){
-                            $scope.roomPatients = patientsData.data;
-                            angular.forEach($scope.roomPatients,function(user, key) {
-                                var age = new Date().getFullYear() -
-                                    $scope.roomPatients[key].patient.user.dateofbirth.substring(0,4);
-                                $scope.roomPatients[key].patient.user.age = age
-                            });
-                            $scope.loading = false;
-                        },function(e){
-                            console.log(e)
-                        })
-                    localStorage.removeItem('selectRoom');
-                }
-                catch (e){
-                    $state.go('room.manageRoom')
-                }
-            }
-
-        }
-        
-
         // Load selected doctor's room list
         $scope.loadRoombyDoctor = function(){
             try {
@@ -156,8 +125,11 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
         };
 
         // redirect to selected room details page
-        $scope.selectRoom = function(room) {
-            $state.go('exam',{selectedRoom: room})
+        $scope.selectRoom = function(room,appointID) {
+            $state.go('exam',{
+                selectedRoom: room,
+                selectedAppoint: appointID
+            })
             
         }
 
@@ -224,7 +196,8 @@ app.controller('roomController',['$scope','$mdDialog','roomServices','$mdMedia',
                 $scope.room.doctor = $rootScope.docUser['id'];
                 
                 // Save room into database
-                roomServices.save($scope.room).success(function(){
+                roomServices.save($scope.room)
+                    .then(function(){
                     $mdToast.show($mdToast.simple().textContent('Room is created successful!'));
                     $mdDialog.cancel();
                 },function(e){

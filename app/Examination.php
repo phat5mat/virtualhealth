@@ -12,6 +12,10 @@ class Examination extends Model
         return $this->hasOne('App\Prescription','examination');
     }
     
+    public function appointment(){
+        return $this->hasOne('App\Appointment','examination');
+    }
+    
     protected $table = 'examination';
     protected $primaryKey = 'id';
     public $timestamps = false;

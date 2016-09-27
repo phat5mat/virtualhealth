@@ -1,5 +1,8 @@
 <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
 <div class="container" ng-hide="loading">
+    <div ng-init="loginValidate = false" ng-show="loginValidate" class="alert alert-danger text-center" role="alert">
+        <b>You have entered wrong old password.</b>
+    </div>
         <form name="loginForm"  class="form-signin">
             <h3 class="form-signin-heading">Login</h3>
             <input ng-model="username" class="form-control" required placeholder="Username">

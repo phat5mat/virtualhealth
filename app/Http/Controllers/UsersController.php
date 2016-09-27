@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Patient;
 use App\Doctor;
@@ -23,6 +24,10 @@ class UsersController extends Controller
         return $userList;
     }
 
+    public function findUserByID($id){
+        $user = User::where('id',$id)->get();
+        return $user;
+    }
 
     public function findUserByDoc($id){
         $doctor = Doctor::where('id',$id)->with('user')->get();
@@ -77,16 +82,33 @@ class UsersController extends Controller
         $updateUser = $request->all();
         $user = User::find($id);
 
-        $user->name = $updateUser['name'];
-        $user->password = $updateUser['password'];
+        $user->name = $updateUser['updateName'];
         $user->email = $updateUser['email'];
         $user->phone = $updateUser['phone'];
         $user->save();
 
-        return "Sucess updating user ";
+        return "Success updating user ";
     }
 
+    public function validatePassword(Request $request){
+        $pass = $request->all();
+        $user = User::where('id',$pass['user'])->first();
+        if(Auth::validate(['username'=>$user->username,'password'=>$pass['pass']]))
+            return "true";
+        else
+            return "false";
+
+    }
     
+    public function changePassword(Request $request){
+        $pass = $request->all();
+        $user = User::where('id',$pass['user'])->first();
+        $user->password = bcrypt($pass['pass']);
+        $user->save();
+        return "Success changing password";
+
+    }
+
     public function destroy(Request $request,$id) {
         $role = $request->all();
         if($role = 0){

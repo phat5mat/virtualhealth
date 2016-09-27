@@ -17,6 +17,10 @@ class Doctor extends Model
     public function user(){
         return $this->belongsTo('App\User','users');
     }
+    
+    public function faculty(){
+        return $this->belongsTo('App\Faculty','faculty');
+    }
 
     protected $table = 'doctors';
     protected $primaryKey = 'id';

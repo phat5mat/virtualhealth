@@ -11,11 +11,36 @@ app.service('userServices',function($http,API_URL){
             return $http.get(API_URL + "user");
         },
 
+        findUserByID: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "finduserbyid/" + id,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
         
         findUserByDoc : function(id){
             return $http({
                 method: 'GET',
                 url: API_URL + "finduserbydoc" + id,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
+
+        validatePass : function(passData){
+            return $http({
+                method: 'POST',
+                url: API_URL + "validatepass",
+                data:  $.param(passData),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
+
+        changePass : function(passData){
+            return $http({
+                method: 'POST',
+                url: API_URL + "changepass",
+                data:  $.param(passData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
@@ -43,12 +68,12 @@ app.service('userServices',function($http,API_URL){
         
         update : function(id,userData){
             return  $http({
-                method: 'POST',
+                method: 'PUT',
                 url: API_URL + "user/" + id,
                 data:  $.param(userData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
-        },
+        }
      
     }
 })

@@ -290,7 +290,7 @@
                             <button class="btn btn-info" ng-show="video" ng-click="endCall()">
                                 <strong>End Call</strong>
                             </button>
-                            <button class="btn btn-success" ng-show="!loadChat" ng-click="finishExam()">
+                            <button class="btn btn-success" ng-show="!loadChat" ng-click="showReviewExamDialog()">
                                 <strong>Finish</strong>
                             </button>
                         </div>
@@ -415,5 +415,37 @@
     </md-dialog>
 </script>
 
+<script type="text/ng-template" id="confirmFinish.html">
+    <md-dialog aria-label="Create New Room">
+        <form class="form-group"
+              ng-submit="createRoom()" name="roomForm">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Finish Confirm</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="cancel()">
+                        X
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-dialog-content>
+                    <h4 class="text-center">Are you sure to finish this examination?</h4>
+            </md-dialog-content>
+            <md-dialog-actions layout="row">
+                <md-button class="md-primary" ng-click="acceptFinish('true')" style="margin-right:20px;">
+                    FINISH
+                </md-button>
+                <span flex></span>
+                <md-button class="md-warn" ng-click="acceptFinish('false')" style="margin-right:20px;">
+                    CANCEL
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+
+    </form>
+    </md-dialog>
+</script>
 
 

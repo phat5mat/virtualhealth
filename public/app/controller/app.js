@@ -5,8 +5,9 @@
 
     'use strict';
 
-    angular.module('authModule', ['ui.router', 'satellizer','ngMaterial','ui.bootstrap'])
+    angular.module('authModule', ['ui.router', 'satellizer','ngMaterial','ui.bootstrap','ngMessages'])
         .config(function($stateProvider, $urlRouterProvider, $authProvider,$httpProvider, $provide) {
+
 
             function logoutRedirect($q,$injector){
                 return {
@@ -28,11 +29,7 @@
                                 // if we get rejection by these reasons or any errors about users
                                 // the user data will be remove from local storage and authenticated
                                 // with current user are also set to null
-                                localStorage.removeItem('user');
-                                localStorage.removeItem('docUser');
-                                localStorage.removeItem('patUser');
-                                localStorage.removeItem('staffUser');
-                                localStorage.removeItem('satellizer_token');
+                                localStorage.clear();
                                 $rootScope.authenticated = false;
                                 $rootScope.currentUser = null;
                                 $rootScope.patUser = null;
@@ -189,7 +186,8 @@
                     templateUrl: '../public/app/template/examination/exam.html',
                     controller: 'examController',
                     params: {
-                        selectedRoom: null
+                        selectedRoom: null,
+                        selectedAppoint: null
                     },
 
                 })
@@ -282,6 +280,20 @@
                     }
                 })
 
+                .state('examList',{
+                    url: '/manageExam',
+                    templateUrl: '../public/app/template/examination/examList.html',
+                    controller: 'manageExamController'
+                })
+
+                .state('examDetails',{
+                    templateUrl: '../public/app/template/examination/examDetails.html',
+                    controller: 'manageExamController',
+                    params: {
+                        selectedExam: null
+                    }
+                })
+
 
 
         })
@@ -300,15 +312,11 @@
                     $rootScope.staffUser = JSON.parse(localStorage.getItem('staffUser'));
 
             }
-
-          
             
       
         });
 
 // define main application which contains all of services and modules.
 angular.module('mainApp', ['authModule', 'userServices',
-    'doctorServices','patientServices','facultyServices','roomServices','appointmentServices','ui.router']);
-
-
+    'doctorServices','patientServices','facultyServices','roomServices','appointmentServices','examinationServices','ui.router']);
 

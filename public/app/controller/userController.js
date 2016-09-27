@@ -109,6 +109,7 @@ app.controller('userController',['$scope','$location','$http','userServices','fa
                     console.log(e);
                 });
         }
+            
     }]);
 
 

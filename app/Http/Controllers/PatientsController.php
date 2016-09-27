@@ -116,7 +116,6 @@ class PatientsController extends Controller
         $doctor = Patient::find($id);
         $doctor->docid = $updateDoc['docid'];
         $doctor->docname = $updateDoc['docname'];
-        $doctor->docpassword = $updateDoc['docpassword'];
         $doctor->docemail = $updateDoc['docemail'];
         $doctor->docphone = $updateDoc['docphone'];
         $doctor->save();

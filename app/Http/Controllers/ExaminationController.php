@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-use Faker\Provider\DateTime;
+use App\Appointment;
 use Illuminate\Http\Request;
+use DB;
 use App\Room;
 use App\Examination;
 use App\Prescription;
@@ -33,17 +34,57 @@ class ExaminationController extends Controller
         return $roomList;
     }
 
+    public function findByPatient($id){
+        $exam = Appointment::where('patients',$id)
+            ->with('examination.prescription.drug')
+            ->with('room.doctor.user')
+            ->with('room.doctor.faculty')
+            ->with('patient.user')
+            ->get();
+        return $exam;
+    }
+
+    public function findByAppointment($id){
+        $exam = Appointment::where('id',$id)
+            ->with('examination.prescription.drug')
+            ->with('room.doctor.user')
+            ->with('room.doctor.faculty')
+            ->with('patient.user')
+            ->get();
+        return $exam;
+    }
 
     public function store(Request $request) {
         $newExam = $request->all();
-        $exam = new Examination;
+        $examID = DB::table('examination')->insertGetId(
+            [
+                'logs' => $newExam['chatLog'],
+                'result' => $newExam['result']
+            ]
+        );
+        $presID = DB::table('prescription')->insertGetId(
+            [
+                'examination' => $examID,
+            ]
+        );
 
-        $exam->logs = $newExam['chatLog'];
-        $exam->result = $newExam['result'];
+        $appoint = Appointment::find($newExam['appointment']);
+        $appoint->examination = $examID;
+        $appoint->save();
 
-        $exam->save();
+        if(isset($newExam['prescription']))
+        {
+            foreach ($newExam['prescription'] as $value)
+            {
+                $drug = new Drug;
+                $drug->name = $value['name'];
+                $drug->quantity = $value['quantity'];
+                $drug->prescription = $presID;
+                $drug->save();
 
-
+            }
+        }
+        
         return Response::json(array('success' => true));
     }
 
@@ -67,4 +108,7 @@ class ExaminationController extends Controller
         $room->delete();
         return Response::json(array('success delete room ' + $id => true));
     }
+    
+    
+    
 }

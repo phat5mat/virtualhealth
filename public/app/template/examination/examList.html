@@ -1,0 +1,30 @@
+<div class="container-fluid">
+    <h3>Examination Management</h3>
+    <table class="table" ng-init="loadExamination()" >
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Faculty</th>
+            <th>Doctor</th>
+            <th>Room</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+
+
+        </tr>
+        </thead>
+        <tbody>
+        <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+        <tr ng-repeat="exam in examDetails" ng-hide="loading" ng-click="selectExam(exam)" >
+            <td>{{ exam.examination.id }}</td>
+            <td>{{ exam.room.doctor.faculty.name }}</td>
+            <td>{{ exam.room.doctor.user.name }}</td>
+            <td>{{ exam.room.name }}</td>
+            <td>{{ exam.room.startDate }}</td>
+            <td>{{ exam.room.endDate }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+

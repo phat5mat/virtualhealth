@@ -28,20 +28,34 @@ Route::group(array('prefix' => 'api'), function() {
     Route::get('fac', 'FacultyController@show');
     Route::resource('doctor', 'DoctorsController');
     Route::resource('user', 'UsersController');
+    Route::get('finduserbyid/{id}', 'UsersController@findUserByID');
+    Route::post('validatepass','UsersController@validatePassword');
+    Route::post('changepass','UsersController@changePassword');
+
+    
     Route::resource('patient', 'PatientsController');
     Route::resource('room', 'RoomController');
     Route::resource('appointment', 'AppointmentsController');
-
+    Route::resource('examination', 'ExaminationController');
+    
     Route::get('docbyuser/{user}','DoctorsController@findDocByUser');
     Route::get('docbyrequest','DoctorsController@findUnactiveDoc');
     Route::get('checkrequest','DoctorsController@checkRequest');
     Route::put('approverequest/{doctor}','DoctorsController@approveRequest');
     Route::put('rejectrequest/{doctor}','DoctorsController@rejectRequest');
+
+
     Route::get('patbyuser/{user}','PatientsController@findByUser');
     Route::get('patbyuserwith/{user}','PatientsController@findByUserWithUser');
     Route::get('patbyroom/{room}','PatientsController@findByRoom');
+
+
     Route::get('findroombydoctor/{doctor}','RoomController@findByDoctor');
-    
+
+    Route::get('exambypatient/{pat}','ExaminationController@findByPatient');
+    Route::get('exambyappoint/{pat}','ExaminationController@findByAppointment');
+
+
     Route::get('finduserbydoc/{doctor}','UsersController@findUserByDoc');
     Route::get('patAppointmentList/{patients}','AppointmentsController@patAppointmentList');
     Route::post('getslotnumber','AppointmentsController@getSlotNumber');

@@ -46,6 +46,20 @@ app.service('examinationServices',function($http,API_URL){
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
+        
+        getExamByPatient: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "exambypatient/" + id
+            })
+        },
+
+        getExamByAppointment: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "exambyappoint/" + id
+            })
+        }
 
 
 
