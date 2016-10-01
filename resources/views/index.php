@@ -22,6 +22,7 @@
 <script src="../bower_components/angular-animate/angular-animate.js"></script>
 <script src="../bower_components/angular-material/angular-material.js"></script>
 <script src="../bower_components/angular-messages/angular-messages.js"></script>
+<script src="../bower_components/ng-file-upload/ng-file-upload.js"></script>
 <script src="node_modules/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="node_modules/satellizer/dist/satellizer.js"></script>
 <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
@@ -48,6 +49,8 @@
 <script src="app/js/services/roomServices.js"></script>
 <script src="app/js/services/appointmentServices.js"></script>
 <script src="app/js/services/examinationServices.js"></script>
+<script src="app/js/services/uploadServices.js"></script>
+
 
 </body>
 

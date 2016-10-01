@@ -13,7 +13,9 @@ angular
                   $mdToast,$timeout){
     
             $scope.login = function() {
-                $scope.loading = true;
+                $timeout(function(){
+                    $scope.loading = true;
+                });
                 var credentials = {
                     username: $scope.username,
                     password: $scope.password
@@ -26,6 +28,9 @@ angular
                     return $http.get('api/authenticate/user');
 
                 }, function(error) {
+                    $timeout(function(){
+                        $scope.loading = false  ;
+                    });
                     $scope.loginValidate = true;
                 }).then(function(response){
 

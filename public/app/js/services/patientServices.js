@@ -1,7 +1,7 @@
 /**
  * Created by REN on 7/30/2016.
  */
-var app = angular.module('patientServices', [])
+var app = angular.module('mainApp')
     .constant('API_URL', 'http://localhost/VirtualHealth/public/api/');
 
 

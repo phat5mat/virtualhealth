@@ -5,7 +5,8 @@
 
     'use strict';
 
-    angular.module('authModule', ['ui.router', 'satellizer','ngMaterial','ui.bootstrap','ngMessages'])
+    angular.module('authModule', ['ui.router', 'satellizer','ngMaterial'
+        ,'ui.bootstrap','ngMessages','ngFileUpload'])
         .config(function($stateProvider, $urlRouterProvider, $authProvider,$httpProvider, $provide) {
 
 
@@ -17,6 +18,8 @@
                         // inject it here in order to use it
                         var $state = $injector.get('$state');
                         var $rootScope = $injector.get('$rootScope');
+                        var $mdToast = $injector.get('$mdToast');
+
 
 
                         // declare list of reasons that token can get
@@ -34,6 +37,7 @@
                                 $rootScope.currentUser = null;
                                 $rootScope.patUser = null;
                                 $rootScope.docUser = null;
+                                $mdToast.show($mdToast.simple().textContent('Your authentication has been expired.Please login again!!!'));
                                 // Send the user to the auth state so they can login
                                 $state.go('login');
                             }
@@ -317,6 +321,110 @@
         });
 
 // define main application which contains all of services and modules.
-angular.module('mainApp', ['authModule', 'userServices',
-    'doctorServices','patientServices','facultyServices','roomServices','appointmentServices','examinationServices','ui.router']);
+var app = angular.module('mainApp', ['authModule','ui.router']);
 
+
+app.directive("compareTo", function(){
+    return {
+        require: "ngModel",
+        scope: {
+            otherValue: "=compareTo"
+        },
+        link: function(scope, element, attributes, ngModel) {
+
+            ngModel.$validators.compareTo = function(modelValue) {
+                return modelValue == scope.otherValue;
+            };
+
+            scope.$watch("otherValue", function() {
+                ngModel.$validate();
+            });
+        }
+    };
+});
+
+
+app.directive("ngFileSelect", function (uploadServices,$timeout) {
+
+    return {
+        scope: {
+            imgRead: '=',
+            imgFile: '=',
+            validateSize: '='
+        },
+        link: function ($scope, selectedFile,$attr) {
+            function getFile(file) {
+                if(file.size > 1000000){
+                    $timeout(function(){
+                        $scope.validateSize = false;
+                    });
+                }else{
+                    uploadServices.readAsDataUrl(file, $scope)
+                        .then(function(result) {
+                            $timeout(function() {
+                                $scope.validateSize = true;
+                                $scope.imgRead = result;
+                                $scope.imgFile = file;
+                                var sizeKB = file.size/1000;
+                                $scope.imgFile.sizeOutput = sizeKB + 'KB (' + file.size + '  bytes)';
+                            });
+                        });
+                }
+            }
+
+            selectedFile.bind("change", function (e) {
+                var file = e.target.files[0];
+                if(file)    
+                getFile(file);
+                
+            });
+
+        }
+    }
+
+});
+
+app.directive('ngThumb', ['$window', function($window) {
+    var helper = {
+        support: !!($window.FileReader && $window.CanvasRenderingContext2D),
+        isFile: function(item) {
+            return angular.isObject(item) && item instanceof $window.File;
+        },
+        isImage: function(file) {
+            var type =  '|' + file.type.slice(file.type.lastIndexOf('/') + 1) + '|';
+            return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+        }
+    };
+
+    return {
+        restrict: 'A',
+        template: '<canvas/>',
+        link: function(scope, element, attributes) {
+            if (!helper.support) return;
+
+            var params = scope.$eval(attributes.ngThumb);
+
+            if (!helper.isFile(params.file)) return;
+            if (!helper.isImage(params.file)) return;
+
+            var canvas = element.find('canvas');
+            var reader = new FileReader();
+
+            reader.onload = onLoadFile;
+            reader.readAsDataURL(params.file);
+
+            function onLoadFile(event) {
+                var img = new Image();
+                img.onload = onLoadImage;
+                img.src = event.target.result;
+            }
+
+            function onLoadImage() {
+                var width = params.width || this.width / this.height * params.height;
+                var height = params.height || this.height / this.width * params.width;
+                canvas.attr({ width: width, height: height });
+                canvas[0].getContext('2d').drawImage(this, 0, 0, width, height);
+            }
+        }
+    };
+}]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use App\User;
 use App\Patient;
 use App\Doctor;
@@ -25,7 +26,7 @@ class UsersController extends Controller
     }
 
     public function findUserByID($id){
-        $user = User::where('id',$id)->get();
+        $user = User::where('id',$id)->first();
         return $user;
     }
 
@@ -85,6 +86,7 @@ class UsersController extends Controller
         $user->name = $updateUser['updateName'];
         $user->email = $updateUser['email'];
         $user->phone = $updateUser['phone'];
+        $user->dateofbirth = $updateUser['dateofbirth'];
         $user->save();
 
         return "Success updating user ";
@@ -107,6 +109,23 @@ class UsersController extends Controller
         $user->save();
         return "Success changing password";
 
+    }
+    
+    public function saveAvatar(Request $request){
+        // checking file is valid.
+        if (Input::file('file')) {
+            $user = Auth::User();
+            $destinationPath = 'assets/img'; 
+            $fileName = "avatar-".$user->username.".jpg";
+            Input::file('file')->move($destinationPath, $fileName); 
+            $user->avatar = 1;
+            $user->save();
+            return 'Upload Avatar Successful';
+        }
+        else {
+            // sending back with error message.
+            return $request->all();
+        }
     }
 
     public function destroy(Request $request,$id) {

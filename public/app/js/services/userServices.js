@@ -1,11 +1,11 @@
 /**
  * Created by REN on 7/28/2016.
  */
-var app = angular.module('userServices', [])
+var app = angular.module('mainApp')
     .constant('API_URL', 'http://localhost/VirtualHealth/public/api/');
 
 
-app.service('userServices',function($http,API_URL){
+app.service('userServices',function($http,API_URL,$rootScope){
     return {
         get : function(){
             return $http.get(API_URL + "user");
@@ -42,6 +42,22 @@ app.service('userServices',function($http,API_URL){
                 url: API_URL + "changepass",
                 data:  $.param(passData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
+        
+        saveAvatar: function(img){
+
+            var fd = new FormData();
+            //Take the first selected file
+            fd.append("file", img);
+
+            return $http({
+                method: 'POST',
+                withCredentials: true,
+                url: API_URL + "saveavatar",
+                transformRequest: angular.identity,
+                data: fd,
+                headers: {'Content-Type': undefined}
             });
         },
         

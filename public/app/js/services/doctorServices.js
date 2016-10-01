@@ -1,4 +1,4 @@
-var app = angular.module('doctorServices', [])
+var app = angular.module('mainApp')
     .constant('API_URL', 'http://localhost/VirtualHealth/public/api/');
 
 

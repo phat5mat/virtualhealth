@@ -31,6 +31,7 @@ Route::group(array('prefix' => 'api'), function() {
     Route::get('finduserbyid/{id}', 'UsersController@findUserByID');
     Route::post('validatepass','UsersController@validatePassword');
     Route::post('changepass','UsersController@changePassword');
+    Route::post('saveavatar','UsersController@saveAvatar');
 
     
     Route::resource('patient', 'PatientsController');

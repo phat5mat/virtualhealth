@@ -1,13 +1,16 @@
 <h3>Manage Patient Account</h3>
 <div class="container">
     <div class="col-md-4 text-center tableUser">
-        <div class="row">
-            <img width="150px" height="150px" ng-src="app/imgs/no-avatar.png">
+        <div class="row avatarContainer">
+            <span>
+                <img width="165px" height="160px" ng-src="{{imgSrc}}">
+                <button ng-click="showChangeAvatar()" class="btn btn-info">Change Avatar Image</button>
+            </span>
         </div>
         <div class="row">
-            <h3 >{{ patient.name }}</h3>
+            <h3>{{ patient.name }}</h3>
         </div>
-        <div class="row controlRow" >
+        <div class="row controlRow">
             <button class="btn btn-default controlButton">Information</button>
         </div>
         <div class="row controlRow">
@@ -21,59 +24,69 @@
     <div id="informationTab" class="col-md-8 pull-left">
         <div class="row" style="padding-left: 15px">
             <button class="btn btn-warning" ng-click="showUpdate()" ng-disabled="updateToggle">Edit</button>
-            <button class="btn btn-warning" ng-click="showChangePassword()" ng-disabled="changePasswordToggle">Change Password</button>
+            <button class="btn btn-warning" ng-click="showChangePassword()" ng-disabled="changePasswordToggle">Change
+                Password
+            </button>
         </div>
         <form class="form-group" name="updateForm">
-            <div class="panel panel-default"  ng-show="updateToggle">
+            <div class="panel panel-default" ng-show="updateToggle">
                 <div class="panel-heading">
                     <h3 class="panel-title"><b>Update Information</b></h3>
                 </div>
-                <div class="panel-body" >
-                        <md-input-container class="md-block">
-                            <md-icon md-svg-src="app/imgs/ic_person_24px.svg" class="email"></md-icon>
-                            <label>Name</label>
-                            <input required md-maxlength="30" name="updateName" ng-model="updateUser.updateName">
-                            <div ng-messages="updateForm.updateName.$error">
-                                <div ng-message="required">Name is required.</div>
-                                <div ng-message="md-maxlength">Maximum characters is 30.</div>
+                <div class="panel-body">
+                    <md-input-container class="md-block">
+                        <md-icon md-svg-src="app/imgs/ic_person_24px.svg" class="email"></md-icon>
+                        <label>Name</label>
+                        <input required md-maxlength="30" name="updateName" ng-model="updateUser.updateName">
+                        <div ng-messages="updateForm.updateName.$error">
+                            <div ng-message="required">Name is required.</div>
+                            <div ng-message="md-maxlength">Maximum characters is 30.</div>
 
 
-                            </div>
-                        </md-input-container>
+                        </div>
+                    </md-input-container>
 
-                        <md-input-container class="md-block">
-                            <md-icon md-svg-src="app/imgs/ic_email_24px.svg" class="email"></md-icon>
-                            <label>Email</label>
-                            <input required type="email" name="email" ng-model="updateUser.email">
-                            <div ng-messages="updateForm.email.$error">
-                                <div ng-message="required">Email is required.</div>
-                                <div ng-message="email">Email is invalid.</div>
-                            </div>
-                        </md-input-container>
+                    <md-input-container class="md-block">
+                        <md-icon md-svg-src="app/imgs/ic_email_24px.svg" class="email"></md-icon>
+                        <label>Email</label>
+                        <input required type="email" name="email" ng-model="updateUser.email">
+                        <div ng-messages="updateForm.email.$error">
+                            <div ng-message="required">Email is required.</div>
+                            <div ng-message="email">Email is invalid.</div>
+                        </div>
+                    </md-input-container>
 
-                        <md-input-container class="md-block">
-                            <md-icon md-svg-src="app/imgs/ic_local_phone_24px.svg" class="email"></md-icon>
-                            <label>Phone number</label>
-                            <input required name="phone" ng-model="updateUser.phone">
-                            <div ng-messages="updateForm.phone.$error">
-                                <div ng-message="required">Phone number is required.</div>
-                            </div>
-                        </md-input-container>
+                    <md-input-container class="md-block">
+                        <md-icon md-svg-src="app/imgs/ic_local_phone_24px.svg" class="email"></md-icon>
+                        <label>Phone number</label>
+                        <input required name="phone" ng-model="updateUser.phone">
+                        <div ng-messages="updateForm.phone.$error">
+                            <div ng-message="required">Phone number is required.</div>
+                        </div>
+                    </md-input-container>
 
-                        <md-input-container class="md-block">
-                            <label>Date of Birth</label>
-                            <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg" class="email"></md-icon>
-                            <input type="date" required name="dateofbirth" ng-model="updateUser.dateofbirth">
-                            <div ng-messages="updateForm.dateofbirth.$error">
-                                <div ng-message="required">Date of birth is required.</div>
-                            </div>
-                        </md-input-container>
+                    <md-input-container class="md-block">
+                        <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg" class="email"></md-icon>
+                        <label>Date of Birth</label>
+                        <input type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                               name="dateofbirth" style="width: 30%" ng-click="openDatePicker()"
+                               ng-model="updateUser.dateofbirth" is-open="datePicker.opened"
+                               datepicker-options="dateOptions"
+                               close-text="Close"
+                               readonly="readonly" formatMonth="MM"/>
+                        <div ng-messages="updateForm.dateofbirth.$error">
+                            <div ng-message="required">Date of birth is required.</div>
+                        </div>
+                    </md-input-container>
+
 
                     <div class="row" style="padding-left: 15px">
-                        <button class="btn btn-danger" ng-click="updateToggle = false" ng-show="updateToggle">Cancel</button>
+                        <button class="btn btn-danger" ng-click="updateToggle = false" ng-show="updateToggle">Cancel
+                        </button>
                         <button type="submit" ng-disabled="updateForm.$invalid"
                                 class="btn btn-success" ng-click="saveUpdate()"
-                                ng-show="updateToggle">Save</button>
+                                ng-show="updateToggle">Save
+                        </button>
                     </div>
                 </div>
             </div>
@@ -81,11 +94,11 @@
         </form>
 
         <form class="form-group" name="changePasswordForm">
-            <div class="panel panel-default"  ng-show="changePasswordToggle">
+            <div class="panel panel-default" ng-show="changePasswordToggle">
                 <div class="panel-heading">
                     <h3 class="panel-title"><b>Change Password</b></h3>
                 </div>
-                <div class="panel-body" >
+                <div class="panel-body">
                     <table class="table ">
                         <tbody>
                         <div ng-init="wrongPass = false" ng-show="wrongPass"
@@ -94,7 +107,7 @@
                         </div>
                         <md-input-container class="md-block">
                             <label>Old Password</label>
-                            <input ng-minlength="6" ng-maxlength="15"  type="password"
+                            <input ng-minlength="6" ng-maxlength="15" type="password"
                                    required name="oldpassword" ng-model="oldpass">
                             <div ng-messages="changePasswordForm.oldpassword.$error">
                                 <div ng-message="required">Old Password is required.</div>
@@ -116,22 +129,24 @@
 
                         <md-input-container class="md-block">
                             <label>Confirm Password</label>
-                            <input ng-disabled="changePasswordForm.newpassword.$invalid" compare-to="newpass" ng-minlength="6" ng-maxlength="15" type="password"
+                            <input ng-disabled="changePasswordForm.newpassword.$invalid" compare-to="newpass"
+                                   ng-minlength="6" ng-maxlength="15" type="password"
                                    name="confirmpass" ng-model="confirmpass">
                             <div ng-messages="changePasswordForm.confirmpass.$error">
-                                <div ng-message="compareTo">Confirm password is not match with New Password.</div>
+                                <div ng-message="compareTo">Confirm password not match with New Password.</div>
                             </div>
                         </md-input-container>
-
 
                         </tbody>
                     </table>
                     <div class="row" style="padding-left: 15px">
                         <button class="btn btn-danger" ng-click="changePasswordToggle = false"
-                                ng-show="changePasswordToggle">Cancel</button>
+                                ng-show="changePasswordToggle">Cancel
+                        </button>
                         <button type="submit" ng-disabled="changePasswordForm.$invalid"
                                 class="btn btn-success" ng-click="updatePassword()"
-                                ng-show="changePasswordToggle">Save</button>
+                                ng-show="changePasswordToggle">Save
+                        </button>
                     </div>
                 </div>
             </div>
@@ -182,7 +197,7 @@
                             Date of Birth
                         </td>
                         <td class="col-md-8">
-                            {{ patient.dateofbirth }}
+                            {{ patient.dateofbirth | date:"yyyy/MM/dd"}}
                         </td>
                     </tr>
 
@@ -192,7 +207,7 @@
                             Created Date
                         </td>
                         <td class="col-md-8">
-                            {{ patient.created_at | date:"MM/dd/yyyy 'at' h:mma"}}
+                            {{ patient.created_at | date:"yyyy/MM/dd 'at' h:mma"}}
                         </td>
                     </tr>
 
@@ -202,7 +217,7 @@
                             Last Updated
                         </td>
                         <td class="col-md-8">
-                            {{ patient.updated_at | date:"MM/dd/yyyy 'at' h:mma"}}
+                            {{ patient.updated_at | date:"yyyy/MM/dd 'at' h:mma"}}
                         </td>
                     </tr>
 
@@ -210,7 +225,65 @@
                 </table>
             </div>
         </div>
-
-
     </div>
 </div>
+
+<script type="text/ng-template" id="changeAvatarDialog.html">
+    <md-dialog aria-label="Change Avatar Image">
+        <form class="form-group" ng-submit="changeAvatar()" name="avatarForm">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Change Avatar Image</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="cancel()">
+                        X
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-dialog-content>
+                <div class="container" style="width:620px;height:200px;">
+                    <div class="col-md-5">
+                        <b>Preview:</b><br/>
+                        <img  width="165px" height="160px" ng-src="{{imageSrc}}"/><br/>
+
+                    </div>
+                   <div class="col-md-7 pull-left uploadAvatarContainer">
+                       <form>
+                           <input type="file" accept="image/*"
+                                  ng-file-select="$file" img-read="imageSrc"
+                                  img-file="fileinfo" validate-size="validateSize">
+                       </form>
+                       <div ng-init="validateSize = true" ng-hide="validateSize"
+                            class="alert alert-danger text-center" role="alert">
+                           <b>Image file size must be less than 1MB.</b>
+                       </div>
+                       <div ng-show="imageSrc && validateSize">
+                           <div><b>Name:</b> {{ fileinfo.name }}</div>
+                           <div><b>Size:</b> {{fileinfo.sizeOutput}} </div>
+                           <div><b>Type:</b> {{ fileinfo.type }}</div>
+                       </div>
+                   </div>
+
+                </div>
+            </md-dialog-content>
+
+
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <md-button class="md-warn" ng-click="cancel()" style="margin-right:20px;">
+                    CANCEL
+                </md-button>
+                <md-button  ng-click="saveImage()" style="margin-right:20px;">
+                    SAVE
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+
+    </form>
+    </md-dialog>
+</script>
+
+
+

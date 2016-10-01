@@ -8,7 +8,7 @@
  * Created by REN on 8/5/2016.
  */
 
-var app = angular.module('examinationServices', [])
+var app = angular.module('mainApp')
     .constant('API_URL', 'http://localhost/VirtualHealth/public/api/');
 
 
