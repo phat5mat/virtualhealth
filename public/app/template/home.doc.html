@@ -1,4 +1,106 @@
-<body >
-<h3>DOC HOME</h3>
+<h3>Doc Home</h3>
+<table style="width: 100%" st-table="displayedCollection" st-safe-src="doctors">
+    <tr>
+        <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+    </tr>
 
-</body>
+</table>
+
+<table id="docTable" st-table="displayedCollection"
+       st-safe-src="doctors" wt-responsive-table class="table table-striped"
+       ng-init="loadDoctors()">
+    <thead>
+    <tr>
+        <th style="width: 5%"></th>
+        <th style="width: 10%" class="sortable" st-sort="id">ID</th>
+        <th style="width: 25%" class="sortable" st-sort="name">Name</th>
+        <th style="width: 20%">Email</th>
+        <th style="width: 20%" class="sortable" st-sort="doctor.professional">Professional</th>
+    </tr>
+    <tr>
+        <th>
+        </th>
+        <th>
+            <input st-search="id" placeholder="search ID"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="name" placeholder="search Name"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="email" placeholder="search Email"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="doctor.professional" placeholder="search Professional"
+                   class="input-sm form-control"/>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
+    <tr ng-repeat="doctor in displayedCollection" ng-hide="loading" ng-click="selectDoctor($event,doctor)">
+        <td><img class="avatarCircle" ng-src="{{doctor.avatarSrc}}"></td>
+        <td data-title="ID">{{ doctor.id }}</td>
+        <td data-title="Name">{{ doctor.name }}</td>
+        <td data-title="Email">{{ doctor.email }}</td>
+        <td data-title="Professional">{{ doctor.doctor.professional }}</td>
+
+    </tr>
+    </tbody>
+</table>
+
+
+<script type="text/ng-template" id="viewDoctorDetailsDialog.html">
+    <md-dialog aria-label="Doctor Informations" ng-init="test()">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>{{ doctorDetails.name }}</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    X
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="container" style="width:500px;height:300px;">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ doctorDetails.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Date of Birth</td>
+                        <td>{{ doctorDetails.dateofbirth }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{ doctorDetails.email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>{{ doctorDetails.phone }}</td>
+                    </tr>
+                    <tr>
+                        <td>Faculty</td>
+                        <td>{{ doctorDetails.doctor.faculty }}</td>
+                    </tr>
+                    <tr>
+                        <td>Professional</td>
+                        <td>{{ doctorDetails.doctor.professional }}</td>
+                    </tr>
+                    <tr>
+                        <td>Biography</td>
+                        <td>{{ doctorDetails.doctor.biography }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-primary btn-block" ng-click="makeAppointment()">View {{ doctorDetails.name }}
+                Room
+            </button>
+        </md-dialog-content>
+    </md-dialog>
+</script>

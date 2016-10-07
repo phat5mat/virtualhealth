@@ -231,7 +231,7 @@
                     templateUrl: '../public/app/template/appointment/appoint.manageAppointment.html',
                     params: {
                         selectedRoom: null
-                    },
+                    }
                 })
 
                 .state('manage',{
@@ -241,30 +241,9 @@
                     onEnter: function($rootScope,$state,$timeout){
                         if($rootScope.currentUser == null){
                             $state.go('login');
-                        }else{
-                            if($rootScope.currentUser['role'] == 1){
-                                $timeout(function() {
-                                    $state.go('manage.doc');
-                                });
-                            }else {
-                                $timeout(function() {
-                                    $state.go('manage.pat');
-                                });
-                            }
                         }
                     }
 
-                })
-
-                .state('manage.pat',{
-                    templateUrl: '../public/app/template/user/manage.pat.html',
-                    controller: 'patientController'
-                    
-                })
-
-                .state('manage.doc',{
-                    templateUrl: '../public/app/template/user/manage.doc.html',
-                    controller: 'doctorController'
                 })
                 
                 
@@ -321,7 +300,7 @@
         });
 
 // define main application which contains all of services and modules.
-var app = angular.module('mainApp', ['authModule','ui.router']);
+var app = angular.module('mainApp', ['authModule','ui.router','smart-table','ui.footable','wt.responsive']);
 
 
 app.directive("compareTo", function(){

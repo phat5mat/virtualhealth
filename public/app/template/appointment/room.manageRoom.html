@@ -1,32 +1,75 @@
 <div>
     <h3>Doctor Room Page</h3>
+    <md-button class="md-primary md-raised" ng-click="showCreateRoomDialog($event)">
+        Create New Room
+    </md-button>
 
+    <table style="width: 100%" st-table="displayedCollection" st-safe-src="rooms">
+        <tr>
+            <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+        </tr>
+
+    </table>
     <!-- Table-to-load-the-data Part -->
-    <table class="table" ng-init="loadRoom()">
+    <table class="table hoverTable" st-table="displayedCollection"
+           st-safe-src="rooms" wt-responsive-table class="table table-striped"
+           ng-init="loadRoom()">
         <thead>
         <tr>
-            <th>Name</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Size</th>
+            <th class="sortable" st-sort="id" style="width: 10%">ID</th>
+            <th class="sortable" st-sort="name" style="width: 25%">Name</th>
+            <th class="sortable" st-sort="startDate" style="width: 25%">Start Date</th>
+            <th class="sortable" st-sort="roomSize" style="width: 10%">Size</th>
+            <th class="sortable" st-sort="status" style="width: 15%">Status</th>
+            <th style="width: 15%"></th>
+
+        </tr>
+        <tr>
+            <th>
+                <input st-search="id"
+                       class="input-sm form-control"/>
+            </th>
+            <th>
+                <input st-search="name"
+                       class="input-sm form-control"/>
+            </th>
+            <th>
+                <input st-search="startDate"
+                       class="input-sm form-control"/>
+            </th>
+            <th>
+                <input st-search="roomSize"
+                       class="input-sm form-control"/>
+            </th>
+            <th>
+                <input st-search="status"
+                       class="input-sm form-control"/>
+            </th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
-        <tr ng-repeat="room in rooms" ng-hide="loading" ng-click="selectRoom(room)">
-            <td>{{ room.name }}</td>
-            <td>{{ room.startDate }}</td>
-            <td>{{ room.endDate }}</td>
-            <td>{{ room.roomSize }}</td>
-            <td>
-                <button class="btn btn-danger btn-delete" ng-click="removeRoom(room.id)">Delete</button>
+        <tr ng-repeat="room in displayedCollection" ng-hide="loading">
+            <td data-title="ID">{{ room.id }}</td>
+            <td data-title="Name">{{ room.name }}</td>
+            <td data-title="Start Date">{{ room.startDate | date:"MM/dd/yyyy 'at' h:mma" }}</td>
+            <td data-title="Room Size">{{ room.roomSize }}</td>
+            <td ng-class="room.statusColor" data-title="Status">{{ room.status }}</td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-success"
+                        ng-show="room.status == 'Open'"
+                        ng-click="selectRoom(room)">Enter
+                </button>
+                <button class="btn btn-sm btn-primary"
+                        ng-show="room.status == 'Waiting'"
+                        ng-click="selectRoom(room)">Open
+                </button>
             </td>
         </tr>
         </tbody>
     </table>
-    <md-button class="md-primary md-raised" ng-click="showCreateRoomDialog($event)">
-        Create New Room
-    </md-button>
+
 </div>
 
 <script type="text/ng-template" id="createRoomDialog.html">
@@ -43,77 +86,81 @@
             </md-toolbar>
 
             <md-dialog-content>
-                <div class="md-dialog-content">
+                <div class="container" style="width:600px;height:450px;">
                     <table class="table no-border">
                         <tbody>
                         <tr>
-                            <td><strong>Name: </strong></td>
-                        </tr>
-                        <tr>
-                            <td><input class="form-control" ng-model="room.name" name="name" required></td>
+                            <td>
+                                <md-input-container class="md-block">
+                                    <input class="form-control"
+                                           ng-model="room.name" name="name"
+                                           placeholder="Name of room" required
+                                           ng-minlength="8" ng-maxlength="30">
+
+                                    <div ng-messages="roomForm.name.$error">
+                                        <div ng-message="required">Room name is required.</div>
+                                        <div ng-message="minlength">Room name minimum characters is 8.</div>
+                                        <div ng-message="maxlength">Room name minimum characters is 30.</div>
+                                    </div>
+                                </md-input-container>
+                            </td>
                         </tr>
 
                         <tr>
-                            <td class="col-md-2"><strong>Start From: </strong></td>
+                            <td class="col-md-6">
+                                <md-input-container class="md-block">
+                                    <input readonly="true" class="form-control" uib-datepicker-popup="{{format}}"
+                                           ng-model="room.startDateobj" is-open="startDatePicker.opened"
+                                           datepicker-options="dateOptions" name="startDate" style="width: 50%"
+                                           placeholder="Start Date"
+                                           formatMonth="MM"
+                                           required close-text="Close" alt-input-formats="altInputFormats"
+                                           formatMonth="MM" ng-click="open1()"/>
+                                    <div ng-messages="roomForm.startDate.$error">
+                                        <div ng-message="required">Start date is required.</div>
+                                    </div>
+                                </md-input-container>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="col-md-2"><strong>Start Time </strong></td>
                         </tr>
                         <tr>
-                            <td class="col-md-6">
-                                <p class="input-group">
-                                    <input type="text" class="form-control" uib-datepicker-popup="{{format}}"
-                                           ng-model="room.startDateobj" is-open="startDatePicker.opened"
-                                           datepicker-options="dateOptions"
-                                           ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
-                                           formatMonth="MM"/>
-          <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open1()"><i
-                    class="glyphicon glyphicon-calendar"></i></button>
-          </span>
-                                </p>
-                            </td>
                             <td class="col-md-6">
                                 <div uib-timepicker ng-model="startTime" ng-change="changed()" hour-step="1"
-                                     show-meridian="true" show-spinners="false"></div>
+                                     show-meridian="true" show-spinners="false" required
+                                     name="startTime"></div>
                             </td>
                         </tr>
 
-
                         <tr>
-                            <td class="col-md-2"><strong>Closing At: </strong></td>
-                        </tr>
-                        <tr>
-                            <td class="col-md-6">
-                                <p class="input-group">
-                                    <input type="text" class="form-control" uib-datepicker-popup="{{format}}"
-                                           ng-model="room.endDateobj" is-open="endDatePicker.opened"
-                                           datepicker-options="dateOptions"
-                                           ng-required="true" close-text="Close" alt-input-formats="altInputFormats"/>
-          <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open2()"><i
-                    class="glyphicon glyphicon-calendar"></i></button>
-          </span>
-                                </p>
-                            </td>
-                            <td class="col-md-6">
-                                <div uib-timepicker ng-model="endTime" ng-change="changed()" hour-step="1"
-                                     show-meridian="true" show-spinners="false"></div>
+                            <td>
+                                <md-input-container class="md-block">
+                                    <input placeholder="Room size" ng-minlength="1"
+                                           ng-maxlength="2" type="number" style="width: 50%"
+                                           required name="size" ng-model="room.roomSize">
+                                    <div ng-messages="roomForm.size.$error">
+                                        <div ng-message="required">Room size is required.</div>
+                                        <div ng-message="minlength">Room size must be larger than 1.</div>
+                                        <div ng-message="maxlength">Room size must be less than 100.</div>
+                                    </div>
+                                </md-input-container>
                             </td>
                         </tr>
-
-
-                        <tr>
-                            <td><strong>Room Size: </strong></td>
-                        </tr>
-                        <tr>
-                            <td><input type="number" min="1" max="100" class="form-control" ng-model="room.roomSize"
-                                       name="size" required></td>
-                        </tr>
-
                         </tbody>
                     </table>
-                    <button class="btn btn-primary" ng-disabled="roomForm.$invalid" type="submit">Save</button>
                 </div>
             </md-dialog-content>
-
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <md-button class="md-raised md-warn" ng-click="cancel()" style="margin-right:20px;">
+                    CANCEL
+                </md-button>
+                <md-button class="md-raised md-primary" ng-disabled="roomForm.$invalid"
+                           type="submit">Save
+                </md-button>
+            </md-dialog-actions>
         </form>
     </md-dialog>
 </script>

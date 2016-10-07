@@ -15,28 +15,31 @@ class AppointmentsController extends Controller
     {
         $this->middleware('jwt.auth');
     }
-    
+
     public function index()
     {
         $roomList = Appointment::all();
         return $roomList;
     }
 
-    
-    public function findByDoctor($id){
-        $roomList = Appointment::where('doctor',$id)->get();
+
+    public function findByDoctor($id)
+    {
+        $roomList = Appointment::where('doctor', $id)->get();
         return $roomList;
     }
 
-    
-    public function patAppointmentList($id){
-        $roomList = Appointment::where('patients',$id)
+
+    public function patAppointmentList($id)
+    {
+        $roomList = Appointment::where('patients', $id)
             ->with('room.doctor.user')
             ->get();
         return $roomList;
     }
 
-    public function getSlotNumber(Request $request){
+    public function getSlotNumber(Request $request)
+    {
         $data = $request->all();
         $patient = User::find($data['user']);
         $patient = $patient->patient;
@@ -44,8 +47,22 @@ class AppointmentsController extends Controller
         $slot = Appointment::where($findQuery)->get();
         return $slot;
     }
-    
-    public function store(Request $request) {
+
+    public function updateAppointmentStatus(Request $request, $id)
+    {
+        $appoint = Appointment::where('room', $id)->get();
+        $status = $request->all();
+        foreach ($appoint as $value)
+        {
+            $value->status = $status['status'];
+            $value->save();
+        }
+        return "Sucess updating user ";
+
+    }
+
+    public function store(Request $request)
+    {
         $newApp = $request->all();
         $appointment = new Appointment;
 
@@ -57,8 +74,9 @@ class AppointmentsController extends Controller
         $appointment->save();
     }
 
-    
-    public function update(Request $request, $id) {
+
+    public function update(Request $request, $id)
+    {
 
         $updateRoom = $request->all();
         $room = Room::find($id);
@@ -72,8 +90,9 @@ class AppointmentsController extends Controller
         return "Sucess updating user ";
     }
 
-    
-    public function destroy($id) {
+
+    public function destroy($id)
+    {
         $room = Room::find($id);
         $room->delete();
         return Response::json(array('success delete room ' + $id => true));

@@ -1,30 +1,61 @@
-<div class="container-fluid">
-    <h3>Examination Management</h3>
-    <table class="table" ng-init="loadExamination()" >
+<h3>Examination Management</h3>
+    <table style="width: 100%" st-table="displayedCollection" st-safe-src="appointments">
+        <tr>
+            <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+        </tr>
+
+    </table>
+    <table st-table="displayedCollection"
+           st-safe-src="examDetails" wt-responsive-table class="table table-striped hoverTable"
+           ng-init="loadExamination()" >
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Faculty</th>
-            <th>Doctor</th>
-            <th>Room</th>
-            <th>Start Date</th>
-            <th>End Date</th>
+            <th class="sortable" st-sort="examination.id" style="width: 10%">ID</th>
+            <th class="sortable" st-sort="room.examination.date" style="width: 20%">Date</th>
+            <th class="sortable" st-sort="room.doctor.user.name" style="width: 20%">Doctor</th>
+            <th class="sortable" st-sort="room.name" style="width: 20%">Room</th>
+            <th class="sortable" st-sort="room.doctor.faculty.name" style="width: 20%">Faculty</th>
+            <th style="width: 10%"></th>
+
+        </tr>
+        <tr>
+            <th>
+                <input st-search="examination.id"
+                       class="input-sm form-control searchInput" />
+            </th>
+            <th>
+                <input st-search="room.examination.date"
+                       class="input-sm form-control" />
+            </th>
+            <th>
+                <input st-search="room.doctor.user.name"
+                       class="input-sm form-control"/>
+            </th>
+            <th >
+                <input st-search="room.name"
+                       class="input-sm form-control" />
+            </th>
+            <th>
+                <input st-search="room.doctor.faculty.name"
+                       class="input-sm form-control"/>
+            </th>
 
 
         </tr>
         </thead>
         <tbody>
         <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
-        <tr ng-repeat="exam in examDetails" ng-hide="loading" ng-click="selectExam(exam)" >
+        <tr ng-repeat="exam in displayedCollection" ng-hide="loading"  >
             <td>{{ exam.examination.id }}</td>
-            <td>{{ exam.room.doctor.faculty.name }}</td>
+            <td>{{ exam.examination.date | date:"MM/dd/yyyy 'at' h:mma" }}</td>
             <td>{{ exam.room.doctor.user.name }}</td>
             <td>{{ exam.room.name }}</td>
-            <td>{{ exam.room.startDate }}</td>
-            <td>{{ exam.room.endDate }}</td>
+            <td>{{ exam.room.doctor.faculty.name }}</td>
+            <td>
+                <button class="btn btn-info" ng-click="selectExam(exam)">Details</button>
+            </td>
         </tr>
         </tbody>
     </table>
-</div>
 
 

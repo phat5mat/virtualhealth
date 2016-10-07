@@ -1,24 +1,66 @@
-<h3>Pat Home</h3>
-<table class="table" ng-init="loadAppointment()" >
+<table style="width: 100%" st-table="displayedCollection" st-safe-src="appointments">
+    <tr>
+        <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+    </tr>
+
+</table>
+<table class="table hoverTable" st-table="displayedCollection"
+       st-safe-src="appointments" wt-responsive-table class="table table-striped"
+       ng-init="loadAppointment()" >
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Doctor</th>
-        <th>Room</th>
-        <th>Status</th>
-        <th>Slot Number</th>
+        <th class="sortable" st-sort="id" style="width: 10%">ID</th>
+        <th class="sortable" st-sort="room.doctor.user.name" style="width: 20%">Doctor</th>
+        <th class="sortable" st-sort="room.name" style="width: 20%">Room</th>
+        <th class="sortable" st-sort="room.startDate" style="width: 20%">Start Date</th>
+        <th class="sortable" st-sort="status" style="width: 10%">Status</th>
+        <th class="sortable" st-sort="slot" style="width: 10%">Slot</th>
+        <th style="width: 10%"></th>
 
+    </tr>
+    <tr>
+        <th>
+            <input st-search="id"
+                   class="input-sm form-control" />
+        </th>
+        <th>
+            <input st-search="room.doctor.user.name"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="room.name"
+                   class="input-sm form-control"/>
+        </th>
+        <th >
+            <input st-search="room.startDate"
+                   class="input-sm form-control" />
+        </th>
+        <th >
+            <input st-search="status"
+                   class="input-sm form-control" />
+        </th>
+        <th >
+            <input st-search="slot"
+                   class="input-sm form-control" />
+        </th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
     <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
-    <tr ng-repeat="appoint in appointments" ng-hide="loading" ng-click="selectRoom(appoint.room,appoint.id)" >
-        <td>{{ appoint.id }}</td>
-        <td>{{ appoint.room.doctor.user.name }}</td>
-        <td>{{ appoint.room.name }}</td>
-        <td>{{ appoint.status }}</td>
-        <td>{{ appoint.slot }}</td>
-
+    <tr ng-repeat="appoint in displayedCollection" ng-hide="loading" >
+        <td data-title="ID">{{ appoint.id }}</td>
+        <td data-title="Doctor">{{ appoint.room.doctor.user.name }}</td>
+        <td data-title="Room">{{ appoint.room.name }}</td>
+        <td data-title="Start Date">{{ appoint.room.startDate | date:"MM/dd/yyyy 'at' h:mma" }}</td>
+        <td ng-class="appoint.statusColor" data-title="Status"><b>{{ appoint.status }}</b></td>
+        <td class="slotRow" data-title="Slot Number">{{ appoint.slot }}</td>
+        <td>
+            <button ng-show="appoint.status == 'Starting'"
+                    class="btn btn-sm btn-success" ng-click="selectRoom(appoint.room,appoint.id)">Enter</button>
+        </td>
     </tr>
     </tbody>
+
 </table>
+

@@ -30,13 +30,21 @@ class RoomController extends Controller
         return $roomList;
     }
     
+    public function updateRoomStatus(Request $request,$id){
+        $room = Room::where('id',$id)->first();
+        $status = $request->all();
+        $room->status = $status['status'];
+        $room->save();
+        return $status;
+
+    }
+    
     
     public function store(Request $request) {
         $newRoom = $request->all();
         $room = new Room;
 
         $room->startDate = $newRoom['startDate'];
-        $room->endDate = $newRoom['endDate'];
         $room->roomSize = $newRoom['roomSize'];
         $room->available = $newRoom['roomSize'];
         $room->name =  $newRoom['name'];

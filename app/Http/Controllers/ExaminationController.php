@@ -70,6 +70,7 @@ class ExaminationController extends Controller
 
         $appoint = Appointment::find($newExam['appointment']);
         $appoint->examination = $examID;
+        $appoint->status = 2;
         $appoint->save();
 
         if(isset($newExam['prescription']))

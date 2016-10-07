@@ -11,6 +11,9 @@ app.controller('manageExamController',['$scope','$http','$window','doctorService
             examinationServices.getExamByPatient($rootScope.patUser.id)
                 .then(function(exam){
                     $scope.examDetails = exam.data;
+                    angular.forEach($scope.examDetails,function(value,key){
+                        value.examination.date = new Date(value.examination.date);
+                    })
                 },function(e){
                     console.log(e)
                 })
@@ -29,7 +32,7 @@ app.controller('manageExamController',['$scope','$http','$window','doctorService
             var age = new Date().getFullYear() -
                 selectedExam.patient.user.dateofbirth.substring(0,4);
             $scope.patDetails.age = age
-        }
+        };
 
         $scope.downLog = function(){
             var selectedExam = $stateParams.selectedExam;

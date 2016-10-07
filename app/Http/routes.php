@@ -38,13 +38,15 @@ Route::group(array('prefix' => 'api'), function() {
     Route::resource('room', 'RoomController');
     Route::resource('appointment', 'AppointmentsController');
     Route::resource('examination', 'ExaminationController');
+
+    Route::put('updateRoomStatus/{room}','RoomController@updateRoomStatus');
     
     Route::get('docbyuser/{user}','DoctorsController@findDocByUser');
     Route::get('docbyrequest','DoctorsController@findUnactiveDoc');
     Route::get('checkrequest','DoctorsController@checkRequest');
     Route::put('approverequest/{doctor}','DoctorsController@approveRequest');
     Route::put('rejectrequest/{doctor}','DoctorsController@rejectRequest');
-
+    
 
     Route::get('patbyuser/{user}','PatientsController@findByUser');
     Route::get('patbyuserwith/{user}','PatientsController@findByUserWithUser');
@@ -60,6 +62,8 @@ Route::group(array('prefix' => 'api'), function() {
     Route::get('finduserbydoc/{doctor}','UsersController@findUserByDoc');
     Route::get('patAppointmentList/{patients}','AppointmentsController@patAppointmentList');
     Route::post('getslotnumber','AppointmentsController@getSlotNumber');
+    Route::put('updateAppointStatus/{room}','AppointmentsController@updateAppointmentStatus');
+
 
     Route::get('manageDoc',function(){
         return view('manageDoctors');

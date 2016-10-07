@@ -49,6 +49,14 @@ app.service('roomServices',function($http,API_URL){
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
+        
+        updateStatus: function(id,status){
+            return  $http({
+                method: 'PUT',
+                url: API_URL + "updateRoomStatus/" + id,
+                data:  {status: status}
+            });
+        }
 
     }
 })

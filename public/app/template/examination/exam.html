@@ -20,16 +20,7 @@
                             Start Date
                         </td>
                         <td class="col-md-4">
-                            {{ roomDetails2.startDate}}
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="col-md-2">
-                            End Date
-                        </td>
-                        <td class="col-md-4">
-                            {{ roomDetails2.endDate }}
+                            {{ roomDetails2.startDate | date:"MM/dd/yyyy 'at' h:mma"}}
                         </td>
                     </tr>
 
@@ -54,6 +45,13 @@
                 </table>
             </div>
 
+            <div class="row text-center">
+                <button ng-show="docUser"
+                        class="btn btn-danger btn-lg" style="width: 60%"
+                     ng-disabled="!loadChat"   ng-click="closeRoom()">Close Room
+                </button>
+            </div>
+
             <div class="row" id="patientList">
                 <div class="text-center" ng-hide="enteredPat" ng-init="enteredPat = false">
                     <span><strong>Next Number: {{ nextSlot }}</strong> </span> ||
@@ -65,7 +63,8 @@
                         <div ng-hide="showContacts" class="alert alert-warning text-center" role="alert">
                             <b>There is not any patient in this room.</b>
                         </div>
-                        <div ng-show="docUser && showContacts" class="col-md-4 roomPatientsBlock pull-left" ng-init="subcribe()">
+                        <div ng-show="docUser && showContacts" class="col-md-4 roomPatientsBlock pull-left"
+                             ng-init="subcribe()">
                             <table class="table contactsContent">
                                 <p class="text-center" ng-show="loading"><span
                                         class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
@@ -175,7 +174,7 @@
                             </table>
                         </form>
                         <div class="presTable">
-                            <table id="pres" class="table table-bordered ">
+                            <table id="pres" class="table table-bordered hoverTable ">
                                 <thead>
                                 <th style="width: 10%">#</th>
                                 <th style="width: 60%">Name</th>
@@ -189,9 +188,10 @@
                                     <td><strong>{{ m.quantity }}</strong>
                                     <span style="float: right;">
                                          <a class="button">
-                                            <button ng-click="removeMed($index)" type="button" class="btn btn-danger btn-circle button">
-                                            <i class="glyphicon glyphicon-remove"></i></button>
-                                        </a>
+                                             <button ng-click="removeMed($index)" type="button"
+                                                     class="btn btn-danger btn-circle button">
+                                                 <i class="glyphicon glyphicon-remove"></i></button>
+                                         </a>
                                      </span>
                                     </td>
                                 </tr>
@@ -273,8 +273,9 @@
                                 <li class="chatContentMessage" ng-repeat="message in chatContent">
                                     <div ng-class="message.bubble">
                                         <span><h4>{{ message.userName }}</h4></span>
-                                        <p class="MessagesDate">{{ message.sentDate | date:"MM/dd/yyyy 'at' h:mma"
-                                            }}</p>
+                                        <p class="MessagesDate">
+                                            {{ message.sentDate | date:"MM/dd/yyyy 'at' h:mma"}}
+                                        </p>
                                         <p>{{ message.textMessages }}</p>
                                     </div>
                                 </li>
@@ -290,7 +291,8 @@
                             <button class="btn btn-info" ng-show="video" ng-click="endCall()">
                                 <strong>End Call</strong>
                             </button>
-                            <button class="btn btn-success" ng-show="!loadChat" ng-click="showReviewExamDialog()">
+                            <button class="btn btn-success" ng-show="!loadChat && docUser"
+                                    ng-click="showReviewExamDialog()">
                                 <strong>Finish</strong>
                             </button>
                         </div>
@@ -397,7 +399,8 @@
                             <h4><strong style="color: green;">Examination Result</strong></h4>
                         </div>
                         <div class="row">
-                            <textarea ng-model="examResult" rows="4" cols="60" style="max-width: 450px; max-height: 300px;"></textarea>
+                            <textarea ng-model="examResult" rows="4" cols="60"
+                                      style="max-width: 450px; max-height: 300px;"></textarea>
                         </div>
                     </div>
                 </div>
@@ -430,7 +433,7 @@
             </md-toolbar>
 
             <md-dialog-content>
-                    <h4 class="text-center">Are you sure to finish this examination?</h4>
+                <h4 class="text-center">Are you sure to finish this examination?</h4>
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <md-button class="md-primary" ng-click="acceptFinish('true')" style="margin-right:20px;">
@@ -448,4 +451,60 @@
     </md-dialog>
 </script>
 
+
+<script type="text/ng-template" id="closeRoomDialog.html">
+    <md-dialog aria-label="Create New Room">
+        <form class="form-group"
+              ng-submit="createRoom()" name="roomForm">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Finish Confirm</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="cancel()">
+                        X
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-dialog-content>
+                <div class="container" style="width:500px;height:400px;">
+                    <h4 class="alert alert-warning text-center">Are you sure to close this room? All of patient appointment
+                        with you in {{roomName}} room will be set to canceled</h4>
+                    <h4 class="text-center">There are {{patCount}} patient(s) in the room</h4>
+                    <table class="table"
+                           wt-responsive-table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th style="width: 10%">#</th>
+                            <th style="width: 80%">Name</th>
+                            <th style="width: 10%">Slot</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+                        <tr ng-repeat="pat in patList" ng-hide="loading">
+                            <td data-title="ID">{{ $index+1 }}</td>
+                            <td data-title="Patient">{{ pat.name }}</td>
+                            <td data-title="Slot">{{ pat.slot }}</td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </md-dialog-content>
+            <md-dialog-actions layout="row">
+                <button class="btn btn-primary" ng-click="saveAndCloseRoom()" style="margin-right:20px;">
+                    ACCEPT
+                </button>
+                <span flex></span>
+                <button class="btn btn-danger" ng-click="cancel()" style="margin-right:20px;">
+                    CANCEL
+                </button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+
+    </form>
+    </md-dialog>
+</script>
 

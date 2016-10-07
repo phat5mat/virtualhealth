@@ -41,6 +41,14 @@ app.service('appointmentServices',function($http,API_URL){
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             })
         },
+
+        updateStatus: function(id,status){
+            return  $http({
+                method: 'PUT',
+                url: API_URL + "updateAppointStatus/" + id,
+                data:  {status: status}
+            });
+        },
         
         save : function(appData){
             return $http({
