@@ -6,18 +6,26 @@ var app = angular.module('mainApp')
     .constant('API_URL', 'http://localhost/VirtualHealth/public/api/');
 
 
-app.factory('facultyServices',function($http,API_URL){
+app.factory('specialityServices',function($http,API_URL){
     return {
         get : function(){
-            return $http.get(API_URL + "fac");
+            return $http.get(API_URL + "special");
+        },
+
+        getSpecialByDoctor : function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "specialbydoctor/"+id,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });        
         },
 
         
-        save : function(facData){
+        save : function(specData){
             return $http({
                 method: 'POST',
-                url: API_URL + "fac",
-                data:  $.param(userData),
+                url: API_URL + "special",
+                data:  $.param(specData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
@@ -26,16 +34,16 @@ app.factory('facultyServices',function($http,API_URL){
         destroy : function(id){
             return $http({
                 method: 'DELETE',
-                url: API_URL + "fac/" + id
+                url: API_URL + "special/" + id
             });
         },
 
         
-        update : function(id,facData){
+        update : function(id,specData){
             return  $http({
                 method: 'POST',
-                url: API_URL + "fac/" + id,
-                data:  $.param(userData),
+                url: API_URL + "special/" + id,
+                data:  $.param(specData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         }

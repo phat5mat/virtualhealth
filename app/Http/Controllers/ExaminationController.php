@@ -36,9 +36,10 @@ class ExaminationController extends Controller
 
     public function findByPatient($id){
         $exam = Appointment::where('patients',$id)
+            ->whereNotNull('examination')
             ->with('examination.prescription.drug')
             ->with('room.doctor.user')
-            ->with('room.doctor.faculty')
+            ->with('room.doctor.professional.speciality')
             ->with('patient.user')
             ->get();
         return $exam;
@@ -48,7 +49,7 @@ class ExaminationController extends Controller
         $exam = Appointment::where('id',$id)
             ->with('examination.prescription.drug')
             ->with('room.doctor.user')
-            ->with('room.doctor.faculty')
+            ->with('room.doctor.speciality')
             ->with('patient.user')
             ->get();
         return $exam;

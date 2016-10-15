@@ -1,172 +1,374 @@
-<div class="container" ng-show="selectRole" ng-init="selectRole = true">
-    <div class="row">
-        <div class="col-md-12 text-center"><h3><strong>Register as</strong></h3></div>
-    </div>
-    <div class="row">
-        <div class="col-md-6 text-center">
-            <button ng-click="showPatForm(); user.role = 0">Patient</button>
+<p class="text-center" ng-init="loading = false" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
+
+<div ng-hide="loading">
+    <div ng-show="selectRole" ng-init="selectRole = true">
+        <div class="row">
+            <div class="col-md-12 text-center"><h3><strong>Register as</strong></h3></div>
         </div>
-        <div class="col-md-6 text-center">
-            <button ng-click="showDocForm(); user.role = 1">Doctor</button>
-        </div>
-
-    </div>
-
-</div>
-
-<form class="form-group" ng-show="patForm" ng-init="patForm = false"  ng-submit="register()" name="patientForm">
-    <div class="container" style="max-width: 600px">
-        <div >
-
-            <div class="page-header" >
-                <h3 style="text-align: center">Patient Signup Form</h3>
+        <div class="row">
+            <div class="col-md-6 text-center registryPatientIcon"
+                 ng-click="showPatForm();
+             user.role = 0;">
+                <h3 class="alert alert-info">PATIENT</h3>
+                <img class="registryIcon"
+                     src="app/imgs/patient-icon.png" width="200" height="200">
             </div>
-            <table class="table no-border">
-                <tbody>
-                <tr>
-                    <td class="col-md-2"><strong>Username: </strong></td>
-                    <td class="col-md-10"><input class="form-control" ng-model="user.username" name="username" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Password: </strong></td>
-                    <td class="col-md-10"><input class="form-control" type="password" ng-model="user.password" name="password" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Name: </strong></td>
-                    <td class="col-md-10"><input class="form-control" ng-model="user.name" name="name" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Phone number: </strong></td>
-                    <td class="col-md-10"><input class="form-control" ng-model="user.phone" name="phone" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Email: </strong></td>
-                    <td class="col-md-10"><input class="form-control" type="email" ng-model="user.email" name="email" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Date of Birth: </strong></td>
-                    <td class="col-md-10"><input  type="date"
-                                                 ng-model="user.dateinput"
-                                                 name="dateofbirth" required></td>
-                </tr>
-
-                </tbody>
-            </table>
-            <div class="row">
-                <div class="col-md-1">
-                    <button class="btn btn-warning btn-lg" ng-click="backForm()">Back</button>
-                </div>
-                <div class="col-md-7">
-                    <button name="submit" ng-disabled="patientForm.$invalid"
-                            type="submit" class="btn btn-primary btn-lg pull-right">Register</button>
-                </div>
+            <div class="col-md-6 text-center registryDoctorIcon"
+                 ng-click="showDocForm();
+             user.role = 1;">
+                <h3 class="alert alert-warning">DOCTOR</h3>
+                <img class="registryIcon"
+                     src="app/imgs/doctor-icon.png" width="200" height="200">
             </div>
-
-
         </div>
     </div>
-</form>
 
-<form ng-show="docForm" ng-init="docForm = false" ng-submit="register()" name="doctorForm">
-    <div class="container" style="max-width: 600px">
+    <form class="form-group" ng-show="patForm" ng-init="patForm = false" name="patientForm">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div ng-init="validateUsername = true" ng-hide="validateUsername"
+                 class="alert alert-danger text-center" role="alert">
+                <b>Username has been taken already.</b>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><b>Patient Signup Form</b></h3>
+                </div>
+                <div class="panel-body">
+                    <md-input-container class="md-block">
+                        <label>User name</label>
+                        <input required minlength="8" md-maxlength="30"
+                               name="username" ng-model="user.username"
+                               ng-pattern="/^[a-zA-Z0-9]*$/"
+                               username-available validated-username="validatedUsername">
+                        <div ng-messages="patientForm.username.$error">
+                            <div ng-message="required"
+                                 ng-show="patientForm.username.$touched">
+                                User name is required.
+                            </div>
+                            <div ng-message="minlength">Minimum characters is 8.</div>
+                            <div ng-message="md-maxlength">Maximum characters is 30.</div>
+                            <div ng-message="pattern">User name can not contain special characters.</div>
+                            <div ng-message="usernameAvailable">User name has been already taken.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Password</label>
+                        <input required minlength="6" md-maxlength="16"
+                               name="password" ng-model="user.password"
+                               type="password">
+                        <div ng-messages="patientForm.password.$error">
+                            <div ng-message="required"
+                                 ng-show="patientForm.password.$touched">
+                                Password is required.
+                            </div>
+                            <div ng-message="md-maxlength">Maximum characters is 16.</div>
+                            <div ng-message="minlength">Minimum characters is 6</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Confirm Password</label>
+                        <input ng-disabled="patientForm.password.$invalid" confirm-pass="user.password"
+                               type="password"
+                               name="confirmpass" ng-model="confirmpass">
+                        <div ng-messages="patientForm.confirmpass.$error">
+                            <div ng-message="confirmPass">Confirm password not match with Password.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Name</label>
+                        <input required md-maxlength="30"
+                               name="name" ng-model="user.name">
+                        <div ng-messages="patientForm.name.$error">
+                            <div ng-message="required"
+                                 ng-show="patientForm.name.$touched">
+                                Name is required.
+                            </div>
+                            <div ng-message="md-maxlength">Maximum characters is 30.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Email</label>
+                        <input required type="email" name="email" ng-model="user.email"
+                               validated-email="validatedEmail"
+                               email-available>
+                        <div ng-messages="patientForm.email.$error">
+                            <div ng-message="required"
+                                 ng-show="patientForm.email.$touched">
+                                Email is required.
+                            </div>
+                            <div ng-message="emailAvailable">Email has been already taken.</div>
+                            <div ng-message="email">Email is invalid.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Phone number</label>
+                        <input required name="phone" ng-model="user.phone">
+                        <div ng-messages="patientForm.phone.$error">
+                            <div ng-message="required"
+                                 ng-show="patientForm.phone.$touched">
+                                Phone number is required.
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Date of Birth</label>
+                        <input type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                               name="dateofbirth" style="width: 40%" ng-click="openDatePicker()"
+                               ng-model="user.dateofbirth" is-open="datePicker.opened"
+                               datepicker-options="dateOptions"
+                               close-text="Close"
+                               readonly="readonly" formatMonth="MM"/>
+                        <div ng-messages="patientForm.dateofbirth.$error">
+                            <div ng-message="required"
+                                 ng-show="patientForm.dateofbirth.$touched">
+                                Date of birth is required.
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <div class="row" style="padding-left: 15px">
+                        <button class="btn btn-danger" ng-click="backForm()">Cancel
+                        </button>
+                        <button type="submit" ng-disabled="patientForm.$invalid"
+                                class="btn btn-success" ng-click="register()">Confirm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </form>
+
+
+    <form ng-show="docForm" ng-init="docForm = false" ng-submit="register()" name="doctorForm">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><b>Doctor Signup Form</b></h3>
+                </div>
+                <div class="panel-body">
+                    <md-input-container class="md-block">
+                        <label>User name</label>
+                        <input required minlength="8" md-maxlength="30"
+                               name="username" ng-model="user.username"
+                               username-available validated-username="validatedUsername"
+                               ng-pattern="/^[a-zA-Z0-9]*$/">
+                        <div ng-messages="doctorForm.username.$error">
+                            <div ng-message="required"
+                                 ng-show="doctorForm.username.$touched">
+                                User name is required.
+                            </div>
+                            <div ng-message="minlength">Minimum characters is 8.</div>
+                            <div ng-message="md-maxlength">Maximum characters is 30.</div>
+                            <div ng-message="pattern">User name can not contain special characters.</div>
+                            <div ng-message="usernameAvailable">User name has been already taken.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Password</label>
+                        <input required minlength="6" md-maxlength="16"
+                               name="password" ng-model="user.password"
+                               type="password">
+                        <div ng-messages="doctorForm.password.$error">
+                            <div ng-message="required"
+                                 ng-show="doctorForm.password.$touched">Password is required.
+                            </div>
+                            <div ng-message="md-maxlength">Maximum characters is 16.</div>
+                            <div ng-message="minlength">Minimum characters is 6.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Confirm Password</label>
+                        <input ng-disabled="doctorForm.password.$invalid" confirm-pass="user.password"
+                               type="password"
+                               name="confirmpass" ng-model="confirmpass">
+                        <div ng-messages="doctorForm.confirmpass.$error">
+                            <div ng-message="confirmPass">Confirm password not match with Password.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Name</label>
+                        <input required md-maxlength="30"
+                               name="name" ng-model="user.name">
+                        <div ng-messages="doctorForm.name.$error">
+                            <div ng-message="required"
+                                 ng-show="doctorForm.name.$touched">Name is required.
+                            </div>
+                            <div ng-message="md-maxlength">Maximum characters is 30.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Email</label>
+                        <input required type="email" name="email" ng-model="user.email"
+                               validated-email="validatedEmail"
+                               email-available>
+                        <div ng-messages="doctorForm.email.$error">
+                            <div ng-message="required"
+                                 ng-show="doctorForm.email.$touched">Email is required.
+                            </div>
+                            <div ng-message="email">Email is invalid.</div>
+                            <div ng-message="emailAvailable">Email has been already taken.</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Phone number</label>
+                        <input required name="phone" ng-model="user.phone">
+                        <div ng-messages="doctorForm.phone.$error">
+                            <div ng-message="required"
+                                 ng-show="doctorForm.phone.$touched">Phone number is required.
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Date of Birth</label>
+                        <input type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                               name="dateofbirth" style="width: 40%" ng-click="openDatePicker()"
+                               ng-model="user.dateofbirth" is-open="datePicker.opened"
+                               datepicker-options="dateOptions"
+                               close-text="Close" required
+                               readonly="readonly" formatMonth="MM"/>
+                        <div ng-messages="doctorForm.dateofbirth.$error">
+                            <div ng-message="required"
+                                 ng-show="doctorForm.dateofbirth.$touched">Date of birth is required.
+                            </div>
+                        </div>
+                    </md-input-container>
+                    <div style="height: 10px;"></div>
+
+                    <md-input-container class="md-block">
+                        <label>Speciality</label>
+                        <md-select ng-model="user.speciality" name="spec" required ng-model="selectedSpec" multiple>
+                            <md-optgroup label="Select your Specialities">
+                                <md-option ng-value="s" ng-repeat="s in specList">{{s.name}}</md-option>
+                            </md-optgroup>
+                        </md-select>
+                        <div ng-messages="doctorForm.spec.$error">
+                            <div ng-message="required"
+                                 ng-show="doctorForm.spec.$touched">Specialities are required.
+                            </div>
+                        </div>
+                    </md-input-container>
+                    <div style="height: 10px;"></div>
+
+
+                    <label for="uploadAvatar" class="uploadButton">
+                        <i class="fa fa-cloud-upload"></i> Upload Certification
+                    </label>
+                    <img src="app/imgs/question.png" uib-popover-template="dynamicPopover.templateUrl"
+                         popover-placement="right" popover-title="What is Certification?"
+                         class="circleQuestion">
+
+                    <input id="uploadAvatar" type="file" accept=".zip"
+                           name="certification" ng-model="user.cert"
+                           ng-file-select="$file" zip-read="zipLoad"
+                           zip-file="fileinfo" validate-size="validateSizeZip"
+                    wrong-file="wrongFile">
+
+                    <div ng-init="validateSizeZip = true" ng-hide="validateSizeZip"
+                         class="alert alert-danger text-center" role="alert">
+                        <b>Zip file size must be less than 5MB.</b>
+                    </div>
+                    <div ng-init="wrongFile = true" ng-hide="wrongFile"
+                         class="alert alert-danger text-center" role="alert">
+                        <b>File must be in Zip format.</b>
+                    </div>
+
+                    <div ng-init="zipLoad = false" ng-show="zipLoad && validateSizeZip">
+                        <div><b>Name:</b> {{ fileinfo.name }}</div>
+                        <div><b>Size:</b> {{fileinfo.sizeOutput}}</div>
+                    </div>
+
+                    <div style="height: 10px;"></div>
+
+
+                    <md-input-container class="md-block">
+                        <label>Experience</label>
+                        <textarea placeholder="Do you have any experience?" name="exp" ng-model="user.exp" md-maxlength="150"></textarea>
+                    </md-input-container>
+
+
+                    <div class="row" style="padding-left: 15px">
+                        <button class="btn btn-danger" ng-click="backForm()">Cancel
+                        </button>
+                        <button type="submit" ng-disabled="doctorForm.$invalid || !fileinfo"
+                                class="btn btn-success" ng-click="register()">Confirm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+
+    </form>
+
+    <div class="container" ng-show="successPatient" style="max-width: 600px">
         <div>
-
-            <div class="page-header">
-                <h3 style="text-align: center">Doctor Signup Form</h3>
+            <div class="page-header bg-success text-center">
+                <h2>
+                    <b>Patient Registration Successful</b>
+                </h2>
             </div>
-            <table class="table no-border">
-                <tbody>
-                <tr>
-                    <td class="col-md-2"><strong>Username: </strong></td>
-                    <td class="col-md-10"><input class="form-control" ng-model="user.username" name="username" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Password: </strong></td>
-                    <td class="col-md-10"><input class="form-control" type="password" ng-model="user.password" name="password" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Name: </strong></td>
-                    <td class="col-md-10"><input class="form-control" ng-model="user.name" name="name" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Phone number: </strong></td>
-                    <td class="col-md-10"><input class="form-control" ng-model="user.phone" name="phone" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Email: </strong></td>
-                    <td class="col-md-10"><input class="form-control" type="email" ng-model="user.email" name="email" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Date of Birth: </strong></td>
-                    <td class="col-md-10"><input type="date"
-                                                 ng-model="user.dateinput"
-                                                 min="1920-01-01" max="1995-01-01"
-                                                 name="dateofbirth" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Faculty: </strong></td>
-                    <td class="col-md-10"><select class="form-control" ng-model="user.faculty" ng-options="f.name for f in facList" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Professional: </strong></td>
-                    <td class="col-md-10"><input class="form-control" ng-model="user.pro" name="email" required></td>
-                </tr>
-                <tr>
-                    <td class="col-md-2"><strong>Certification: </strong></td>
-                    <td class="col-md-10"><input class="form-control" ng-model="user.cert" name="email" required></td>
-                </tr>
-                </tbody>
-            </table>
             <div class="row">
-                <div class="col-md-1">
-                    <button class="btn btn-warning btn-lg" ng-click="backForm()">Back</button>
-                </div>
-
-                <div class="col-md-7">
-                    <button name="submit" ng-disabled="doctorForm.$invalid"
-                            type="submit" class="btn btn-primary btn-lg pull-right">Register</button>
-                </div>
+                Welcome {{ user.name }}!
+            </div>
+            <div class="row">
+                <h3>Thank you for registering, now you can login into Virtual Healthcare </h3>
+            </div>
+            <div class="row">
+                <button class="btn btn-primary btn-lg" ui-sref="login">Login</button>
             </div>
         </div>
     </div>
-</form>
 
-<div class="container" ng-show="successPatient" style="max-width: 600px"   >
-    <div>
-        <div class="page-header bg-success text-center">
-            <h2>
-                <b>Patient Registration Successful</b>
-            </h2>
-        </div>
-        <div class="row">
-            Welcome {{ user.name }}!
-        </div>
-        <div class="row">
-            <h3>Thank you for registering, now you can login into Virtual Healthcare </h3>
-        </div>
-        <div class="row">
-            <button class="btn btn-primary btn-lg" ui-sref="login">Login</button>
+    <div class="container" ng-show="successDoctor" style="max-width: 600px">
+        <div>
+            <div class="page-header bg-success text-center">
+                <h2>
+                    <b>Doctor Registration Request Received</b>
+                </h2>
+            </div>
+            <div class="row">
+                Welcome {{ user.name }}!
+            </div>
+            <div class="row">
+                <h3>Thank you for registering as doctor, now you can login into Virtual Healthcare
+                    but you can not access Doctor's functions yet until your Doctor request is approved by staff. </h3>
+            </div>
+            <div class="row">
+                <button class="btn btn-primary btn-lg" ui-sref="login">Login</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="container" ng-show="successDoctor" style="max-width: 600px"   >
-    <div>
-        <div class="page-header bg-success text-center">
-            <h2>
-                <b>Doctor Registration Request Received</b>
-            </h2>
+    <script type="text/ng-template" id="certificationQuestionTemplate.html">
+        <div>
+            <div style="font-weight: bold">
+                You must provide us proof of your doctor certification in order to ensure health care quality.
+            </div>
+            <div class="alert alert-warning">
+                <ul>
+                    <li>Please compress all
+                        of your files which are your doctor certification into Zip file.</li>
+                    <li>File must be less than 5MB.</li>
+                    <li>File format must be Zip format.</li>
+                </ul>
+            </div>
         </div>
-        <div class="row">
-            Welcome {{ user.name }}!
-        </div>
-        <div class="row">
-            <h3>Thank you for registering as doctor, now you can login into Virtual Healthcare
-           but you can not access Doctor's functions yet until your Doctor request is approved by staff. </h3>
-        </div>
-        <div class="row">
-            <button class="btn btn-primary btn-lg" ui-sref="login">Login</button>
-        </div>
-    </div>
-</div>
 
+    </script>
+
+</div>

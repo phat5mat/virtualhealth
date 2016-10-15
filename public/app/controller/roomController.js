@@ -8,7 +8,28 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
         , patientServices) {
 
         $scope.loading = true;
+        var currentUser = JSON.parse(localStorage.getItem('user'));
 
+
+        var handleStatusColor = function(data){
+            $scope.rooms = data;
+            $scope.loading = false;
+            angular.forEach($scope.rooms, function (value, key) {
+                value.startDate = new Date(value.startDate);
+                if (value.status == 0) {
+                    value.status = 'Waiting';
+                    value.statusColor = 'waitingColor';
+                }
+                if (value.status == 1) {
+                    value.status = 'Open';
+                    value.statusColor = 'startingColor';
+                }
+                if (value.status == 2) {
+                    value.status = 'Closed';
+                    value.statusColor = 'canceledColor';
+                }
+            })
+        };
 
         // Load all room
         $scope.loadRoom = function () {
@@ -16,23 +37,7 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                 try {
                     roomServices.findroombydoctor($rootScope.docUser['id'])
                         .then(function (roomData) {
-                                $scope.rooms = roomData.data;
-                                $scope.loading = false;
-                                angular.forEach($scope.rooms, function (value, key) {
-                                    value.startDate = new Date(value.startDate);
-                                    if (value.status == 0) {
-                                        value.status = 'Waiting';
-                                        value.statusColor = 'waitingColor';
-                                    }
-                                    if (value.status == 1) {
-                                        value.status = 'Open';
-                                        value.statusColor = 'startingColor';
-                                    }
-                                    if (value.status == 2) {
-                                        value.status = 'Closed';
-                                        value.statusColor = 'canceledColor';
-                                    }
-                                })
+                                handleStatusColor(roomData.data);
                             },
                             function (e) {
                                 $scope.error = e;
@@ -51,8 +56,7 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                 $selectedDoc = $stateParams.selectedDoc.doctor;
                 roomServices.findroombydoctor($selectedDoc['id'])
                     .then(function (roomData) {
-                            $scope.docRooms = roomData.data;
-                            $scope.loading = false;
+                            handleStatusColor(roomData.data);
                         },
                         function (e) {
                             console.log(e)
@@ -73,14 +77,13 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                     .then(function (appointData) {
                             $scope.appointments = appointData.data;
                             angular.forEach($scope.appointments, function (value, key) {
-
                                 value.room.startDate = new Date(value.room.startDate);
                                 if (value.status == 0) {
                                     value.status = 'Waiting';
                                     value.statusColor = 'waitingColor';
                                 }
                                 if (value.status == 1) {
-                                    value.status = 'Starting';
+                                    value.status = 'Open';
                                     value.statusColor = 'startingColor';
                                 }
                                 if (value.status == 2) {
@@ -173,7 +176,6 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                 })
             };
 
-            var currentUser = JSON.parse(localStorage.getItem('user'));
             if (currentUser.role == 1 && room.status == 'Waiting') {
                 if (currentDate < room.startDate) {
                     $mdDialog.show(
@@ -206,11 +208,20 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
             if (currentUser.role == 1 && room.status == 'Open') {
                 enterRoom();
             }
-            if (currentUser.role == 0 && room.status == 'Open') {
-                enterRoom();
-            }
 
         };
+
+        $scope.selectAppoint = function (appoint) {
+            if (currentUser.role == 0 && appoint.status == 'Open') {
+                $state.go('exam', {
+                    selectedRoom: appoint.room,
+                    selectedAppoint: appoint.id
+                });
+            }
+        };
+
+
+
 
 
         $scope.selectPatient = function (pat) {
@@ -304,7 +315,7 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
 
                 $scope.appointment.slot = passRoom['roomSize'] - passRoom['available'] + 1;
 
-                // Save room into database
+                // Save appointment into database
                 appointmentServices.save($scope.appointment).then(function () {
                     passRoom['available'] = passRoom['available'] - 1;
 

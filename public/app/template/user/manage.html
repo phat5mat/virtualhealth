@@ -41,12 +41,11 @@
                     <md-input-container class="md-block">
                         <md-icon md-svg-src="app/imgs/ic_person_24px.svg" class="email"></md-icon>
                         <label>Name</label>
-                        <input required md-maxlength="30" name="updateName" ng-model="updateUser.updateName">
+                        <input required md-minlength="8" md-maxlength="30" name="updateName" ng-model="updateUser.updateName">
                         <div ng-messages="updateForm.updateName.$error">
                             <div ng-message="required">Name is required.</div>
                             <div ng-message="md-maxlength">Maximum characters is 30.</div>
-
-
+                            <div ng-message="md-minlength">Minimum characters is 8.</div>
                         </div>
                     </md-input-container>
 
@@ -250,17 +249,24 @@
                     <div class="col-md-5">
                         <b>Preview:</b><br/>
                         <img  width="165px" height="160px" ng-src="{{imageSrc}}"/><br/>
-
                     </div>
                     <div class="col-md-7 pull-left uploadAvatarContainer">
                         <form>
-                            <input type="file" accept="image/*"
+                            <label for="uploadAvatar" class="uploadButton">
+                                <i class="fa fa-cloud-upload"></i> Upload Avatar
+                            </label>
+                            <input id="uploadAvatar"  type="file" accept="image/*"
                                    ng-file-select="$file" img-read="imageSrc"
-                                   img-file="fileinfo" validate-size="validateSize">
+                                   img-file="fileinfo" validate-size="validateSize"
+                                   wrong-file="wrongFile">
                         </form>
                         <div ng-init="validateSize = true" ng-hide="validateSize"
                              class="alert alert-danger text-center" role="alert">
                             <b>Image file size must be less than 1MB.</b>
+                        </div>
+                        <div ng-init="wrongFile = true" ng-hide="wrongFile"
+                             class="alert alert-danger text-center" role="alert">
+                            <b>File must be in Image format.</b>
                         </div>
                         <div ng-show="imageSrc && validateSize">
                             <div><b>Name:</b> {{ fileinfo.name }}</div>
@@ -275,10 +281,11 @@
 
             <md-dialog-actions layout="row">
                 <span flex></span>
-                <md-button class="md-warn" ng-click="cancel()" style="margin-right:20px;">
+                <md-button class="md-raised md-warn" ng-click="cancel()" style="margin-right:20px;">
                     CANCEL
                 </md-button>
-                <md-button  ng-click="saveImage()" style="margin-right:20px;">
+                <md-button ng-disabled="!fileinfo" ng-click="saveImage()"
+                           class="md-raised md-primary" style="margin-right:20px;">
                     SAVE
                 </md-button>
             </md-dialog-actions>

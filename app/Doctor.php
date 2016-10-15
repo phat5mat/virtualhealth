@@ -18,8 +18,8 @@ class Doctor extends Model
         return $this->belongsTo('App\User','users');
     }
     
-    public function faculty(){
-        return $this->belongsTo('App\Faculty','faculty');
+    public function professional(){
+        return $this->hasMany('App\Professional','doctor');
     }
 
     protected $table = 'doctors';

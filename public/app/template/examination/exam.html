@@ -48,7 +48,7 @@
             <div class="row text-center">
                 <button ng-show="docUser"
                         class="btn btn-danger btn-lg" style="width: 60%"
-                     ng-disabled="!loadChat"   ng-click="closeRoom()">Close Room
+                        ng-disabled="!loadChat" ng-click="closeRoom()">Close Room
                 </button>
             </div>
 
@@ -100,7 +100,6 @@
                         </div>
                     </uib-tab>
                     <uib-tab disable="detailsTab" index="1" heading="Details">
-
                         <table class="table">
                             <tbody>
                             <tr>
@@ -129,19 +128,11 @@
                                     {{ patDetails.patient.condition }}
                                 </td>
                             </tr>
-
-                            <tr>
-                                <td class="col-md-2">
-                                    Heart Rate
-                                </td>
-                                <td class="col-md-4">
-                                    {{ patDetails.patient.heartrate }}
-                                </td>
-                            </tr>
-
                             </tbody>
                         </table>
                     </uib-tab>
+                    <button class="btn btn-primary text-center" ng-click="showHealth()">Health Statistic</button>
+
                     <uib-tab disable="detailsTab" index="2" heading="Prescription">
                         <form class="form-group" name="medForm">
                             <table class="table no-border">
@@ -174,7 +165,7 @@
                             </table>
                         </form>
                         <div class="presTable">
-                            <table id="pres" class="table table-bordered hoverTable ">
+                            <table id="pres" ng-show="showPres" class="table table-bordered hoverTable ">
                                 <thead>
                                 <th style="width: 10%">#</th>
                                 <th style="width: 60%">Name</th>
@@ -197,6 +188,9 @@
                                 </tr>
                                 </tbody>
                             </table>
+                            <div ng-hide="showPres" class="alert alert-warning text-center" role="alert">
+                                <b>This examination doesn't has any medicine.</b>
+                            </div>
                         </div>
                     </uib-tab>
                 </uib-tabset>
@@ -363,15 +357,6 @@
                                 </td>
                             </tr>
 
-                            <tr>
-                                <td class="col-md-1">
-                                    Heart Rate
-                                </td>
-                                <td class="col-md-3">
-                                    {{ patDetails.patient.heartrate }}
-                                </td>
-                            </tr>
-
                             </tbody>
                         </table>
                     </div>
@@ -468,7 +453,8 @@
 
             <md-dialog-content>
                 <div class="container" style="width:500px;height:400px;">
-                    <h4 class="alert alert-warning text-center">Are you sure to close this room? All of patient appointment
+                    <h4 class="alert alert-warning text-center">Are you sure to close this room? All of patient
+                        appointment
                         with you in {{roomName}} room will be set to canceled</h4>
                     <h4 class="text-center">There are {{patCount}} patient(s) in the room</h4>
                     <table class="table"
@@ -507,4 +493,45 @@
     </form>
     </md-dialog>
 </script>
+
+<script type="text/ng-template" id="healthStatistic.html">
+    <md-dialog aria-label="Create New Room">
+        <form class="form-group"
+              ng-submit="createRoom()" name="roomForm">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>{{pat.name}}</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="cancel()">
+                        X
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-dialog-content>
+                <div class="container" style="width: 600px;height: 400px">
+                    <uib-accordion close-others="oneAtATime">
+                        <div uib-accordion-group class="panel-default" is-open="status.open">
+                            <uib-accordion-heading>
+                                I can have markup, too! <i class="pull-right glyphicon"
+                                                           ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                            </uib-accordion-heading>
+                            This is just some content to illustrate fancy headings.
+                        </div>
+                    </uib-accordion>
+                </div>
+            </md-dialog-content>
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <md-button class="md-raised md-warn" ng-click="cancel()" style="margin-right:20px;">
+                    BACK
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+
+    </form>
+    </md-dialog>
+</script>
+
 

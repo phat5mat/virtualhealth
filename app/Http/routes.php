@@ -25,19 +25,25 @@ Route::group(array('prefix' => 'api'), function() {
     Route::post('authenticate', 'AuthenticateController@authenticate');
     Route::get('authenticate/user', 'AuthenticateController@getAuthenticatedUser');
     
-    Route::get('fac', 'FacultyController@show');
+    Route::get('special', 'SpecialityController@show');
     Route::resource('doctor', 'DoctorsController');
     Route::resource('user', 'UsersController');
     Route::get('finduserbyid/{id}', 'UsersController@findUserByID');
+    Route::get('checkusername/{user}', 'UsersController@checkUsername');
+    Route::get('checkemail/{user}', 'UsersController@checkEmail');
+
     Route::post('validatepass','UsersController@validatePassword');
     Route::post('changepass','UsersController@changePassword');
     Route::post('saveavatar','UsersController@saveAvatar');
+    Route::post('savezip/{doc}','UsersController@saveZip');
 
-    
+
+
     Route::resource('patient', 'PatientsController');
     Route::resource('room', 'RoomController');
     Route::resource('appointment', 'AppointmentsController');
     Route::resource('examination', 'ExaminationController');
+    Route::get('specialbydoctor/{doctor}', 'SpecialityController@findSpeciaByDoctor');
 
     Route::put('updateRoomStatus/{room}','RoomController@updateRoomStatus');
     

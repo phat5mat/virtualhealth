@@ -8,14 +8,16 @@ use Illuminate\Support\Facades\Input;
 use App\User;
 use App\Patient;
 use App\Doctor;
+use App\Professional;
 use App\Http\Requests;
+use DB;
 use Response;
 
 class UsersController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.auth', ['except' => ['store']]);
+        $this->middleware('jwt.auth', ['except' => ['store','checkUsername','checkEmail','saveZip']]);
     }
     
     
@@ -59,13 +61,25 @@ class UsersController extends Controller
 
         if($newUser['role'] == 1)
         {
-            $doc = new Doctor;
-            $doc->professional = $newUser['pro'];
-            $doc->certification = $newUser['cert'];
-            $doc->users = $user->id;
-            $doc->status = 0;
-            $doc->faculty = $newUser['faculty']['id'];
-            $doc->save();
+            if(isset($newUser['exp']))
+                $addExp = $newUser['exp'];
+            else
+                $addExp = 'No Experience';
+            
+            $docID = DB::table('doctors')->insertGetId(
+                [
+                    'experience' => $addExp,
+                    'users' => $user->id,
+                    'status' => 0,
+                ]
+            );
+            foreach($newUser['speciality'] as $value)
+            {
+                $pro = new Professional;
+                $pro->doctor = $docID;
+                $pro->speciality = $value['id'];
+                $pro->save();
+            }
         }
         if($newUser['role'] == 0)
         {
@@ -74,7 +88,23 @@ class UsersController extends Controller
             $pat->save();
         }
 
-        return Response::json(array('success' => true));
+        return $docID;
+    }
+
+    public function checkUsername($username){
+        $user = User::where('username',$username)->get();
+        if(count($user) > 0)
+            return 'false';
+        else
+            return 'true';
+    }
+
+    public function checkEmail($email){
+        $user = User::where('email',$email)->get();
+        if(count($user) > 0)
+            return 'false';
+        else
+            return 'true';
     }
 
     
@@ -121,6 +151,23 @@ class UsersController extends Controller
             $user->avatar = 1;
             $user->save();
             return 'Upload Avatar Successful';
+        }
+        else {
+            // sending back with error message.
+            return $request->all();
+        }
+    }
+
+    public function saveZip(Request $request,$id){
+        // checking file is valid.
+        if (Input::file('file')) {
+            $doc = Doctor::where('id',$id)->first();
+            $destinationPath = 'app/zip';
+            $fileName = "doctorID-".$doc->id.".zip";
+            Input::file('file')->move($destinationPath, $fileName);
+            $doc->certification = 1;
+            $doc->save();
+            return 'Upload Zip Successful';
         }
         else {
             // sending back with error message.

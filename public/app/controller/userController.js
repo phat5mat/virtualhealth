@@ -4,24 +4,28 @@
 
 var app = angular.module('mainApp');
 app.controller('userController', ['$scope', '$location',
-    '$http', 'userServices', 'facultyServices', 'doctorServices', '$state', '$auth', '$mdDialog',
+    '$http', 'userServices', 'specialityServices', 'doctorServices', '$state', '$auth', '$mdDialog',
     '$mdMedia', 'patientServices', '$rootScope', '$mdToast', '$timeout',
     '$filter'
-    , function ($scope, $location, $http, userServices, facultyServices, doctorServices, $state, $auth, $mdDialog
-        , $mdMedia, patientServices, $rootScope, $mdToast, $timeout, $filter){
+    , function ($scope, $location, $http, userServices, specialityServices, doctorServices, $state, $auth, $mdDialog
+        , $mdMedia, patientServices, $rootScope, $mdToast, $timeout, $filter, $sce) {
 
-
+        if($rootScope.currentUser){
+            var currentUser = $rootScope.currentUser;
+            var avatarPath = "assets/img/avatar-" + currentUser.username + ".jpg";
+            var random = (new Date()).toString();
+        }
 
         $scope.dateOptions = {
             maxDate: new Date(1995, 01, 01),
-            minDate: new Date(1920, 01, 01)
+            minDate: new Date(1920, 01, 01),
+            initDate: new Date(1995, 01, 01)
         };
-        
+
+
         $scope.loadUserDetails = function () {
-            var currentUser = $rootScope.currentUser;
-            var avatarPath = "assets/img/avatar-" + currentUser.username+".jpg";
-            var random = (new Date()).toString();
-            
+
+
             $scope.userDetails = {
                 name: null,
                 email: null,
@@ -35,9 +39,13 @@ app.controller('userController', ['$scope', '$location',
             $scope.userDetails.dateofbirth = new Date($scope.userDetails.dateofbirth);
             $scope.userDetails.created_at = new Date($scope.userDetails.created_at);
             $scope.userDetails.updated_at = new Date($scope.userDetails.updated_at);
-            if($scope.userDetails.avatar == 0){
-                $scope.imgSrc = 'assets/img/no-avatar.png';
-            }else{
+            if ($scope.userDetails.avatar == 0) {
+                if($scope.userDetails.role == 1)
+                    $scope.imgSrc = 'assets/img/no-avatarDoctor.png';
+                else
+                    $scope.imgSrc = 'assets/img/no-avatar.png';
+                
+            } else {
                 $scope.imgSrc = avatarPath + "?cb=" + random;
             }
         };
@@ -144,7 +152,7 @@ app.controller('userController', ['$scope', '$location',
                     clickOutsideToClose: true
                 })
                 .then(function (answer) {
-                    $timeout(function(){
+                    $timeout(function () {
                         $scope.imgSrc = $scope.imgSrc + "?cb=" + random;
                     });
 
@@ -156,15 +164,14 @@ app.controller('userController', ['$scope', '$location',
         function changeAvatarDialogController($scope, $mdDialog, uploadServices) {
             $scope.cancel = function () {
                 $mdDialog.cancel();
-
             };
 
-            $scope.saveImage = function(){
+            $scope.saveImage = function () {
                 userServices.saveAvatar($scope.fileinfo)
-                    .then(function(response){
+                    .then(function (response) {
                         console.log(response);
                         $mdDialog.hide();
-                    },function(e){
+                    }, function (e) {
                         console.log(e)
                     })
             }
@@ -189,20 +196,58 @@ app.controller('userController', ['$scope', '$location',
         };
 
 
+        resetForm = function () {
+            $scope.user = {
+                username: null,
+                name: null,
+                password: null,
+                phone: null,
+                email: null,
+                certification: null,
+                speciality: null,
+                experience: null,
+                dateofbirth: null
+            };
+            $scope.confirmpass = null;
+        };
+
         $scope.showPatForm = function () {
-            $scope.patForm = true;
-            $scope.selectRole = false;
+            $timeout(function () {
+                $scope.loading = true;
+                resetForm();
+                $scope.user.role = 0;
+                $scope.patientForm.$setPristine();
+                $scope.patientForm.$setUntouched();
+
+            });
+            $timeout(function(){
+                $scope.patForm = true;
+                $scope.selectRole = false;
+                $scope.loading = false;
+            },500)
+
         };
 
 
         $scope.showDocForm = function () {
-            $scope.docForm = true;
-            $scope.selectRole = false;
-            facultyServices.get().then(function (facData) {
-                $scope.facList = facData.data;
-            }, function (e) {
-                console.log('get Fac Error');
+            $timeout(function () {
+                $scope.loading = true;
+                resetForm();
+                $scope.user.role = 1;
+                $scope.doctorForm.$setPristine();
+                $scope.doctorForm.$setUntouched();
+                specialityServices.get().then(function (specData) {
+                    $scope.specList = specData.data;
+                }, function (e) {
+                    console.log('get Speciality Error');
+                });
             });
+
+            $timeout(function(){
+                $scope.docForm = true;
+                $scope.selectRole = false;
+                $scope.loading = false;
+            },500)
 
         };
 
@@ -216,20 +261,32 @@ app.controller('userController', ['$scope', '$location',
 
         $scope.register = function () {
             $scope.loading = true;
-            var dateFilter = $filter('date')($scope.user.dateinput, 'yyyy-MM-dd');
+            var dateFilter = $filter('date')($scope.user.dateofbirth, 'yyyy-MM-dd');
             $scope.user.dateofbirth = dateFilter;
+            $scope.user.username = $scope.validatedUsername;
+            $scope.user.email = $scope.validatedEmail;
+            sessionStorage.clear();
+            console.log($scope.user)
             userServices.save($scope.user)
-                .then(function (data) {
-                        $scope.patForm = false;
-                        $scope.docForm = false;
-                        if ($scope.user.role == 0)
-                            $scope.successPatient = true;
-                        if ($scope.user.role == 1)
-                            $scope.successDoctor = true;
+                .then(function (res) {
+                        userServices.saveZip($scope.fileinfo, res.data)
+                            .then(function (response) {
+                                $scope.validateUsername = true;
+                                $scope.patForm = false;
+                                $scope.docForm = false;
+                                if ($scope.user.role == 0)
+                                    $scope.successPatient = true;
+                                if ($scope.user.role == 1)
+                                    $scope.successDoctor = true;
+                            }, function (e) {
+                                console.log(e)
+                            });
                     },
                     function (e) {
                         console.log(e);
                     });
+
+
         };
 
 
@@ -261,8 +318,10 @@ app.controller('userController', ['$scope', '$location',
             }
         };
 
-       
-
+        $scope.dynamicPopover = {
+            templateUrl: 'certificationQuestionTemplate.html'
+        };
+        
     }]);
 
 

@@ -28,6 +28,10 @@
 <script  src="../bower_components/footable/js/footable.js"></script>
 <script  src="../bower_components/angular-footable/dist/angular-footable.js"></script>
 <script  src="../bower_components/angular-responsive-tables/release/angular-responsive-tables.js"></script>
+<script src="../bower_components/chart.js/dist/Chart.min.js"></script>
+<script src="../bower_components/angular-chart.js/dist/angular-chart.js"></script>
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
 
 <script src="node_modules/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="node_modules/satellizer/dist/satellizer.js"></script>
@@ -50,7 +54,7 @@
 <script src="app/js/services/userServices.js"></script>
 <script src="app/js/services/patientServices.js"></script>
 <script src="app/js/services/doctorServices.js"></script>
-<script src="app/js/services/facultyServices.js"></script>
+<script src="app/js/services/specialityServices.js"></script>
 <script src="app/js/services/roomServices.js"></script>
 <script src="app/js/services/appointmentServices.js"></script>
 <script src="app/js/services/examinationServices.js"></script>

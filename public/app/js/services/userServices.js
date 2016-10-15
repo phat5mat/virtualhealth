@@ -22,7 +22,7 @@ app.service('userServices',function($http,API_URL,$rootScope){
         findUserByDoc : function(id){
             return $http({
                 method: 'GET',
-                url: API_URL + "finduserbydoc" + id,
+                url: API_URL + "finduserbydoc/" + id,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
@@ -44,9 +44,26 @@ app.service('userServices',function($http,API_URL,$rootScope){
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
-        
-        saveAvatar: function(img){
 
+        checkUsername : function(user){
+            return $http({
+                method: 'GET',
+                url: API_URL + "checkusername/"+user,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
+
+        checkEmail : function(email){
+            return $http({
+                method: 'GET',
+                url: API_URL + "checkemail/"+email,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
+
+
+
+        saveAvatar: function(img){
             var fd = new FormData();
             //Take the first selected file
             fd.append("file", img);
@@ -55,6 +72,21 @@ app.service('userServices',function($http,API_URL,$rootScope){
                 method: 'POST',
                 withCredentials: true,
                 url: API_URL + "saveavatar",
+                transformRequest: angular.identity,
+                data: fd,
+                headers: {'Content-Type': undefined}
+            });
+        },
+
+        saveZip: function(zip,doc){
+            var fd = new FormData();
+            //Take the first selected file
+            fd.append("file", zip);
+
+            return $http({
+                method: 'POST',
+                withCredentials: true,
+                url: API_URL + "savezip/"+doc,
                 transformRequest: angular.identity,
                 data: fd,
                 headers: {'Content-Type': undefined}

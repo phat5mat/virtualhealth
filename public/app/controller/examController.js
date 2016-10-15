@@ -233,6 +233,7 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                     quantity: $scope.med.medQuantity
                 };
                 $scope.medicines.push(medicine);
+                $scope.showPres = true;
                 $scope.med.medName = '';
                 $scope.med.medQuantity = '';
             });
@@ -242,6 +243,8 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
         // Remove selected medicine from prescription
         $scope.removeMed = function (index) {
             $scope.medicines.splice(index, 1);
+            if($scope.medicines.length == 0)
+                $scope.showPres = false;
         };
 
         // Show examination review dialog
@@ -315,6 +318,32 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                 });
             }
             
+        };
+        
+        $scope.showHealth = function(){
+            $mdDialog.show({
+                    locals: {
+                        passPat: $scope.roomPatients,
+                        passRoom: $stateParams.selectedRoom.name
+                    },
+                    controller: healthStatisticController,
+                    templateUrl: 'healthStatistic.html',
+                    parent: angular.element(document.body),
+                    clickOutsideToClose: true
+                })
+                .then(function () {
+                    roomServices.updateStatus($stateParams.selectedRoom.id,2)
+                        .then(function(response){
+                            appointmentServices.updateStatus($stateParams.selectedRoom.id,3)
+                                .then(function(){
+                                    sendRoomMessage({closeRoom: true});
+                                    $mdToast.show($mdToast.simple().textContent('Room is closed'));
+                                    $state.go('room.manageRoom')
+                                });
+                        })
+                }, function () {
+
+                })
         };
 
 
@@ -869,6 +898,14 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
             $scope.saveAndCloseRoom = function () {
                 $mdDialog.hide();
             }
+        }
+        
+        function healthStatisticController($scope,$mdDialog){
+            $scope.cancel = function () {
+                $mdDialog.cancel();
+            };
+
+            
         }
 
 

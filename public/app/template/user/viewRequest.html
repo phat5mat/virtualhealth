@@ -1,32 +1,71 @@
-<table datatable="" class="table" ng-init="loadRequest()">
+<h3>View Request</h3>
+
+
+<table style="width: 100%" st-table="displayedCollection" st-safe-src="doctors">
+    <tr>
+        <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+    </tr>
+
+</table>
+
+<table class="table table-striped"
+       st-table="displayedCollection"
+       st-safe-src="users" wt-responsive-table class="table table-striped"
+       ng-init="loadRequest()">
     <thead>
     <tr>
-        <th>User ID</th>
-        <th>Doctor ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Faculty</th>
-        <th>Status</th>
+        <th style="width: 10%" class="sortable" st-sort="user.id">User ID</th>
+        <th style="width: 10%" class="sortable" st-sort="id">Doctor ID</th>
+        <th style="width: 20%" class="sortable" st-sort="user.username">Username</th>
+        <th style="width: 20%" class="sortable" st-sort="user.name">Name</th>
+        <th style="width: 20%" class="sortable" st-sort="speciality">Speciality</th>
+        <th style="width: 20%" class="sortable" st-sort="status">Status</th>
+    </tr>
+    <tr>
+        <th>
+            <input st-search="user.id"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="id"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="user.username"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="user.name"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="speciality"
+                   class="input-sm form-control"/>
+        </th>
     </tr>
     </thead>
+
     <tbody>
     <p class="text-center ng-hide" ng-show="loading">
         <span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span>
     </p>
     <tr ng-show="req == 0">
         <td colspan="6">
-            <h3 class="bg-success text-center">
+            <h3 class="alert alert-success text-center">
                 There is no any doctor request
             </h3>
         </td>
     </tr>
-    <tr ng-hide="req == 0" ng-repeat="doctor in users" ng-click="selectRequest(doctor)">
-        <td>{{ doctor.user.id }}</td>
-        <td>{{ doctor.id }}</td>
-        <td>{{ doctor.user.name }}</td>
-        <td>{{ doctor.user.email }}</td>
-        <td>{{ doctor.faculty }}</td>
-        <td>{{ doctor.status }}</td>
+    <tr ng-hide="req == 0" ng-repeat="doctor in displayedCollection"
+        ng-hide="loading" ng-click="selectRequest(doctor)">
+        <td data-title="User ID">{{ doctor.user.id }}</td>
+        <td data-title="Doctor ID">{{ doctor.id }}</td>
+        <td data-title="Username">{{ doctor.user.username }}</td>
+        <td data-title="Name">{{ doctor.user.email }}</td>
+        <td data-title="Speciality">
+            {{ doctor.speciality }}
+        </td>
+        <td class="text-center" data-title="Status">{{ doctor.status }}</td>
     </tr>
     </tbody>
 </table>

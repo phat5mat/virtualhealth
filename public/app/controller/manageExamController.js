@@ -10,8 +10,8 @@ app.controller('manageExamController',['$scope','$http','$window','doctorService
         $scope.loadExamination = function(){
             examinationServices.getExamByPatient($rootScope.patUser.id)
                 .then(function(exam){
-                    $scope.examDetails = exam.data;
-                    angular.forEach($scope.examDetails,function(value,key){
+                    $scope.examList = exam.data;
+                    angular.forEach($scope.examList,function(value,key){
                         value.examination.date = new Date(value.examination.date);
                     })
                 },function(e){
@@ -19,9 +19,19 @@ app.controller('manageExamController',['$scope','$http','$window','doctorService
                 })
         };
 
+        $scope.loadSpeciality = function(spec){
+            var specList = '';
+            angular.forEach(spec,function(value, key){
+                specList = specList + value.speciality.name + ', ';
+            });
+            specList = specList.substring(0,specList.length-2);
+            return specList;
+        };
+
+
         $scope.selectExam = function(examDetails){
             $state.go('examDetails',{selectedExam: examDetails})
-        }
+        };
 
         $scope.loadExamDetails = function(){
             var selectedExam = $stateParams.selectedExam;
