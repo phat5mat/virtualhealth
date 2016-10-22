@@ -8,8 +8,16 @@
     </div>
         <form name="loginForm" class="form-signin">
             <h3 class="form-signin-heading">Login</h3>
-            <input ng-model="username" class="form-control" required placeholder="Username">
-            <input ng-model="password" type="password" class="form-control" required placeholder="Password">
+            <div class="input-group margin-bottom-sm">
+                <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                <input  ng-model="username" class="form-control" required placeholder="Username"
+                        type="text" placeholder="Username">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                <input ng-model="password" type="password" class="form-control"
+                       required placeholder="Password">
+            </div>
             <div>
                 <button name="login" ng-disabled="loginForm.$invalid"
                         ng-click="login()" class="btn btn-lg btn-primary btn-block">Log in</button>

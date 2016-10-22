@@ -14,12 +14,6 @@
         <div class="row controlRow">
             <button class="btn btn-default controlButton">Information</button>
         </div>
-        <div class="row controlRow" ng-show="docUser">
-            <button class="btn btn-default controlButton">Record</button>
-        </div>
-        <div class="row controlRow" ng-show="patUser">
-            <button class="btn btn-default controlButton">Health</button>
-        </div>
         <div class="row controlRow">
             <button class="btn btn-default controlButton">Balance</button>
         </div>
@@ -80,6 +74,16 @@
                         <div ng-messages="updateForm.dateofbirth.$error">
                             <div ng-message="required">Date of birth is required.</div>
                         </div>
+                    </md-input-container>
+
+
+                    <md-input-container class="md-block" ng-if="docUser">
+                        <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg" ></md-icon>
+                        <label>Biography</label>
+                        <textarea type="text" class="form-control"
+                               name="bio"
+                               ng-model="updateUser.bio">
+                        </textarea>
                     </md-input-container>
 
 
@@ -204,6 +208,29 @@
                         </td>
                     </tr>
 
+                    <tr ng-if="docUser">
+                        <td class="col-md-4">
+                            <span style="width: 24px;height: 24px">
+                                <i  class="fa fa-graduation-cap"
+                                   aria-hidden="true"></i>
+                            </span>
+                            <span style="margin-left: 6px;">Experience</span>
+                        </td>
+                        <td class="col-md-8">
+                            {{ docUser.doctor.experience }}
+                        </td>
+                    </tr>
+
+                    <tr ng-if="docUser">
+                        <td class="col-md-4">
+                            <md-icon md-svg-src="app/imgs/ic_chat_24px.svg" class="email"></md-icon>
+                            Biography
+                        </td>
+                        <td class="col-md-8">
+                            {{ docUser.doctor.biography }}
+                        </td>
+                    </tr>
+
                     <tr>
                         <td class="col-md-4">
                             <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg" class="email"></md-icon>
@@ -223,7 +250,6 @@
                             {{ userDetails.updated_at | date:"yyyy/MM/dd 'at' h:mma"}}
                         </td>
                     </tr>
-
                     </tbody>
                 </table>
             </div>

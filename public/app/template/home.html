@@ -1,2 +1,68 @@
-<h1 class="text-center "> WELCOME TO VIRTUAL HEALTHCARE </h1>
-<div ui-view></div>
+<div style="height: 305px">
+    <div uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides">
+        <div uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
+            <img ng-src="{{slide.image}}" style="margin:auto;">
+            <div class="carousel-caption">
+                <h4>Slide {{slide.id}}</h4>
+                <p>{{slide.text}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="row text-center">
+        <h3><b>HOW CAN WE HELP YOU?</b></h3>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center" style="background-color: #00c0ef">
+                    <b>ABOUT US</b>
+                </div>
+                <div class="panel-body">
+                    <p>We provide health care services for patients and working for doctors.</p>
+                    <p><b>As a patient</b>, you won't need to go to hospital, clinic to get doctor's advices,
+                        all you need is a computer with internet then you can have communicate with doctors.
+                        Furthermore, you can manage your examinations and prescriptions easily.</p>
+                    <p><b>As a doctor</b>, you won't be in trouble because lacking of experience and unemployment,
+                        we believe that all of doctor like you does not deserved that and here is the place
+                        where you can get more experience and confidence in your career </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center" style="background-color: greenyellow">
+                    <b>FIND A DOCTOR</b>
+                </div>
+                <div class="panel-body">
+                    We have many doctors that have been reviewed and approved by our staff in order
+                    to be ensure the quality of health care. Press the button to view
+                    our doctors.
+                    <div style="padding-top: 20px;">
+                        <btn ui-sref="viewDoctor" class="btn btn-primary" style="width: 100%">Doctors List</btn>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center" style="background-color: orange">
+                    <b>FIND A MEDICINE STORE</b>
+                </div>
+                <div class="panel-body">
+                    <ng-map default-style="true" center="current-location" zoom="14">
+                        <info-window position="current-location">
+                            <span>Loation found using HTML5.</span>
+                        </info-window>
+                    </ng-map>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div ng-if="currentUser" ui-view></div>

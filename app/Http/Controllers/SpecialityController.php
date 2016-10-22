@@ -10,11 +10,7 @@ use App\Http\Requests;
 
 class SpecialityController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('jwt.auth', ['except' => ['store']]);
-    }
+    
     
     public function show()
     {
@@ -27,4 +23,6 @@ class SpecialityController extends Controller
             ->get();
         return $spec;
     }
+    
+   
 }

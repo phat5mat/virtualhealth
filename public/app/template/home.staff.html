@@ -1,8 +1,107 @@
 <head></head>
 <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
-<div class="container" ng-hide="loading" ng-init="checkRequest()">
-    <h3>Staff Home</h3>
-    <h3 class="ng-cloak" ng-hide="req == 0" >{{ req }} New Doctor Request Received</h3>
-    <button ui-sref="viewRequest">Review</button>
+
+<div class="row" ng-init="checkRequest()">
+
+    <div class="col-md-8 col-sm-6 col-xs-12">
+        <div class="row" style="margin-left: 0px">
+            <div class="panel panel-default" style="width: 98%;">
+                <div class="panel-heading">
+                    <i class="fa fa-tasks" aria-hidden="true"></i>
+                    <b>Tasks Notification</b>
+                </div>
+                <div class="panel-body panel-notification">
+                    <div ng-hide="requestNotification.length > 0" class="alert alert-warning">
+                        There isn't any request
+                    </div>
+                    <div class="row" ng-repeat="notify in requestNotification">
+                        <div class="alert alert-info" style="margin: 3px;width: 98%"
+                             ng-hide="notify.isTime || notify.status != 0" ng-click="selectRequest(notify)">
+                            <span><i class="fa fa-user-md"></i></span>
+                            {{notify.user.name}} sent a doctor request at {{convertDate(notify.user.created_at) | date:"h:mma"}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row col-md-12 col-xs-12 col-sm-12
+        alert alert-success text-center" style="margin-top: 10px">
+            <h4><b>Statistics</b></h4>
+        </div>
+        <div class="row info-container">
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="info-box">
+                    <span ui-sref="viewRequest" class="info-icon"
+                          style="background-color: rgba(219, 102, 57, 0.51)">
+                        <i class="fa fa-file-text"></i>
+                    </span>
+                    <div class="info-content-container">
+                        <div class="info-title">
+                            <b>{{totalRequest}}</b> REQUEST(s)
+                            <span>
+                                <i class="fa fa-question-circle"
+                                   uib-popover="Number of your completed examination!"
+                                   popover-trigger="'mouseenter'"
+                                   aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <div class="info-box-content">
+                            <p><b>{{reqToday}}</b> Request(s) Today</p>
+                            <p><b>{{reqWeek}}</b> Request(s) this Week</p>
+                            <p><b>{{reqMonth}}</b> Request(s) this Month</p>
+                            <p><b>{{reqYear}}</b> Request(s) this Year</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="info-box">
+                    <span ui-sref="viewDoctor" class="info-icon" style="background-color: #c4d0e8">
+                        <i class="fa fa-user-md"></i>
+                    </span>
+                    <div class="info-content-container">
+                        <div class="info-title">
+                            <b>{{totalDoctor}}</b> DOCTOR(s)
+                            <span>
+                                <i class="fa fa-question-circle"
+                                   uib-popover="Number of your appointment!"
+                                   popover-trigger="'mouseenter'"
+                                   aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <div class="info-box-content">
+                            <p><b>{{inactiveDoc}}</b> Inactive Doctor(s)</p>
+                            <p><b>{{activeDoc}}</b> Actived Doctor(s)</p>
+                            <p><b>{{rejectDoc}}</b> Rejected Doctor(s)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="float: right;" class="col-md-4 col-sm-6 col-xs-12">
+        <div class="row" style="width: 306px">
+            <div ng-if="calendarLoaded" style="display:inline-block; min-height:250px;">
+                <div uib-datepicker ng-model="cal.dt" ng-change="loadNotification()"
+                     class="well well-sm" datepicker-options="options">
+                </div>
+            </div>
+            <button type="button" style="width: 100%" class="btn btn-sm btn-info" ng-click="today()">Today</button>
+            <pre>{{cal.dt | date:'fullDate' }}</pre>
+        </div>
+        <div class="row" style="width: 306px">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Digital Clock</b>
+                </div>
+                <ds-widget-clock show-digital theme="blue-light"
+                                 digital-format="'hh:mm:ss a'">
+                </ds-widget-clock>
+            </div>
+        </div>
+    </div>
 </div>
+
 

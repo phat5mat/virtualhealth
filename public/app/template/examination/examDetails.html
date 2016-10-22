@@ -29,14 +29,6 @@
                     </td>
                 </tr>
 
-                <tr>
-                    <td class="col-md-2">
-                        Heart Rate
-                    </td>
-                    <td class="col-md-4">
-                        {{ patDetails.heartrate }}
-                    </td>
-                </tr>
 
                 </tbody>
             </table>
@@ -48,13 +40,23 @@
         <div class="row">
             <textarea disabled ng-model="examResult" rows="4" cols="60" style="max-width: 450px; max-height: 300px;"></textarea>
         </div>
-        <div class="row">
-            <button ng-click="downLog()" class="btn btn-primary">Download</button>
+        <div class="row " style="width: 300px" ng-init="showDownloadBtn = true;" style="margin-top: 10px">
+            <button ng-click="downLog()" ng-show="showDownloadBtn" class="btn btn-primary">
+                <i class="fa fa-download" aria-hidden="true"></i>
+                Download Text Log
+            </button>
+            <button ng-hide="showDownloadBtn" ng-disabled="!showDownloadBtn" class="btn btn-warning">
+                <i class="fa fa-download" aria-hidden="true"></i>
+                No text log found
+            </button>
         </div>
     </div>
-    <div class="row"><h4><strong style="color: cornflowerblue">Prescription</strong></h4></div>
     <div class="row col-md-12">
-            <div class="presTable row">
+        <div ng-show="medicines.length == 0"
+             class="alert alert-warning text-center" role="alert">
+            <b>This examination has no prescription.</b>
+        </div>
+            <div class="presTable row" ng-show="medicines.length > 0">
                 <table class="table table-bordered ">
                     <thead>
                     <th style="width: 10%">#</th>

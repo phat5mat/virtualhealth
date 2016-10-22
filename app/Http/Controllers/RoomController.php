@@ -26,7 +26,10 @@ class RoomController extends Controller
 
     
     public function findByDoctor($id){
-        $roomList = Room::where('doctor',$id)->with('doctor.user')->get();
+        $roomList = Room::where('doctor',$id)
+            ->with('doctor.user')
+            ->with('speciality')
+            ->get();
         return $roomList;
     }
     
@@ -49,6 +52,7 @@ class RoomController extends Controller
         $room->available = $newRoom['roomSize'];
         $room->name =  $newRoom['name'];
         $room->doctor = $newRoom['doctor'];
+        $room->speciality = $newRoom['speciality'];
         $room->save();
 
 

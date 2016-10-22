@@ -13,6 +13,10 @@ class Room extends Model
         return $this->belongsTo('App\Doctor','doctor');
     }
 
+    public function speciality(){
+        return $this->belongsTo('App\Speciality','speciality');
+    }
+
     protected $table = 'room';
     protected $primaryKey = 'id';
     public $timestamps = false;

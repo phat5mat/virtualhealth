@@ -1,87 +1,81 @@
-<div class="container" >
+<div class="container">
 
-        <table class="table" ng-init="loadRequestDetails()" >
-            <h3>Review {{ doctor.user.name }} Request</h3>
-            <tbody>
-            <tr>
-                <td class="col-md-2">
-                    Name
-                </td>
-                <td class="col-md-10">
-                    {{ doctor.user.name }}
-                </td>
-            </tr>
+    <table class="table" ng-init="loadRequestDetails()">
+        <h3>Review {{ doctor.user.name }} Request</h3>
+        <tbody>
+        <tr>
+            <td class="col-md-2">
+                Name
+            </td>
+            <td class="col-md-10">
+                {{ doctor.name }}
+            </td>
+        </tr>
 
-            <tr>
-                <td class="col-md-2">
-                    Email
-                </td>
-                <td class="col-md-10">
-                    {{ doctor.user.email }}
-                </td>
-            </tr>
+        <tr>
+            <td class="col-md-2">
+                Email
+            </td>
+            <td class="col-md-10">
+                {{ doctor.email }}
+            </td>
+        </tr>
 
-            <tr>
-                <td class="col-md-2">
-                    Phone Number
-                </td>
-                <td class="col-md-10">
-                    {{ doctor.user.phone }}
-                </td>
-            </tr>
+        <tr>
+            <td class="col-md-2">
+                Phone Number
+            </td>
+            <td class="col-md-10">
+                {{ doctor.phone }}
+            </td>
+        </tr>
 
-            <tr>
-                <td class="col-md-2">
-                    Date of Birth
-                </td>
-                <td class="col-md-10">
-                    {{ doctor.user.dateofbirth }}
-                </td>
-            </tr>
+        <tr>
+            <td class="col-md-2">
+                Date of Birth
+            </td>
+            <td class="col-md-10">
+                {{ doctor.dateofbirth }}
+            </td>
+        </tr>
 
-            <tr>
-                <td class="col-md-2">
-                    Balance
-                </td>
-                <td class="col-md-10">
-                    {{ doctor.user.balance }}
-                </td>
-            </tr>
+        <tr>
+            <td class="col-md-2">
+                Speciality
+            </td>
+            <td class="col-md-10">
+                {{ loadSpeciality(doctor.doctor.speciality) }}
+            </td>
+        </tr>
 
-            <tr>
-                <td class="col-md-2">
-                    Speciality
-                </td>
-                <td class="col-md-10">
-                    {{ doctor.speciality }}
-                </td>
-            </tr>
+        <tr>
+            <td class="col-md-2">
+                Certification
+            </td>
+            <td class="col-md-10">
+                <button class="btn btn-primary" ng-click="downloadZip()">Download</button>
+            </td>
+        </tr>
 
-            <tr>
-                <td class="col-md-2">
-                    Professional
-                </td>
-                <td class="col-md-10">
-                    {{ doctor.professional }}
-                </td>
-            </tr>
+        <tr>
+            <td class="col-md-2">
+                Experience
+            </td>
+            <td class="col-md-10">
+                {{ doctor.doctor.experience }}
+            </td>
+        </tr>
 
-            <tr>
-                <td class="col-md-2">
-                    Certification
-                </td>
-                <td class="col-md-10">
-                    {{ doctor.certification }}
-                </td>
-            </tr>
 
-            </tbody>
-        </table>
-    <div class="col-md-7">
-        <button class="btn btn-primary center-block btn-lg" ng-click="approveRequest(doctor.id)">Approve</button>
+        </tbody>
+    </table>
+    <div class="col-md-4" ng-hide="doctor.doctor.status == 'Actived' || doctor.doctor.status == 'Rejected'">
+        <button
+                class="btn btn-primary center-block btn-lg" ng-click="approveRequest(doctor.id)">Approve
+        </button>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-4" ng-hide="doctor.doctor.status == 'Actived' || doctor.doctor.status == 'Rejected' ">
         <button class="btn btn-warning center-block btn-lg" ng-click="rejectRequest(doctor.id)">Reject</button>
     </div>
 

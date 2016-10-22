@@ -5,17 +5,15 @@
 
 </table>
 <table class="table hoverTable" st-table="displayedCollection"
-       st-safe-src="appointments" wt-responsive-table class="table table-striped"
-       ng-init="loadAppointment()" >
+       st-safe-src="appointDocList" wt-responsive-table class="table table-striped"
+       ng-init="loadAppointmentByDoc()" >
     <thead>
     <tr>
         <th class="sortable" st-sort="id" style="width: 10%">ID</th>
-        <th class="sortable" st-sort="room.doctor.user.name" style="width: 20%">Doctor</th>
-        <th class="sortable" st-sort="room.name" style="width: 15%">Room</th>
-        <th class="sortable" st-sort="room.startDate" style="width: 20%">Start Date</th>
+        <th class="sortable" st-sort="slot" style="width: 20%">Patient</th>
+        <th class="sortable" st-sort="room.name" style="width: 20%">Room</th>
         <th class="sortable" st-sort="slot" style="width: 10%">Slot</th>
         <th class="sortable" st-sort="status" style="width: 15%">Status</th>
-        <th style="width: 10%"></th>
 
     </tr>
     <tr>
@@ -24,7 +22,7 @@
                    class="input-sm form-control" />
         </th>
         <th>
-            <input st-search="room.doctor.user.name"
+            <input st-search="patient.user.name"
                    class="input-sm form-control"/>
         </th>
         <th>
@@ -39,31 +37,16 @@
             <input st-search="slot"
                    class="input-sm form-control" />
         </th>
-        <th >
-            <input st-search="status"
-                   class="input-sm form-control" />
-        </th>
-
-        <th></th>
     </tr>
     </thead>
     <tbody>
     <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
     <tr ng-repeat="appoint in displayedCollection" ng-hide="loading" >
         <td class="text-center" data-title="ID">{{ appoint.id }}</td>
-        <td data-title="Doctor">{{ appoint.room.doctor.user.name }}</td>
+        <td class="text-center" data-title="Patient">{{ appoint.patient.user.name }}</td>
         <td data-title="Room">{{ appoint.room.name }}</td>
-        <td data-title="Start Date">{{ appoint.room.startDate | date:"MM/dd/yyyy 'at' h:mma" }}</td>
         <td class="slotRow" data-title="Slot Number">{{ appoint.slot }}</td>
         <td ng-class="appoint.statusColor" data-title="Status"><b>{{ appoint.status }}</b></td>
-        <td data-title="Action" class="text-center">
-            <div class="btn-group">
-                <button type="button" ng-show="appoint.status == 'Open'"
-                        class="btn btn-sm btn-success" ng-click="selectAppoint(appoint)">Enter</button>
-                <button type="button" ng-show="appoint.status == 'Waiting'"
-                        class="btn btn-sm btn-danger" ng-click="cancelAppoint(appoint)">Cancel</button>
-            </div>
-        </td>
     </tr>
     </tbody>
 

@@ -58,10 +58,10 @@ angular
                                     $rootScope.patUser = patUser;
                                     localStorage.setItem('patUser',JSON.stringify(patUser));
                                     $mdToast.show($mdToast.simple().textContent('Welcome backl!'));
+                                    $state.go('home.pat');
                                 },function(e){
                                     console.log(e.data.error);
                                 });
-                            $state.go('home.pat');
                         }
 
                         // handle if user is doctor
@@ -73,10 +73,10 @@ angular
                                     $rootScope.docUser = docUser;
                                     localStorage.setItem('docUser',JSON.stringify(docUser));
                                     $mdToast.show($mdToast.simple().textContent('Welcome back!'));
+                                    $state.go('home.doc');
                                 },function(e){
                                     console.log(e.data.error);
                                 });
-                            $state.go('home.doc');
                         }
 
                         // handle if user is staff
@@ -88,10 +88,10 @@ angular
                                     $rootScope.staffUser = staffUser;
                                     localStorage.setItem('staffUser',JSON.stringify(staffUser));
                                     $mdToast.show($mdToast.simple().textContent('Welcome back!'));
+                                    $state.go('home.staff');
                                 },function(e){
                                     console.log(e.data.error);
                                 });
-                            $state.go('home.staff');
                         }
 
                     }catch(e){
@@ -115,7 +115,8 @@ angular
                     $rootScope.currentUser = null;
                     $rootScope.docUser = null;
                     $rootScope.patUser = null;
-                    
+                    $rootScope.staffUser = null;
+
                 },function(e){
                     console.log(e);
                 })

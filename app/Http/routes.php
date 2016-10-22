@@ -38,21 +38,30 @@ Route::group(array('prefix' => 'api'), function() {
     Route::post('savezip/{doc}','UsersController@saveZip');
 
 
-
     Route::resource('patient', 'PatientsController');
+    Route::get('patbydoctor/{doctor}', 'PatientsController@findByDoctor');
+
+
     Route::resource('room', 'RoomController');
     Route::resource('appointment', 'AppointmentsController');
+    Route::get('doctorappoint/{doctor}', 'AppointmentsController@findByDoctor');
+    Route::get('doctorappoint2/{doctor}', 'AppointmentsController@findByDoctor2');
+
+
     Route::resource('examination', 'ExaminationController');
     Route::get('specialbydoctor/{doctor}', 'SpecialityController@findSpeciaByDoctor');
 
     Route::put('updateRoomStatus/{room}','RoomController@updateRoomStatus');
     
     Route::get('docbyuser/{user}','DoctorsController@findDocByUser');
-    Route::get('docbyrequest','DoctorsController@findUnactiveDoc');
+    Route::get('docbyrequest','DoctorsController@findRequest');
     Route::get('checkrequest','DoctorsController@checkRequest');
     Route::put('approverequest/{doctor}','DoctorsController@approveRequest');
     Route::put('rejectrequest/{doctor}','DoctorsController@rejectRequest');
-    
+    Route::get('downloadZip/{doctor}','DoctorsController@downloadZip');
+    Route::get('getalldoc','DoctorsController@getAllDoctor');
+
+
 
     Route::get('patbyuser/{user}','PatientsController@findByUser');
     Route::get('patbyuserwith/{user}','PatientsController@findByUserWithUser');
@@ -63,14 +72,19 @@ Route::group(array('prefix' => 'api'), function() {
 
     Route::get('exambypatient/{pat}','ExaminationController@findByPatient');
     Route::get('exambyappoint/{pat}','ExaminationController@findByAppointment');
+    Route::get('exambydoctor/{doc}','ExaminationController@findByDoctor');
+    Route::get('exambyspec/{doc}','ExaminationController@findBySpeciality');
+    Route::get('lastexambypatient/{pat}','ExaminationController@findLastExaminationByPatient');
+
 
 
     Route::get('finduserbydoc/{doctor}','UsersController@findUserByDoc');
     Route::get('patAppointmentList/{patients}','AppointmentsController@patAppointmentList');
     Route::post('getslotnumber','AppointmentsController@getSlotNumber');
     Route::put('updateAppointStatus/{room}','AppointmentsController@updateAppointmentStatus');
-
-
+    Route::put('updateAppointStatusIndividual/{apapoint}','AppointmentsController@updateAppointStatusIndividual');
+    Route::put('updateAppointmentStatusExpired/{apapoint}','AppointmentsController@updateAppointmentStatusExpired');
+    
     Route::get('manageDoc',function(){
         return view('manageDoctors');
     });

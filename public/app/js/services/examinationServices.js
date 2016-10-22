@@ -59,7 +59,29 @@ app.service('examinationServices',function($http,API_URL){
                 method: 'GET',
                 url: API_URL + "exambyappoint/" + id
             })
+        },
+
+        getExamByDoctor: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "exambydoctor/" + id
+            })
+        },
+
+        getExamBySpeciality: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "exambyspec/" + id
+            })
+        },
+
+        getLastExamByPatient: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "lastexambypatient/" + id
+            })
         }
+        
 
 
 

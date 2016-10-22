@@ -1,0 +1,56 @@
+<h3>Examination Management</h3>
+<table style="width: 100%" st-table="displayedCollection" st-safe-src="examDocList">
+    <tr>
+        <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+    </tr>
+
+</table>
+<table st-table="displayedCollection"
+       st-safe-src="examList" wt-responsive-table class="table table-striped hoverTable"
+       ng-init="loadExamByDoctor()" >
+    <thead>
+    <tr>
+        <th class="sortable" st-sort="examination.id" style="width: 10%">ID</th>
+        <th class="sortable" st-sort="room.examination.date" style="width: 20%">Date</th>
+        <th class="sortable" st-sort="room.doctor.user.name" style="width: 20%">Patient</th>
+        <th class="sortable" st-sort="room.name" style="width: 20%">Room</th>
+        <th class="sortable" st-sort="room.doctor.speciality.name" style="width: 20%">Speciality</th>
+    </tr>
+    <tr>
+        <th>
+            <input st-search="examination.id"
+                   class="input-sm form-control searchInput" />
+        </th>
+        <th>
+            <input st-search="examination.date"
+                   class="input-sm form-control" />
+        </th>
+        <th>
+            <input st-search="patient.user.name"
+                   class="input-sm form-control"/>
+        </th>
+        <th >
+            <input st-search="examination.name"
+                   class="input-sm form-control" />
+        </th>
+        <th>
+            <input st-search="examination.spec"
+                   class="input-sm form-control"/>
+        </th>
+
+
+    </tr>
+    </thead>
+    <tbody>
+    <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+    <tr ng-repeat="appoint in displayedCollection" ng-hide="loading" ng-click="selectExam       (appoint)" >
+        <td class="text-center">{{ appoint.examination.id }}</td>
+        <td>{{ appoint.examination.date | date:"MM/dd/yyyy 'at' h:mma" }}</td>
+        <td>{{ appoint.patient.user.name }}</td>
+        <td>{{ appoint.examination.room }}</td>
+        <td>{{ appoint.examination.spec }}</td>
+    </tr>
+    </tbody>
+</table>
+
+

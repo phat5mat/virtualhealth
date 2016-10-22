@@ -11,16 +11,16 @@
 
     </table>
     <!-- Table-to-load-the-data Part -->
-    <table class="table hoverTable" st-table="displayedCollection"
-           st-safe-src="rooms" wt-responsive-table class="table table-striped"
+    <table class="table hoverTable table-striped" st-table="displayedCollection"
+           st-safe-src="rooms" wt-responsive-table
            ng-init="loadRoom()">
         <thead>
         <tr>
             <th class="sortable" st-sort="id" style="width: 10%">ID</th>
-            <th class="sortable" st-sort="name" style="width: 25%">Name</th>
+            <th class="sortable" st-sort="name" style="width: 20%">Name</th>
             <th class="sortable" st-sort="startDate" style="width: 25%">Start Date</th>
             <th class="sortable" st-sort="roomSize" style="width: 10%">Size</th>
-            <th class="sortable" st-sort="status" style="width: 15%">Status</th>
+            <th class="sortable" st-sort="status" style="width: 20%">Status</th>
             <th style="width: 15%"></th>
 
         </tr>
@@ -51,20 +51,26 @@
         <tbody>
         <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
         <tr ng-repeat="room in displayedCollection" ng-hide="loading">
-            <td data-title="ID">{{ room.id }}</td>
+            <td class="text-center" data-title="ID">{{ room.id }}</td>
             <td data-title="Name">{{ room.name }}</td>
             <td data-title="Start Date">{{ room.startDate | date:"MM/dd/yyyy 'at' h:mma" }}</td>
-            <td data-title="Room Size">{{ room.roomSize }}</td>
+            <td class="text-center" data-title="Room Size">{{ room.roomSize }}</td>
             <td ng-class="room.statusColor" data-title="Status">{{ room.status }}</td>
-            <td class="text-center">
-                <button class="btn btn-sm btn-success"
-                        ng-show="room.status == 'Open'"
-                        ng-click="selectRoom(room)">Enter
-                </button>
-                <button class="btn btn-sm btn-primary"
-                        ng-show="room.status == 'Waiting'"
-                        ng-click="selectRoom(room)">Open
-                </button>
+            <td data-title="Action" class="text-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-success"
+                            ng-show="room.status == 'Open'"
+                            ng-click="selectRoom(room)">Enter
+                    </button>
+                    <button type="button" class="btn btn-sm btn-primary"
+                            ng-show="room.status == 'Waiting'"
+                            ng-click="selectRoom(room)">Open
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger"
+                            ng-show="room.status == 'Waiting'"
+                            ng-click="closeRoom(room)">Cancel
+                    </button>
+                </div>
             </td>
         </tr>
         </tbody>
@@ -102,6 +108,19 @@
                                         <div ng-message="minlength">Room name minimum characters is 8.</div>
                                         <div ng-message="maxlength">Room name minimum characters is 30.</div>
                                     </div>
+                                </md-input-container>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <md-input-container>
+                                    <label>Speciality</label>
+                                    <md-select ng-model="room.speciality">
+                                        <md-optgroup label="Speciality">
+                                            <md-option ng-value="spec.speciality.id" ng-repeat="spec in specList">{{spec.speciality.name}}</md-option>
+                                        </md-optgroup>
+                                    </md-select>
                                 </md-input-container>
                             </td>
                         </tr>

@@ -1,0 +1,105 @@
+<h3>View Pat</h3>
+<table style="width: 100%" st-table="displayedCollection" st-safe-src="patients">
+    <tr>
+        <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
+    </tr>
+
+</table>
+
+<table id="docTable" st-table="displayedCollection"
+       st-safe-src="patList" wt-responsive-table class="table table-striped"
+       ng-init="loadPatientList()">
+    <thead>
+    <tr>
+        <th style="width: 10%"></th>
+        <th style="width: 25%" class="sortable" st-sort="name">Name</th>
+        <th style="width: 20%">Email</th>
+        <th style="width: 20%" class="sortable" st-sort="doctor.professional">Condition</th>
+    </tr>
+    <tr>
+        <th>
+        </th>
+        <th>
+            <input st-search="name"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="email"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="{{ loadSpeciality(doctor.speciality) }}"
+                   class="input-sm form-control"/>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
+    <tr ng-repeat="pat in displayedCollection" ng-hide="loading" ng-click="selectPatient($event,pat)">
+        <td><img class="avatarCircle" ng-src="{{pat.user.avatarSrc}}"></td>
+        <td data-title="Name">{{ pat.user.name }}</td>
+        <td data-title="Email">{{ pat.user.email }}</td>
+        <td data-title="Condition" >{{ pat.condition }}</td>
+    </tr>
+    </tbody>
+</table>
+
+
+<script type="text/ng-template" id="viewDoctorDetailsDialog.html">
+    <md-dialog aria-label="Doctor Informations" ng-init="test()">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>{{ doctorDetails.name }}</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    X
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="container" style="width:650px;height:350px;">
+                <div class="col-md-4 text-center">
+                    <img width="170px" height="200px" ng-src="{{doctorDetails.avatarSrc}}">
+                </div>
+                <div class="col-md-8">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Name</td>
+                            <td>{{ doctorDetails.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Date of Birth</td>
+                            <td>{{ doctorDetails.dateofbirth }}</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>{{ doctorDetails.email }}</td>
+                        </tr>
+                        <tr>
+                            <td>Phone</td>
+                            <td>{{ doctorDetails.phone }}</td>
+                        </tr>
+                        <tr>
+                            <td>Speciality</td>
+                            <td>{{ loadSpeciality(doctorDetails.speciality) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Experience</td>
+                            <td>{{ doctorDetails.doctor.experience }}</td>
+                        </tr>
+                        <tr>
+                            <td>Biography</td>
+                            <td>{{ doctorDetails.doctor.biography }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <button class="btn btn-primary btn-block" ng-click="makeAppointment()">View {{ doctorDetails.name }}
+                Room
+            </button>
+        </md-dialog-content>
+    </md-dialog>
+</script>

@@ -1,106 +1,154 @@
-<h3>Pat Home</h3>
-<table style="width: 100%" st-table="displayedCollection" st-safe-src="doctors">
-    <tr>
-        <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
-    </tr>
+<div class="row" ng-init="loadAppointmentInfo()">
 
-</table>
-
-<table id="docTable" st-table="displayedCollection"
-       st-safe-src="doctors" wt-responsive-table class="table table-striped"
-       ng-init="loadDoctors()">
-    <thead>
-    <tr>
-        <th style="width: 10%"></th>
-        <th style="width: 25%" class="sortable" st-sort="name">Name</th>
-        <th style="width: 20%">Email</th>
-        <th style="width: 20%" class="sortable" st-sort="doctor.professional">Speciality</th>
-    </tr>
-    <tr>
-        <th>
-        </th>
-        <th>
-            <input st-search="name"
-                   class="input-sm form-control"/>
-        </th>
-        <th>
-            <input st-search="email"
-                   class="input-sm form-control"/>
-        </th>
-        <th>
-            <input st-search="{{ loadSpeciality(doctor.speciality) }}"
-                   class="input-sm form-control"/>
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
-    <tr ng-repeat="doctor in displayedCollection" ng-hide="loading" ng-click="selectDoctor($event,doctor)">
-        <td><img class="avatarCircle" ng-src="{{doctor.avatarSrc}}"></td>
-        <td data-title="Name">{{ doctor.name }}</td>
-        <td data-title="Email">{{ doctor.email }}</td>
-        <td data-title="Professional" >{{ loadSpeciality(doctor.speciality) }}</td>
-
-    </tr>
-    </tbody>
-</table>
-
-
-<script type="text/ng-template" id="viewDoctorDetailsDialog.html">
-    <md-dialog aria-label="Doctor Informations" ng-init="test()">
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <h2>{{ doctorDetails.name }}</h2>
-                <span flex></span>
-                <md-button class="md-icon-button" ng-click="cancel()">
-                    X
-                </md-button>
-            </div>
-        </md-toolbar>
-        <md-dialog-content>
-            <div class="container" style="width:650px;height:350px;">
-                <div class="col-md-4 text-center">
-                    <img width="170px" height="200px" ng-src="{{doctorDetails.avatarSrc}}">
+    <div class="col-md-8 col-sm-6 col-xs-12">
+        <div class="row" style="margin-left: 0px">
+            <div class="panel panel-default" style="width: 98%;">
+                <div class="panel-heading">
+                    <i class="fa fa-tasks" aria-hidden="true"></i>
+                    <b>Tasks Notification</b>
                 </div>
-                <div class="col-md-8">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <td>Name</td>
-                            <td>{{ doctorDetails.name }}</td>
-                        </tr>
-                        <tr>
-                            <td>Date of Birth</td>
-                            <td>{{ doctorDetails.dateofbirth }}</td>
-                        </tr>
-                        <tr>
-                            <td>Email</td>
-                            <td>{{ doctorDetails.email }}</td>
-                        </tr>
-                        <tr>
-                            <td>Phone</td>
-                            <td>{{ doctorDetails.phone }}</td>
-                        </tr>
-                        <tr>
-                            <td>Speciality</td>
-                            <td>{{ loadSpeciality(doctorDetails.speciality) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Experience</td>
-                            <td>{{ doctorDetails.doctor.experience }}</td>
-                        </tr>
-                        <tr>
-                            <td>Biography</td>
-                            <td>{{ doctorDetails.doctor.biography }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <div class="panel-body panel-notification">
+                    <div ng-hide="appointNotification.length > 0" class="alert alert-warning">
+                        There isn't any task
+                    </div>
+                    <div ng-init="loadNotification()" class="row" ng-repeat="notify in appointNotification">
 
+                        <div class="alert alert-info" style="margin: 3px;width: 98%"
+                             ng-hide="notify.isTime || notify.status != 0">
+                            <span><i class="fa fa-medkit"></i></span>
+                            appointment with {{notify.room.name}} room  will open at {{convertDate(notify.room.startDate) | date:"h:mma"}}
+                        </div>
+
+                        <div class="alert alert-success open-room-notify" ng-click="goAppoint(notify)"
+                             style="margin: 3px;width: 98%" ng-show="notify.isOpen">
+                            <span><i class="fa fa-play-circle"></i></span>
+                            {{notify.room.name}} room is currently open.
+                        </div>
+                    </div>
+                </div>
             </div>
-            <button class="btn btn-primary btn-block" ng-click="makeAppointment()">View {{ doctorDetails.name }}
-                Room
-            </button>
-        </md-dialog-content>
-    </md-dialog>
-</script>
+        </div>
+
+
+        <div ng-show="lastExam" class="row info-container" ng-init="loadLastExamination()">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="info-box">
+                    <span ng-click="goLastExam()" class="info-icon" style="background-color: rgba(30, 221, 32, 0.51)">
+                        <i class="fa fa-heartbeat"></i>
+                    </span>
+                    <div class="info-content-container">
+                        <div class="info-title">
+                            RECENTLY EXAMINATION
+                            <span>
+                                <i class="fa fa-question-circle"
+                                   uib-popover="Your last examination!"
+                                   popover-trigger="'mouseenter'"
+                                   aria-hidden="true"></i>
+
+                            </span>
+                        </div>
+                        <div class="info-box-content">
+                            <div class="col-md-6 col-sm-12 col-xs-12">
+                                <p>
+                                    <b>Room: </b>{{lastExam.room.name}}
+                                </p>
+                                <p>
+                                    <b>Speciality: </b>{{lastExam.room.speciality.name}}
+                                </p>
+                                <p>
+                                    <b>Date: </b>{{lastExam.examination.date | date:"MM/dd/yyyy 'at' h:mma"}}
+                                </p>
+                            </div>
+                            <div class="col-md-6  col-sm-12 col-xs-12">
+                                <textarea disabled ng-model="lastExam.examination.result"
+                                          rows="4" cols="30" style="max-width: 200px; max-height: 100px;">
+                                </textarea>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-md-12 col-xs-12 col-sm-12
+        alert alert-success text-center" style="margin-top: 10px">
+            <h4><b>Statistics</b></h4>
+        </div>
+        <div class="row info-container">
+            <div class="col-md-6 col-sm-12 col-xs-12" ng-init="loadExaminationInfo()">
+                <div class="info-box">
+                    <span ui-sref="examList" class="info-icon" style="background-color: #f1a021">
+                        <i class="fa fa-medkit"></i>
+                    </span>
+                    <div class="info-content-container">
+                        <div class="info-title">
+                            <b>{{totalExamination}}</b> EXAMINATION(s)
+                            <span>
+                                <i class="fa fa-question-circle"
+                                   uib-popover="Number of your completed examination!"
+                                   popover-trigger="'mouseenter'"
+                                   aria-hidden="true"></i>
+
+                            </span>
+                        </div>
+                        <div class="info-box-content">
+                            <p><b>{{examToday}}</b> Examination(s) Today</p>
+                            <p><b>{{examWeek}}</b> Examination(s) this Week</p>
+                            <p><b>{{examMonth}}</b> Examination(s) this Month</p>
+                            <p><b>{{examYear}}</b> Examination(s) this Year</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="info-box">
+                    <span ui-sref="appoint.manageAppointment" class="info-icon"
+                          style="background-color: #c4d0e8">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                    <div class="info-content-container">
+                        <div class="info-title">
+                            <b>{{totalAppointment}}</b> APPOINTMENT(s)
+                            <span>
+                                <i class="fa fa-question-circle"
+                                   uib-popover="Number of patient's appointment with you!"
+                                   popover-trigger="'mouseenter'"
+                                   aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <div class="info-box-content">
+                            <p><b>{{waitingAppoint}}</b> Waiting Appointment(s)</p>
+                            <p><b>{{openAppoint}}</b> Open Appointment(s)</p>
+                            <p><b>{{canceledAppoint}}</b> Canceled Appointment(s)</p>
+                            <p><b>{{finishedAppoint}}</b> Finished Appointment(s)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="float: right;" class="col-md-4 col-sm-6 col-xs-12">
+        <div class="row" style="width: 306px">
+            <div ng-if="calendarLoaded" style="display:inline-block; min-height:250px;">
+                <div uib-datepicker ng-model="cal.dt" ng-change="loadNotification()"
+                     class="well well-sm" datepicker-options="options">
+                </div>
+            </div>
+            <button type="button" style="width: 100%" class="btn btn-sm btn-info" ng-click="today()">Today</button>
+            <pre>{{cal.dt | date:'fullDate' }}</pre>
+        </div>
+        <div class="row" style="width: 306px">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Digital Clock</b>
+                </div>
+                <ds-widget-clock show-digital theme="blue-light"
+                                 digital-format="'hh:mm:ss a'">
+                </ds-widget-clock>
+            </div>
+        </div>
+    </div>
+</div>
+
+

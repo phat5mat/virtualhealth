@@ -5,16 +5,22 @@
         </div>
         <ul class="nav navbar-nav navbar-left">
             <li>
-                <a href="#" ui-sref="room.manageRoom" ui-sref-active="disabledClick" ng-show="docUser != null">Room</a>
+                <a href="#" ui-sref="room.manageRoom" ui-sref-active="disabledClick" ng-show="docUser">Room</a>
             </li>
             <li>
-                <a href="#"  ui-sref="appoint" ui-sref-active="disabledClick" ng-show="patUser != null">Appointment</a>
+                <a href="#"  ui-sref="appoint" ui-sref-active="disabledClick" ng-show="patUser">Appointment</a>
             </li>
             <li>
-                <a href="#"  ui-sref="examList" ui-sref-active="disabledClick" ng-show="patUser != null">Examination</a>
+                <a href="#"  ui-sref="examList" ui-sref-active="disabledClick" ng-show="patUser">Examination</a>
+            </li>
+            <li>
+                <a href="#"  ui-sref="viewRequest" ui-sref-active="disabledClick" ng-show="staffUser">Request</a>
+            </li>
+            <li>
+                <a href="#"  ui-sref="viewDoctor" ui-sref-active="disabledClick">Find a Doctor</a>
             </li>
         </ul>
-        <ul class="btn-group nav navbar-nav navbar-right " uib-dropdown ng-show="currentUser != null">
+        <ul class="btn-group nav navbar-nav navbar-right " uib-dropdown ng-show="currentUser">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="">Welcome, {{currentUser.name}}
                     <span class="caret"></span></a>

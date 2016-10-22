@@ -6,7 +6,7 @@
 'use strict';
 
 angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
-        , 'ui.bootstrap', 'ngMessages', 'ngFileUpload','ngSanitize','chart.js'])
+        , 'ui.bootstrap', 'ngMessages', 'ngFileUpload','ngSanitize','chart.js','ds.clock','ngMap'])
     .config(function ($stateProvider, $urlRouterProvider, $authProvider, $httpProvider, $provide) {
 
 
@@ -120,17 +120,19 @@ angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
             // redirect to doctor home page
             .state('home.doc', {
                 templateUrl: '../public/app/template/home.doc.html',
+                controller: 'doctorController'
+
             })
 
             // redirect to patient home page
             .state('home.pat', {
                 templateUrl: '../public/app/template/home.pat.html',
-                controller: 'patientController',
+                controller: 'patientController'
             })
 
             .state('home.staff', {
                 templateUrl: '../public/app/template/home.staff.html',
-                controller: 'staffController',
+                controller: 'staffController'
             })
 
             // redirect to room list page
@@ -275,6 +277,31 @@ angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
                     selectedExam: null
                 }
             })
+
+            .state('viewPatient', {
+                url: '/viewPatient',
+                templateUrl: '../public/app/template/user/viewPatient.html',
+                controller: 'doctorController'
+            })
+
+            .state('viewAppointment', {
+                url: '/viewAppointment',
+                templateUrl: '../public/app/template/appointment/viewAppointment.html',
+                controller: 'roomController'
+            })
+
+            .state('viewExamination', {
+                url: '/viewExamination',
+                templateUrl: '../public/app/template/examination/viewExamination.html',
+                controller: 'manageExamController'
+            })
+
+            .state('viewDoctor', {
+                url: '/viewDoctor',
+                templateUrl: '../public/app/template/user/viewDoctor.html',
+                controller: 'userController'
+            })
+
 
 
     })
@@ -425,6 +452,7 @@ app.directive("ngFileSelect", function (uploadServices, $timeout) {
                 if (file.size > 5000000) {
                     $timeout(function () {
                         $scope.validateSize = false;
+                        $scope.wrongFile = true;
                     });
                 } else {
                     $timeout(function () {

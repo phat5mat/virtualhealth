@@ -8,6 +8,10 @@ app.factory('doctorServices',function($http,API_URL){
             return $http.get(API_URL + "doctor");
         },
 
+        getAllDoc: function(){
+            return $http.get(API_URL + "getalldoc");
+        },
+
         findByUser : function(id){
             return $http({
                 method: 'GET',

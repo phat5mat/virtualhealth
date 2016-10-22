@@ -279,7 +279,7 @@
                         <div class="col-md-6 videoContainer" ng-show="video" ng-init="video = false"
                              id="videoBox"></div>
                         <div class="col-md-2">
-                            <button class="btn btn-info" ng-show="!loadChat && !video" ng-click="sendVideo()">
+                            <button class="btn btn-info" ng-show="!loadChat && !video && docUser" ng-click="sendVideo()">
                                 <strong>Video Call</strong>
                             </button>
                             <button class="btn btn-info" ng-show="video" ng-click="endCall()">

@@ -285,7 +285,7 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                         clickOutsideToClose: true
                     })
                     .then(function () {
-                        roomServices.updateStatus($stateParams.selectedRoom.id,2)
+                        roomServices.updateStatus($stateParams.selectedRoom.id,3)
                             .then(function(response){
                                 appointmentServices.updateStatus($stateParams.selectedRoom.id,3)
                                     .then(function(){
@@ -305,7 +305,7 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                     .cancel('Reject');
 
                 $mdDialog.show(confirm).then(function () {
-                    roomServices.updateStatus($stateParams.selectedRoom.id,2)
+                    roomServices.updateStatus($stateParams.selectedRoom.id,3)
                         .then(function(response){
                             appointmentServices.updateStatus($stateParams.selectedRoom.id,3)
                                 .then(function(){
@@ -776,7 +776,7 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                             if(message['closeRoom']){
                                 if(currentUser.role == 0){
                                     $timeout(function(){
-                                        leaveRoom(currentUser)
+                                        leaveRoom(currentUser);
                                         $state.go('appoint.manageAppointment')
                                     })
                                 }

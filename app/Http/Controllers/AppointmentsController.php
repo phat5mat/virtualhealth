@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Room;
 use Illuminate\Http\Request;
 use App\Appointment;
 use App\User;
@@ -25,8 +26,18 @@ class AppointmentsController extends Controller
 
     public function findByDoctor($id)
     {
-        $roomList = Appointment::where('doctor', $id)->get();
-        return $roomList;
+        $appoint = Appointment::where('room', $id)
+            ->get();
+        return $appoint;
+    }
+
+    public function findByDoctor2($id)
+    {
+        $appoint = Room::where('doctor',$id)
+            ->with('appointment')
+            ->with('appointment.patient.user')
+            ->get();
+        return $appoint;
     }
 
 
@@ -47,7 +58,7 @@ class AppointmentsController extends Controller
         $slot = Appointment::where($findQuery)->get();
         return $slot;
     }
-
+    
     public function updateAppointmentStatus(Request $request, $id)
     {
         $appoint = Appointment::where('room', $id)->get();
@@ -57,7 +68,31 @@ class AppointmentsController extends Controller
             $value->status = $status['status'];
             $value->save();
         }
-        return "Sucess updating user ";
+        return "Sucess updating appointment ";
+    }
+
+    public function updateAppointmentStatusExpired(Request $request, $id)
+    {
+        $appoint = Appointment::where('room', $id)->get();
+        $status = $request->all();
+        foreach ($appoint as $value)
+        {
+            if($value->status == 0)
+            {
+                $value->status = $status['status'];
+                $value->save();
+            }
+        }
+        return "Sucess updating appointment ";
+    }
+
+    public function updateAppointStatusIndividual(Request $request, $id)
+    {
+        $appoint = Appointment::where('id', $id)->first();
+        $status = $request->all();
+        $appoint->status = $status['status'];
+        $appoint->save();
+        return "Sucess updating appointment ";
 
     }
 

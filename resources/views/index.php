@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="../bower_components/angular-responsive-tables/release/angular-responsive-tables.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/custom.css">
+    <link rel="stylesheet" href="../bower_components/angular-ui-clock/dist/angular-clock.css">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div ng-include="'app/template/navbar.html'" ng-controller="authController" ></div>
 </head>
@@ -30,6 +32,10 @@
 <script  src="../bower_components/angular-responsive-tables/release/angular-responsive-tables.js"></script>
 <script src="../bower_components/chart.js/dist/Chart.min.js"></script>
 <script src="../bower_components/angular-chart.js/dist/angular-chart.js"></script>
+<script src="../bower_components/angular-ui-clock/dist/angular-clock.js"></script>
+<script src="../bower_components/ngmap/build/scripts/ng-map.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAApemJeOsiJJZWX5h2NP4j0CL-mwSZjAo"
+        type="text/javascript" async defer></script>
 
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
 
@@ -59,6 +65,8 @@
 <script src="app/js/services/appointmentServices.js"></script>
 <script src="app/js/services/examinationServices.js"></script>
 <script src="app/js/services/uploadServices.js"></script>
+<script src="app/js/services/downloadServices.js"></script>
+
 
 
 </body>

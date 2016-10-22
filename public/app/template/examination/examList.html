@@ -15,8 +15,6 @@
             <th class="sortable" st-sort="room.doctor.user.name" style="width: 20%">Doctor</th>
             <th class="sortable" st-sort="room.name" style="width: 20%">Room</th>
             <th class="sortable" st-sort="room.doctor.speciality.name" style="width: 20%">Speciality</th>
-            <th style="width: 10%"></th>
-
         </tr>
         <tr>
             <th>
@@ -45,15 +43,12 @@
         </thead>
         <tbody>
         <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
-        <tr ng-repeat="exam in displayedCollection" ng-hide="loading"  >
+        <tr ng-repeat="exam in displayedCollection" ng-hide="loading" ng-click="selectExam(exam)" >
             <td>{{ exam.examination.id }}</td>
             <td>{{ exam.examination.date | date:"MM/dd/yyyy 'at' h:mma" }}</td>
             <td>{{ exam.room.doctor.user.name }}</td>
             <td>{{ exam.room.name }}</td>
-            <td>{{ loadSpeciality(exam.room.doctor.professional) }}</td>
-            <td>
-                <button class="btn btn-info" ng-click="selectExam(exam)">Details</button>
-            </td>
+            <td>{{ exam.room.speciality.name }}</td>
         </tr>
         </tbody>
     </table>

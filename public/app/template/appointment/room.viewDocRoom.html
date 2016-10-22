@@ -18,17 +18,6 @@
         <th class="sortable" st-sort="available" style="width: 15%">Available</th>
         <th class="sortable" st-sort="status" style="width: 15%">Status</th>
     </tr>
-    </thead>
-    <tbody>
-    <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
-    <tr ng-repeat="room in displayedCollection" ng-hide="loading" ng-click="showMakeAppointmentDialog($event,room)">
-        <td data-title="ID">{{ room.id }}</td>
-        <td data-title="Name">{{ room.name }}</td>
-        <td data-title="Start Date">{{ room.startDate | date:"MM/dd/yyyy 'at' h:mma" }}</td>
-        <td data-title="Room Size">{{ room.roomSize }}</td>
-        <td data-title="Available">{{ room.available }}</td>
-        <td ng-class="room.statusColor" data-title="Status">{{ room.status }}</td>
-    </tr>
     <tr>
         <th>
             <input st-search="id"
@@ -43,6 +32,18 @@
                    class="input-sm form-control"/>
         </th>
     </tr>
+    </thead>
+    <tbody>
+    <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+    <tr ng-repeat="room in displayedCollection" ng-hide="loading" ng-click="showMakeAppointmentDialog($event,room)">
+        <td class="text-center" data-title="ID">{{ room.id }}</td>
+        <td data-title="Name">{{ room.name }}</td>
+        <td data-title="Start Date">{{ room.startDate | date:"MM/dd/yyyy 'at' h:mma" }}</td>
+        <td class="text-center" data-title="Room Size">{{ room.roomSize }}</td>
+        <td class="text-center" data-title="Available">{{ room.available }}</td>
+        <td ng-class="room.statusColor" data-title="Status">{{ room.status }}</td>
+    </tr>
+
     </tbody>
 </table>
 
@@ -53,6 +54,7 @@
             <md-toolbar>
                 <div class="md-toolbar-tools">
                     <h2>Make an Appointment</h2>
+                    <span flex></span>
                     <md-button class="md-icon-button" ng-click="cancel()">
                         X
                     </md-button>

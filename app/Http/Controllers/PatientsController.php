@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Room;
 use Illuminate\Http\Request;
 use App\Patient;
 use App\User;
@@ -56,6 +57,14 @@ class PatientsController extends Controller
             return $patient;
         }
     }
+    
+   public function findByDoctor($id){
+       $pat = Room::where('doctor',$id)
+           ->with('appointment.patient.user')
+           ->with('appointment.room.speciality')
+           ->get();
+       return $pat;
+   }
 
     public function findByUserWithUser($id){
         $user = User::where('id',$id)->with('patient')->get();

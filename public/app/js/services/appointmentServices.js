@@ -16,10 +16,18 @@ app.service('appointmentServices',function($http,API_URL){
         },
 
         
-        findbydoctor: function(id){
+        doctorappoint: function(id){
             return $http({
                 method: 'GET',
-                url: API_URL + "findbydoctor/" + id,
+                url: API_URL + "doctorappoint/" + id,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
+        
+        doctorappoint2: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "doctorappoint2/" + id,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
@@ -49,7 +57,23 @@ app.service('appointmentServices',function($http,API_URL){
                 data:  {status: status}
             });
         },
-        
+
+        updateStatusIndividual: function(id,status){
+            return  $http({
+                method: 'PUT',
+                url: API_URL + "updateAppointStatusIndividual/" + id,
+                data:  {status: status}
+
+            });
+        },
+        updateAppointmentStatusExpired: function(id,status){
+            return  $http({
+                method: 'PUT',
+                url: API_URL + "updateAppointmentStatusExpired/" + id,
+                data:  {status: status}
+
+            });
+        },
         save : function(appData){
             return $http({
                 method: 'POST',

@@ -3,15 +3,17 @@
  */
 var app = angular.module('mainApp');
 app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMedia', '$state', '$stateParams',
-    'appointmentServices', '$rootScope', '$mdToast', 'patientServices',
-    function ($scope, $mdDialog, roomServices, $mdMedia, $state, $stateParams, appointmentServices, $rootScope, $mdToast
-        , patientServices) {
+    'appointmentServices', '$rootScope', '$mdToast', 'patientServices', 'specialityServices', '$timeout',
+    function ($scope, $mdDialog, roomServices, $mdMedia, $state, $stateParams,
+              appointmentServices, $rootScope, $mdToast, specialityServices
+        , patientServices, $timeout) {
 
         $scope.loading = true;
         var currentUser = JSON.parse(localStorage.getItem('user'));
+        $scope.appointDocList = [];
 
 
-        var handleStatusColor = function(data){
+        var handleStatusColor = function (data) {
             $scope.rooms = data;
             $scope.loading = false;
             angular.forEach($scope.rooms, function (value, key) {
@@ -25,6 +27,10 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                     value.statusColor = 'startingColor';
                 }
                 if (value.status == 2) {
+                    value.status = 'Finished';
+                    value.statusColor = 'finishedColor';
+                }
+                if (value.status == 3) {
                     value.status = 'Closed';
                     value.statusColor = 'canceledColor';
                 }
@@ -33,20 +39,40 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
 
         // Load all room
         $scope.loadRoom = function () {
-            if ($rootScope.docUser != null) {
-                try {
-                    roomServices.findroombydoctor($rootScope.docUser['id'])
-                        .then(function (roomData) {
-                                handleStatusColor(roomData.data);
-                            },
-                            function (e) {
-                                $scope.error = e;
-                            })
-                }
-                catch (e) {
-                    console.log(e);
-                }
+            try {
+                roomServices.findroombydoctor($rootScope.docUser.doctor.id)
+                    .then(function (roomData) {
+
+                            angular.forEach(roomData.data, function (value, key) {
+                                if (value.status == 0) {
+                                    var today = new Date();
+                                    var roomDate = new Date(value.startDate);
+                                    if (today.setHours(0, 0, 0, 0) > roomDate.setHours(0, 0, 0, 0)) {
+                                        roomServices.updateStatus(value.id, 3)
+                                            .then(function () {
+                                                appointmentServices.updateAppointmentStatusExpired(value.id, 3)
+                                                    .then(function () {
+                                                        $mdToast.show($mdToast.simple().textContent(value.name +
+                                                            ' Room has been closed due to expired date'));
+                                                        roomServices.findroombydoctor($rootScope.docUser.doctor.id)
+                                                            .then(function (response) {
+                                                                handleStatusColor(response.data);
+                                                            })
+                                                    })
+                                            })
+                                    }
+                                }
+                            });
+                            handleStatusColor(roomData.data);
+                        },
+                        function (e) {
+                            $scope.error = e;
+                        })
             }
+            catch (e) {
+                console.log(e);
+            }
+
 
         };
 
@@ -68,6 +94,40 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
 
             }
 
+        };
+
+        $scope.closeRoom = function (room) {
+            var confirm = $mdDialog.confirm()
+                .title('Do you want to close ' + room.name + ' room?')
+                .textContent('Please choose your option.')
+                .ok('YES')
+                .cancel('NO');
+
+            $mdDialog.show(confirm).then(function () {
+                roomServices.updateStatus(room.id, 3)
+                    .then(function () {
+                        room.status = 'Closed';
+                        room.statusColor = 'canceledColor';
+                        $mdToast.show($mdToast.simple().textContent(room.name + ' Room has been closed!!'));
+                    })
+            });
+        };
+
+        $scope.cancelAppoint = function (appoint) {
+            var confirm = $mdDialog.confirm()
+                .title('Do you want to cancel appointment with ' + appoint.room.name + ' Room?')
+                .textContent('Please choose your option.')
+                .ok('YES')
+                .cancel('NO');
+
+            $mdDialog.show(confirm).then(function () {
+                appointmentServices.updateStatusIndividual(appoint.id, 3)
+                    .then(function () {
+                        appoint.status = 'Canceled';
+                        appoint.statusColor = 'canceledColor';
+                        $mdToast.show('Appointment with ' + appoint.room.name + ' has been canceled!!!');
+                    })
+            });
         };
 
 
@@ -124,10 +184,9 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                 })
                 .then(function (answer) {
                 }, function () {
-                })
-                .finally(function () {
                     $scope.loadRoom();
-                });
+                })
+
         };
 
 
@@ -168,7 +227,6 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
         // redirect to selected room details page
         $scope.selectRoom = function (room, appointID) {
             var currentDate = new Date();
-
             var enterRoom = function () {
                 $state.go('exam', {
                     selectedRoom: room,
@@ -182,11 +240,11 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                         $mdDialog.alert()
                             .parent(angular.element(document.querySelector('#popupContainer')))
                             .clickOutsideToClose(true)
-                            .title('Opened time has not come yet')
+                            .title('Open time has not come yet')
                             .textContent('Please wait until start date to open the room.')
                             .ok('OK')
                     );
-                }else{
+                } else {
                     var confirm = $mdDialog.confirm()
                         .title('Do you want to open the room?')
                         .textContent('Please choose your option.')
@@ -220,9 +278,55 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
             }
         };
 
+        $scope.loadAppointmentByDoc = function () {
+            try {
+                appointmentServices.doctorappoint2($rootScope.docUser.doctor.id)
+                    .then(function (response) {
+                            var data = response.data;
+                            angular.forEach(data, function (value, key) {
+                                if (value.appointment.length > 1) {
+                                    angular.forEach(value.appointment, function (value2, key2) {
+                                        value2.room = value;
+                                        $scope.appointDocList.push(value2);
+                                    })
+                                }
+                                if (value.appointment.length == 1) {
+                                    value.appointment[0].room = value;
+                                    $scope.appointDocList.push(value.appointment[0]);
+                                }
+                            });
 
+                            angular.forEach($scope.appointDocList, function (value, key) {
+                                value.room.startDate = new Date(value.room.startDate);
+                                if (value.status == 0) {
+                                    value.status = 'Waiting';
+                                    value.statusColor = 'waitingColor';
+                                }
+                                if (value.status == 1) {
+                                    value.status = 'Open';
+                                    value.statusColor = 'startingColor';
+                                }
+                                if (value.status == 2) {
+                                    value.status = 'Finished';
+                                    value.statusColor = 'finishedColor';
+                                }
+                                if (value.status == 3) {
+                                    value.status = 'Canceled';
+                                    value.statusColor = 'canceledColor';
+                                }
 
-
+                            });
+                            $scope.loading = false;
+                        },
+                        function (e) {
+                            console.log(e.data.error);
+                        })
+            }
+            catch (e) {
+                // go to home page when error occur or user refresh the page
+                $state.go('home.pat');
+            }
+        };
 
         $scope.selectPatient = function (pat) {
             var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
@@ -243,7 +347,7 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
         };
 
         // Controller of create room dialog
-        function createRoomController($scope, $mdDialog, $rootScope, $filter) {
+        function createRoomController($scope, $mdDialog, $rootScope, $filter, specialityServices) {
             // Dialog toggle
             $scope.dateOptions = {
                 minDate: new Date()
@@ -263,6 +367,11 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
             //Initialize date object
             $scope.startDateobj = new Date();
 
+            specialityServices.getSpecialByDoctor($rootScope.docUser.doctor.id)
+                .then(function (response) {
+                    $scope.specList = response.data;
+                });
+
             $scope.createRoom = function () {
                 // Get time from timepicker and set to startDate object
                 var startH = $scope.startTime.getHours();
@@ -274,7 +383,7 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                 $scope.room.startDate = formattedDate;
 
                 // Get doctor's id
-                $scope.room.doctor = $rootScope.docUser['id'];
+                $scope.room.doctor = $rootScope.docUser.doctor.id;
 
                 // Save room into database
                 roomServices.save($scope.room)

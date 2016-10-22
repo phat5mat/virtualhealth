@@ -22,6 +22,7 @@ app.service('roomServices',function($http,API_URL){
         },
         
         
+        
         save : function(roomData){
             return $http({
                 method: 'POST',

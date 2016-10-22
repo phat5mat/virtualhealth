@@ -11,6 +11,7 @@ use App\Drug;
 
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\App;
 use Response;
 
 
@@ -30,8 +31,15 @@ class ExaminationController extends Controller
 
 
     public function findByDoctor($id){
-        $roomList = Room::where('doctor',$id)->with('doctor.user')->get();
-        return $roomList;
+        $exam = Room::where('doctor',$id)
+            ->with('speciality')
+            ->with('appointment')
+            ->with('appointment.examination')
+            ->with('appointment.patient.user')
+            ->with('speciality')
+            ->with('appointment.examination.prescription.drug')
+            ->get();
+        return $exam;
     }
 
     public function findByPatient($id){
@@ -39,21 +47,35 @@ class ExaminationController extends Controller
             ->whereNotNull('examination')
             ->with('examination.prescription.drug')
             ->with('room.doctor.user')
-            ->with('room.doctor.professional.speciality')
+            ->with('room.speciality')
             ->with('patient.user')
             ->get();
         return $exam;
     }
+    
 
     public function findByAppointment($id){
         $exam = Appointment::where('id',$id)
             ->with('examination.prescription.drug')
             ->with('room.doctor.user')
-            ->with('room.doctor.speciality')
+            ->with('room.doctor.professional.speciality')
             ->with('patient.user')
             ->get();
         return $exam;
     }
+    
+    public function findLastExaminationByPatient($id){
+        $exam = Appointment::where('patients',$id)
+            ->whereNotNull('examination')
+            ->with('examination.prescription.drug')
+            ->with('room.speciality')
+            ->with('patient.user')
+            ->orderBy('id','desc')
+            ->first();
+        return $exam;
+    }
+
+
 
     public function store(Request $request) {
         $newExam = $request->all();

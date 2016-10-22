@@ -8,18 +8,19 @@
 
 </table>
 
-<table class="table table-striped"
+<table class="table hoverTable table-striped"
        st-table="displayedCollection"
        st-safe-src="users" wt-responsive-table class="table table-striped"
        ng-init="loadRequest()">
     <thead>
     <tr>
-        <th style="width: 10%" class="sortable" st-sort="user.id">User ID</th>
-        <th style="width: 10%" class="sortable" st-sort="id">Doctor ID</th>
-        <th style="width: 20%" class="sortable" st-sort="user.username">Username</th>
-        <th style="width: 20%" class="sortable" st-sort="user.name">Name</th>
-        <th style="width: 20%" class="sortable" st-sort="speciality">Speciality</th>
-        <th style="width: 20%" class="sortable" st-sort="status">Status</th>
+        <th style="width: 10%" class="sortable" st-sort="id">User ID</th>
+        <th style="width: 10%" class="sortable" st-sort="doctor.id">Doctor ID</th>
+        <th style="width: 20%" class="sortable" st-sort="username">Username</th>
+        <th style="width: 20%" class="sortable" st-sort="name">Name</th>
+        <th style="width: 20%" class="sortable" st-sort="loadSpeciality(doctor.doctor.speciality)">Speciality</th>
+        <th style="width: 20%" class="sortable" st-sort="name">Date</th>
+
     </tr>
     <tr>
         <th>
@@ -27,19 +28,19 @@
                    class="input-sm form-control"/>
         </th>
         <th>
-            <input st-search="id"
+            <input st-search="doctor.id"
                    class="input-sm form-control"/>
         </th>
         <th>
-            <input st-search="user.username"
+            <input st-search="username"
                    class="input-sm form-control"/>
         </th>
         <th>
-            <input st-search="user.name"
+            <input st-search="name"
                    class="input-sm form-control"/>
         </th>
         <th>
-            <input st-search="speciality"
+            <input st-search="loadSpeciality(doctor.doctor.speciality)"
                    class="input-sm form-control"/>
         </th>
     </tr>
@@ -58,14 +59,14 @@
     </tr>
     <tr ng-hide="req == 0" ng-repeat="doctor in displayedCollection"
         ng-hide="loading" ng-click="selectRequest(doctor)">
-        <td data-title="User ID">{{ doctor.user.id }}</td>
-        <td data-title="Doctor ID">{{ doctor.id }}</td>
-        <td data-title="Username">{{ doctor.user.username }}</td>
-        <td data-title="Name">{{ doctor.user.email }}</td>
+        <td class="text-center" data-title="User ID">{{ doctor.id }}</td>
+        <td class="text-center" data-title="Doctor ID">{{ doctor.doctor.id }}</td>
+        <td data-title="Username">{{ doctor.username }}</td>
+        <td data-title="Name">{{ doctor.name }}</td>
         <td data-title="Speciality">
-            {{ doctor.speciality }}
+            {{ loadSpeciality(doctor.doctor.speciality) }}
         </td>
-        <td class="text-center" data-title="Status">{{ doctor.status }}</td>
+        <td data-title="Date">{{ doctor.created_at | date:"MM/dd/yyyy 'at' h:mma" }}</td>
     </tr>
     </tbody>
 </table>

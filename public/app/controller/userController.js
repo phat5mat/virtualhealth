@@ -6,9 +6,16 @@ var app = angular.module('mainApp');
 app.controller('userController', ['$scope', '$location',
     '$http', 'userServices', 'specialityServices', 'doctorServices', '$state', '$auth', '$mdDialog',
     '$mdMedia', 'patientServices', '$rootScope', '$mdToast', '$timeout',
-    '$filter'
+    '$filter','NgMap'
     , function ($scope, $location, $http, userServices, specialityServices, doctorServices, $state, $auth, $mdDialog
-        , $mdMedia, patientServices, $rootScope, $mdToast, $timeout, $filter, $sce) {
+        , $mdMedia, patientServices, $rootScope, $mdToast, $timeout, $filter, NgMap) {
+
+        
+        $scope.myInterval = 5000;
+        $scope.noWrapSlides = false;
+        $scope.active = 0;
+        var slides = $scope.slides = [];
+        var currIndex = 0;
 
         if($rootScope.currentUser){
             var currentUser = $rootScope.currentUser;
@@ -23,9 +30,63 @@ app.controller('userController', ['$scope', '$location',
         };
 
 
+        $scope.addSlide = function() {
+            var newWidth = 600 + slides.length + 1;
+            slides.push({
+                image: '//unsplash.it/' + newWidth + '/300',
+                text: ['Nice image','Awesome photograph','That is so cool','I love that'][slides.length % 4],
+                id: currIndex++
+            });
+        };
+
+        NgMap.getMap().then(function(map) {
+            console.log(map.getCenter());
+            console.log('markers', map.markers);
+            console.log('shapes', map.shapes);
+        });
+
+        $scope.randomize = function() {
+            var indexes = generateIndexesArray();
+            assignNewIndexesToSlides(indexes);
+        };
+
+        for (var i = 0; i < 4; i++) {
+            $scope.addSlide();
+        }
+
+        // Randomize logic below
+
+        function assignNewIndexesToSlides(indexes) {
+            for (var i = 0, l = slides.length; i < l; i++) {
+                slides[i].id = indexes.pop();
+            }
+        }
+
+        function generateIndexesArray() {
+            var indexes = [];
+            for (var i = 0; i < currIndex; ++i) {
+                indexes[i] = i;
+            }
+            return shuffle(indexes);
+        }
+
+        // http://stackoverflow.com/questions/962802#962890
+        function shuffle(array) {
+            var tmp, current, top = array.length;
+
+            if (top) {
+                while (--top) {
+                    current = Math.floor(Math.random() * (top + 1));
+                    tmp = array[current];
+                    array[current] = array[top];
+                    array[top] = tmp;
+                }
+            }
+
+            return array;
+        }
+
         $scope.loadUserDetails = function () {
-
-
             $scope.userDetails = {
                 name: null,
                 email: null,
@@ -265,8 +326,6 @@ app.controller('userController', ['$scope', '$location',
             $scope.user.dateofbirth = dateFilter;
             $scope.user.username = $scope.validatedUsername;
             $scope.user.email = $scope.validatedEmail;
-            sessionStorage.clear();
-            console.log($scope.user)
             userServices.save($scope.user)
                 .then(function (res) {
                         userServices.saveZip($scope.fileinfo, res.data)
@@ -321,7 +380,95 @@ app.controller('userController', ['$scope', '$location',
         $scope.dynamicPopover = {
             templateUrl: 'certificationQuestionTemplate.html'
         };
-        
+
+        $scope.loadDoctors = function () {
+            doctorServices.findByRequest()
+                .then(function (response) {
+                $scope.doctors = response.data;
+                angular.forEach($scope.doctors,function(value, key){
+                    if(value.avatar == 0)
+                        value.avatarSrc = 'assets/img/no-avatarDoctor.png';
+                    else
+                        value.avatarSrc = "assets/img/avatar-"+value.username+".jpg?cb=" + random;
+
+                    if($rootScope.currentUser)
+                    {
+                        if(currentUser.role == 2)
+                        {
+                            if (value.doctor.status == 0) {
+                                value.doctor.status = 'Inactive';
+                                value.doctor.statusColor = 'inactiveColor';
+                            }
+                            if (value.doctor.status == 1) {
+                                value.doctor.status = 'Actived';
+                                value.doctor.statusColor = 'activeColor';
+                            }
+                            if (value.doctor.status == 2) {
+                                value.doctor.status = 'Rejected';
+                                value.doctor.statusColor = 'rejectColor';
+                            }
+                        }
+                    }
+
+                    
+                    specialityServices.getSpecialByDoctor(value.doctor.id)
+                        .then(function(response){
+                            value.speciality = response.data;
+                        })
+                })
+            }, function (e) {
+                console.log(e);
+            })
+        };
+
+
+        $scope.selectDoctor = function (ev, doctor) {
+            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
+            $mdDialog.show({
+                    locals: {passDoctor: doctor},
+                    controller: viewDoctorDialogController,
+                    templateUrl: 'viewDoctorDetailsDialog.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: useFullScreen
+
+                })
+                .then(function (answer) {
+                }, function () {
+                });
+        };
+
+        $scope.loadSpeciality = function (spec) {
+            var specList = '';
+            angular.forEach(spec, function (value, key) {
+                specList = specList + value.speciality.name + ', ';
+            });
+            specList = specList.substring(0, specList.length - 2);
+            return specList;
+        };
+
+        function viewDoctorDialogController($scope, $mdDialog, $state, passDoctor) {
+            // Dialog toggle
+            $scope.doctorDetails = passDoctor;
+            $scope.cancel = function () {
+                $mdDialog.cancel();
+            };
+
+            $scope.loadSpeciality = function (spec) {
+                var specList = '';
+                angular.forEach(spec, function (value, key) {
+                    specList = specList + value.speciality.name + ', ';
+                });
+                specList = specList.substring(0, specList.length - 2);
+                return specList;
+            };
+
+            $scope.makeAppointment = function () {
+                $mdDialog.cancel();
+                $state.go('room.viewDocRoom', {selectedDoc: passDoctor});
+            }
+        }
     }]);
 
 
