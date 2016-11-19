@@ -1,10 +1,17 @@
-<table style="width: 100%" st-table="displayedCollection" st-safe-src="appointments">
+<div ng-show="noAppoint">
+    <div class="alert alert-info text-center">
+        <h3><b>You do not have any appointment</b></h3>
+        <button class="btn btn-primary btn-lg" ui-sref="viewDoctor">Go find a doctor
+        <span><i class="fa fa-user-md" aria-hidden="true"></i></span></button>
+    </div>
+</div>
+<table ng-hide="noAppoint" style="width: 100%" st-table="displayedCollection" st-safe-src="appointments">
     <tr>
         <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
     </tr>
 
 </table>
-<table class="table hoverTable" st-table="displayedCollection"
+<table ng-hide="noAppoint" class="table hoverTable" st-table="displayedCollection"
        st-safe-src="appointments" wt-responsive-table class="table table-striped"
        ng-init="loadAppointment()" >
     <thead>
@@ -48,7 +55,7 @@
     </tr>
     </thead>
     <tbody>
-    <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+    <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
     <tr ng-repeat="appoint in displayedCollection" ng-hide="loading" >
         <td class="text-center" data-title="ID">{{ appoint.id }}</td>
         <td data-title="Doctor">{{ appoint.room.doctor.user.name }}</td>
@@ -66,6 +73,13 @@
         </td>
     </tr>
     </tbody>
+    <tfoot>
+    <tr class="text-center">
+        <td colspan="6">
+            <div st-items-by-page="10" st-pagination="" st-template="pagination.html"></div>
+        </td>
+    </tr>
+    </tfoot>
 
 </table>
 

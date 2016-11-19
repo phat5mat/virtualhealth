@@ -145,9 +145,16 @@ angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
                         $state.go('login');
                     } else {
                         if ($rootScope.currentUser['role'] == 1) {
-                            $timeout(function () {
-                                $state.go('room.manageRoom');
-                            });
+                            if($rootScope.docUser.doctor['status'] == 1){
+                                $timeout(function () {
+                                    $state.go('room.manageRoom');
+                                });
+                            }else{
+                                $timeout(function () {
+                                    $state.go('home');
+                                });
+                            }
+
                         }
                         if ($rootScope.currentUser['role'] == 2) {
                             $timeout(function () {
@@ -501,6 +508,19 @@ app.directive("ngFileSelect", function (uploadServices, $timeout) {
     }
 
 });
+
+app.directive('pageSelect', function() {
+    return {
+        restrict: 'E',
+        template: '<input type="text" class="select-page" ng-model="inputPage" ng-change="selectPage(inputPage)">',
+        link: function(scope, element, attrs) {
+            scope.$watch('currentPage', function(c) {
+                scope.inputPage = c;
+            });
+        }
+    }
+});
+
 
 app.directive('ngThumb', ['$window', function ($window) {
     var helper = {

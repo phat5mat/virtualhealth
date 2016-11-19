@@ -85,6 +85,10 @@ class UsersController extends Controller
         {
             $pat = new Patient;
             $pat->users = $user->id;
+            if(isset($newUser['insurance']))
+                $pat->health_insurance = $newUser->insurance;
+            if(isset($newUser['credit']))
+                $pat->credit_card = $newUser->credit;
             $pat->save();
         }
 
@@ -117,6 +121,17 @@ class UsersController extends Controller
         $user->email = $updateUser['email'];
         $user->phone = $updateUser['phone'];
         $user->dateofbirth = $updateUser['dateofbirth'];
+        if($user->role == 0)
+        {
+            $pat = Patient::where('users',$id)->first();
+            if(isset($updateUser['insurance']))
+                $pat->health_insurance = $updateUser['insurance'];
+            if(isset($updateUser['credit']))
+                $pat->credit_card = $updateUser['credit'];
+            $pat->save();
+        }
+
+
         $user->save();
 
         return "Success updating user ";

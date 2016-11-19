@@ -339,13 +339,13 @@ app.controller('doctorController', ['$scope', '$http', '$window', 'doctorService
                                             var lastDay = firstDay + 6;
                                             var firstDate = new Date(today.setDate(firstDay));
                                             var lastDate = new Date(today.setDate(lastDay));
-                                            if (date.getFullYear() == today.getFullYear()) {
+                                            if (date.getFullYear() == new Date().getFullYear()) {
                                                 $scope.examYear++;
-                                                if (today.getDate() == date.getDate())
+                                                if (new Date().toDateString() == date.toDateString())
                                                     $scope.examToday++;
                                                 if (firstDate.getTime() < date.getTime() < lastDate.getTime())
                                                     $scope.examWeek++;
-                                                if (date.getMonth() == today.getMonth())
+                                                if (date.getMonth() == (new Date().getMonth() + 1))
                                                     $scope.examMonth++;
                                             }
                                         }

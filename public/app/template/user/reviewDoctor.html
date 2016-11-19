@@ -1,7 +1,7 @@
 <div class="container">
 
     <table class="table" ng-init="loadRequestDetails()">
-        <h3>Review {{ doctor.user.name }} Request</h3>
+        <h3>Review {{ doctor.name }} Request</h3>
         <tbody>
         <tr>
             <td class="col-md-2">
@@ -9,6 +9,15 @@
             </td>
             <td class="col-md-10">
                 {{ doctor.name }}
+            </td>
+        </tr>
+
+        <tr>
+            <td class="col-md-2">
+                Name
+            </td>
+            <td class="col-md-10">
+                {{ doctor.username }}
             </td>
         </tr>
 
@@ -44,7 +53,7 @@
                 Speciality
             </td>
             <td class="col-md-10">
-                {{ loadSpeciality(doctor.doctor.speciality) }}
+                {{ loadSpeciality(doctor.doctor.professional) }}
             </td>
         </tr>
 
@@ -53,7 +62,9 @@
                 Certification
             </td>
             <td class="col-md-10">
-                <button class="btn btn-primary" ng-click="downloadZip()">Download</button>
+                <button class="btn btn-primary" ng-click="downloadZip()">
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                    Download</button>
             </td>
         </tr>
 
@@ -62,7 +73,8 @@
                 Experience
             </td>
             <td class="col-md-10">
-                {{ doctor.doctor.experience }}
+                <textarea disabled ng-model="doctor.doctor.experience" readonly rows="5" cols="60" style="max-width: 400px; max-height: 150px;">
+                    </textarea>
             </td>
         </tr>
 
@@ -71,12 +83,12 @@
     </table>
     <div class="col-md-4" ng-hide="doctor.doctor.status == 'Actived' || doctor.doctor.status == 'Rejected'">
         <button
-                class="btn btn-primary center-block btn-lg" ng-click="approveRequest(doctor.id)">Approve
+                class="btn btn-primary center-block btn-lg" ng-click="approveRequest(doctor)">Approve
         </button>
     </div>
 
     <div class="col-md-4" ng-hide="doctor.doctor.status == 'Actived' || doctor.doctor.status == 'Rejected' ">
-        <button class="btn btn-warning center-block btn-lg" ng-click="rejectRequest(doctor.id)">Reject</button>
+        <button class="btn btn-warning center-block btn-lg" ng-click="rejectRequest(doctor)">Reject</button>
     </div>
 
 </div>

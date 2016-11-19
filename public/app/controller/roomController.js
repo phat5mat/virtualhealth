@@ -136,6 +136,11 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                 appointmentServices.patientappoint($rootScope.patUser['id'])
                     .then(function (appointData) {
                             $scope.appointments = appointData.data;
+                        if($scope.appointments.length == 0){
+                            $scope.noAppoint = true;
+                            $scope.loading = false;
+                        }else{
+                            $scope.noAppoint = false;
                             angular.forEach($scope.appointments, function (value, key) {
                                 value.room.startDate = new Date(value.room.startDate);
                                 if (value.status == 0) {
@@ -157,7 +162,7 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
 
                             });
                             $scope.loading = false;
-
+                        }
                         },
                         function (e) {
                             console.log(e.data.error);
@@ -191,21 +196,35 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
 
 
         $scope.showMakeAppointmentDialog = function (ev, room) {
-            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
+            if(room.status == 'Waiting' || room.status == 'Open'){
+                appointmentServices.checkExist(room.id)
+                    .then(function(response){
+                        if(response.data == 'false')
+                        {
+                            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
 
-            $mdDialog.show({
-                    locals: {passRoom: room},
-                    controller: makeAppointmentController,
-                    templateUrl: 'makeAppointmentDialog.html',
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: useFullScreen
+                            $mdDialog.show({
+                                    locals: {passRoom: room},
+                                    controller: makeAppointmentController,
+                                    templateUrl: 'makeAppointmentDialog.html',
+                                    parent: angular.element(document.body),
+                                    targetEvent: ev,
+                                    clickOutsideToClose: true,
+                                    fullscreen: useFullScreen
 
-                })
-                .then(function (answer) {
-                }, function () {
-                });
+                                })
+                                .then(function (answer) {
+                                }, function () {
+                                });
+                        }else{
+                            $mdToast.show($mdToast.simple().textContent('You have made appointment with this room already!'));
+                        }
+                    })
+
+            }else{
+                $mdToast.show($mdToast.simple().textContent('This room is not availabled!'));
+            }
+
         };
 
         // remove room
@@ -411,7 +430,8 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                 $scope.appointment = {
                     patients: null,
                     room: null,
-                    status: null
+                    status: null,
+                    condition: null
                 };
 
                 // Get patient's id
@@ -420,7 +440,12 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                 // Get doctor's id
                 $scope.appointment.room = passRoom['id'];
 
-                $scope.appointment.status = 0;
+                if(passRoom['status'] == 'Open')
+                    $scope.appointment.status = 1;
+                else
+                    $scope.appointment.status = 0;
+
+                $scope.appointment.condition = $scope.condition;
 
                 $scope.appointment.slot = passRoom['roomSize'] - passRoom['available'] + 1;
 

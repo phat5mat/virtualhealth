@@ -31,26 +31,35 @@ app.controller('userController', ['$scope', '$location',
 
 
         $scope.addSlide = function() {
-            var newWidth = 600 + slides.length + 1;
+            var position = slides.length + 1;
             slides.push({
-                image: '//unsplash.it/' + newWidth + '/300',
-                text: ['Nice image','Awesome photograph','That is so cool','I love that'][slides.length % 4],
+                image: 'assets/img/Logo/' + position + '.jpg',
+                text: ['Health Care Online',
+                    'Verified Doctor',
+                    'Get Doctor Note Online',
+                    'Easy Management',
+                'Friendly Schedule Management',
+                'Easy Prescription Management',
+                'Protect Your Smile',
+                'Secure Your Health'][slides.length % 7],
                 id: currIndex++
             });
         };
 
-        NgMap.getMap().then(function(map) {
-            console.log(map.getCenter());
-            console.log('markers', map.markers);
-            console.log('shapes', map.shapes);
-        });
+       $scope.loadGoogleMap = function(){
+           NgMap.getMap().then(function(map) {
+               console.log(map.getCenter());
+               console.log('markers', map.markers);
+               console.log('shapes', map.shapes);
+           });
+       }
 
         $scope.randomize = function() {
             var indexes = generateIndexesArray();
             assignNewIndexesToSlides(indexes);
         };
 
-        for (var i = 0; i < 4; i++) {
+        for (var i = 0; i < 7; i++) {
             $scope.addSlide();
         }
 
@@ -114,12 +123,25 @@ app.controller('userController', ['$scope', '$location',
         $scope.showUpdate = function () {
             $scope.updateToggle = true;
             $scope.changePasswordToggle = false;
-            $scope.updateUser = {
-                updateName: $scope.userDetails.name,
-                username: $scope.userDetails.username,
-                email: $scope.userDetails.email,
-                phone: $scope.userDetails.phone,
-                dateofbirth: new Date($scope.userDetails.dateofbirth)
+            if($rootScope.patUser)
+            {
+                $scope.updateUser = {
+                    updateName: $scope.userDetails.name,
+                    username: $scope.userDetails.username,
+                    email: $scope.userDetails.email,
+                    phone: $scope.userDetails.phone,
+                    dateofbirth: new Date($scope.userDetails.dateofbirth),
+                    credit: $rootScope.patUser.credit_card,
+                    insurance: $rootScope.patUser.health_insurance
+                }
+            }else{
+                $scope.updateUser = {
+                    updateName: $scope.userDetails.name,
+                    username: $scope.userDetails.username,
+                    email: $scope.userDetails.email,
+                    phone: $scope.userDetails.phone,
+                    dateofbirth: new Date($scope.userDetails.dateofbirth)
+                }
             }
         };
 
@@ -142,6 +164,13 @@ app.controller('userController', ['$scope', '$location',
                                 $timeout(function () {
                                     localStorage.setItem('user', JSON.stringify(response.data));
                                     $scope.userDetails = response.data;
+                                    if($scope.userDetails.role == 0){
+                                        patientServices.findByUser($scope.userDetails.id)
+                                            .then(function(response){
+                                                $rootScope.patUser.credit_card = response.data.credit_card;
+                                                $rootScope.patUser.health_insurance = response.data.health_insurance;
+                                            })
+                                    }
                                     $scope.userDetails.created_at = new Date($scope.userDetails.created_at);
                                     $scope.userDetails.updated_at = new Date($scope.userDetails.updated_at);
                                     $scope.updateToggle = false;
@@ -214,7 +243,7 @@ app.controller('userController', ['$scope', '$location',
                 })
                 .then(function (answer) {
                     $timeout(function () {
-                        $scope.imgSrc = $scope.imgSrc + "?cb=" + random;
+                        $scope.imgSrc = avatarPath + "?cb=" + random;
                     });
 
                 }, function () {
@@ -267,7 +296,9 @@ app.controller('userController', ['$scope', '$location',
                 certification: null,
                 speciality: null,
                 experience: null,
-                dateofbirth: null
+                dateofbirth: null,
+                insurance: null, 
+                credit: null
             };
             $scope.confirmpass = null;
         };
@@ -334,9 +365,15 @@ app.controller('userController', ['$scope', '$location',
                                 $scope.patForm = false;
                                 $scope.docForm = false;
                                 if ($scope.user.role == 0)
+                                {
+                                    $scope.loading = false;
                                     $scope.successPatient = true;
+                                }
                                 if ($scope.user.role == 1)
+                                {
+                                    $scope.loading = false;
                                     $scope.successDoctor = true;
+                                }
                             }, function (e) {
                                 console.log(e)
                             });

@@ -14,9 +14,7 @@
         <div class="row controlRow">
             <button class="btn btn-default controlButton">Information</button>
         </div>
-        <div class="row controlRow">
-            <button class="btn btn-default controlButton">Balance</button>
-        </div>
+
 
     </div>
     <div id="informationTab" class="col-md-8 pull-left">
@@ -76,6 +74,23 @@
                         </div>
                     </md-input-container>
 
+                    <md-input-container class="md-block" ng-if="patUser">
+                        <md-icon md-svg-src="app/imgs/ic_credit_card_24px.svg" ></md-icon>
+                        <label>Credit Card</label>
+                        <input  class="form-control"
+                                  name="credit"
+                                  ng-model="updateUser.credit">
+                        </input>
+                    </md-input-container>
+
+                    <md-input-container class="md-block" ng-if="patUser">
+                        <md-icon md-svg-src="app/imgs/ic_card_membership_24px.svg" ></md-icon>
+                        <label>Health Insurance</label>
+                        <input  class="form-control"
+                                  name="insurance"
+                                  ng-model="updateUser.insurance">
+                        </input>
+                    </md-input-container>
 
                     <md-input-container class="md-block" ng-if="docUser">
                         <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg" ></md-icon>
@@ -223,11 +238,31 @@
 
                     <tr ng-if="docUser">
                         <td class="col-md-4">
-                            <md-icon md-svg-src="app/imgs/ic_chat_24px.svg" class="email"></md-icon>
+                            <md-icon md-svg-src="app/imgs/ic_chat_24px.svg" ></md-icon>
                             Biography
                         </td>
                         <td class="col-md-8">
                             {{ docUser.doctor.biography }}
+                        </td>
+                    </tr>
+
+                    <tr ng-if="patUser">
+                        <td class="col-md-4">
+                            <md-icon md-svg-src="app/imgs/ic_credit_card_24px.svg"></md-icon>
+                            Credit Card
+                        </td>
+                        <td class="col-md-8">
+                            {{ patUser.credit_card }}
+                        </td>
+                    </tr>
+
+                    <tr ng-if="patUser">
+                        <td class="col-md-4">
+                            <md-icon md-svg-src="app/imgs/ic_card_membership_24px.svg" ></md-icon>
+                            Health Insurance
+                        </td>
+                        <td class="col-md-8">
+                            {{ patUser.health_insurance }}
                         </td>
                     </tr>
 

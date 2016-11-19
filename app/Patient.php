@@ -17,4 +17,5 @@ class Patient extends Model
     protected $table = 'patient';
     protected $primaryKey = 'id';
     public $timestamps = false;
+    protected $fillable = ['users'];
 }

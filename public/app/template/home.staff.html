@@ -16,7 +16,7 @@
                     </div>
                     <div class="row" ng-repeat="notify in requestNotification">
                         <div class="alert alert-info" style="margin: 3px;width: 98%"
-                             ng-hide="notify.isTime || notify.status != 0" ng-click="selectRequest(notify)">
+                             ng-hide="notify.isTime || notify.status != 0" ng-click="selectRequest(notify.user)">
                             <span><i class="fa fa-user-md"></i></span>
                             {{notify.user.name}} sent a doctor request at {{convertDate(notify.user.created_at) | date:"h:mma"}}
                         </div>
@@ -37,20 +37,14 @@
                         <i class="fa fa-file-text"></i>
                     </span>
                     <div class="info-content-container">
-                        <div class="info-title">
+                        <div style="line-height:140px;font-size: 15px; text-align: center">
                             <b>{{totalRequest}}</b> REQUEST(s)
                             <span>
                                 <i class="fa fa-question-circle"
-                                   uib-popover="Number of your completed examination!"
+                                   uib-popover="Number of current request!"
                                    popover-trigger="'mouseenter'"
                                    aria-hidden="true"></i>
                             </span>
-                        </div>
-                        <div class="info-box-content">
-                            <p><b>{{reqToday}}</b> Request(s) Today</p>
-                            <p><b>{{reqWeek}}</b> Request(s) this Week</p>
-                            <p><b>{{reqMonth}}</b> Request(s) this Month</p>
-                            <p><b>{{reqYear}}</b> Request(s) this Year</p>
                         </div>
                     </div>
                 </div>

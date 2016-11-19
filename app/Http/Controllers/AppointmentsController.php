@@ -96,6 +96,11 @@ class AppointmentsController extends Controller
 
     }
 
+    public function findByID($id){
+        $appoint = Appointment::where('id',$id)->first();
+        return $appoint;
+    }
+
     public function store(Request $request)
     {
         $newApp = $request->all();
@@ -105,10 +110,19 @@ class AppointmentsController extends Controller
         $appointment->room = $newApp['room'];
         $appointment->status = $newApp['status'];
         $appointment->slot = $newApp['slot'];
+        $appointment->condition = $newApp['condition'];
 
         $appointment->save();
     }
 
+
+    public function checkAppointmentExist($id){
+        $app = Appointment::where('room',$id)->first();
+        if(empty($app))
+            return 'false';
+        else
+            return 'true';
+    }
 
     public function update(Request $request, $id)
     {

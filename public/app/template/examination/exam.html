@@ -26,7 +26,7 @@
 
                     <tr>
                         <td class="col-md-2">
-                            Size
+                            Room Size
                         </td>
                         <td class="col-md-4">
                             {{ roomDetails2.roomSize }}
@@ -68,31 +68,12 @@
                             <table class="table contactsContent">
                                 <p class="text-center" ng-show="loading"><span
                                         class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
-                                <tbody ng-repeat="pat in roomPatients track by pat.id " ng-hide="loading"
+                                <tbody ng-repeat="pat in roomPatients " ng-hide="loading"
                                        ng-click="selectPatient(pat)">
                                 <tr>
-                                    <td class="col-md-2">
-                                        Name
-                                    </td>
-                                    <td class="col-md-2">
-                                        {{ pat.name }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-md-2">
-                                        Age
-                                    </td>
-                                    <td class="col-md-2">
-                                        {{ pat.age }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="col-md-2">
-                                        Slot
-                                    </td>
-                                    <td class="col-md-2">
-                                        {{ pat.slot }}
+                                    <td><img class="avatarCircle" ng-src="{{pat.avatarSrc}}"></td>
+                                    <td colspan="2">
+                                        <h4><b>{{ pat.name }} - {{pat.slot}}</b></h4>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -125,14 +106,14 @@
                                     Condition
                                 </td>
                                 <td class="col-md-4">
-                                    {{ patDetails.patient.condition }}
+                                    {{ patDetails.condition}}
                                 </td>
                             </tr>
+
+
                             </tbody>
                         </table>
                     </uib-tab>
-                    <button class="btn btn-primary text-center" ng-click="showHealth()">Health Statistic</button>
-
                     <uib-tab disable="detailsTab" index="2" heading="Prescription">
                         <form class="form-group" name="medForm">
                             <table class="table no-border">
@@ -331,6 +312,12 @@
                         <table class="table">
                             <tbody>
                             <tr>
+                                <td class="col-md-4">
+                                <td><img width="100px" height="110px" ng-src="{{patDetails.avatarSrc}}"></td>
+                                </td>
+                            </tr>
+
+                            <tr>
                                 <td class="col-md-1">
                                     Name
                                 </td>
@@ -350,10 +337,10 @@
 
                             <tr>
                                 <td class="col-md-1">
-                                    Condition
+                                    Age
                                 </td>
                                 <td class="col-md-3">
-                                    {{ patDetails.patient.condition }}
+                                    {{ patDetails.condition}}
                                 </td>
                             </tr>
 
@@ -533,5 +520,44 @@
     </form>
     </md-dialog>
 </script>
+
+
+<script type="text/ng-template" id="rateDoctor.html">
+    <md-dialog aria-label="Doctor Rating">
+        <form class="form-group"
+              ng-submit="createRoom()" name="roomForm">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2 align="center">Thank You</h2>
+                    <h2>Rate Dr.{{doc}}</h2>
+                    <span flex></span>
+                </div>
+            </md-toolbar>
+
+            <md-dialog-content>
+                <div class="container" style="width: 400px;height: 200px">
+                    <span  uib-rating ng-model="rate" max="5"
+                          on-hover="hoveringOver(value)" on-leave="overStar = null"
+                          aria-labelledby="default-rating" style="color: yellow; width: 200px; height: 100px">
+                    </span>
+                    <div ng-show="overStar">
+                        <h3><b>{{rateDes}}</b></h3>
+                    </div>
+                    <textarea cols="30" rows="4" ng-model="comment"
+                              placeholder="What do you think about this doctor?"></textarea>
+                </div>
+            </md-dialog-content>
+            <md-dialog-actions layout="row" class="text-center">
+                <md-button class="md-raised md-primary" ng-click="doneRate()" style="margin-right:20px;">
+                    OK
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+
+    </form>
+    </md-dialog>
+</script>
+
 
 

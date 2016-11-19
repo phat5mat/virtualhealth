@@ -1,11 +1,19 @@
+
 <h3>Examination Management</h3>
-    <table style="width: 100%" st-table="displayedCollection" st-safe-src="appointments">
+<div ng-show="noExam">
+    <div class="alert alert-info text-center">
+        <h3><b>You do not have any examination</b></h3>
+        <button class="btn btn-primary btn-lg" ui-sref="viewDoctor">Go find a doctor
+            <span><i class="fa fa-user-md" aria-hidden="true"></i></span></button>
+    </div>
+</div>
+    <table ng-hide="noExam" style="width: 100%" st-table="displayedCollection" st-safe-src="appointments">
         <tr>
             <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
         </tr>
 
     </table>
-    <table st-table="displayedCollection"
+    <table ng-hide="noExam" st-table="displayedCollection"
            st-safe-src="examList" wt-responsive-table class="table table-striped hoverTable"
            ng-init="loadExamination()" >
         <thead>
@@ -42,7 +50,7 @@
         </tr>
         </thead>
         <tbody>
-        <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
+        <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
         <tr ng-repeat="exam in displayedCollection" ng-hide="loading" ng-click="selectExam(exam)" >
             <td>{{ exam.examination.id }}</td>
             <td>{{ exam.examination.date | date:"MM/dd/yyyy 'at' h:mma" }}</td>
@@ -51,6 +59,13 @@
             <td>{{ exam.room.speciality.name }}</td>
         </tr>
         </tbody>
+        <tfoot>
+        <tr class="text-center">
+            <td colspan="6">
+                <div st-items-by-page="10" st-pagination="" st-template="pagination.html"></div>
+            </td>
+        </tr>
+        </tfoot>
     </table>
 
 

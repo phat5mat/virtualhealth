@@ -121,6 +121,18 @@ angular
                     console.log(e);
                 })
             }
-            
+
+            $scope.checkActive = function(){
+                if($rootScope.docUser.doctor.status == 1)
+                {
+                    $timeout(function(){
+                        $state.go('room.manageRoom');
+                    })
+                }else{
+                    $timeout(function(){
+                        $mdToast.show($mdToast.simple().textContent('You need to be activated to use this function!'));
+                    })
+                }
+            }
            
         }]);

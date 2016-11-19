@@ -9,13 +9,10 @@ app.controller('staffController', ['$scope', '$location', '$http', 'userServices
         , specialityServices, downloadServices) {
 
         $scope.events = [];
+        $scope.doctors = [];
         $scope.loading = true;
         $scope.totalDoctor = 0;
         $scope.totalRequest = 0;
-        $scope.reqToday = 0;
-        $scope.reqMonth = 0;
-        $scope.reqWeek = 0;
-        $scope.reqYear = 0;
 
         $scope.inactiveDoc = 0;
         $scope.activeDoc = 0;
@@ -56,6 +53,13 @@ app.controller('staffController', ['$scope', '$location', '$http', 'userServices
             return '';
         }
 
+        function checkRequestExist(){
+            if($scope.doctors.length == 0 )
+                $scope.noRequest = true;
+            else
+                $scope.noRequest = false;
+
+        }
         $scope.today = function () {
             $scope.cal.dt = new Date();
             $scope.loadNotification();
@@ -68,11 +72,15 @@ app.controller('staffController', ['$scope', '$location', '$http', 'userServices
                         $scope.users = res.data;
                         // Convert status into text
                         angular.forEach($scope.users, function (value, key) {
-                            value.created_at = new Date(value.created_at);
-                            specialityServices.getSpecialByDoctor(value.doctor.id)
-                                .then(function (response) {
-                                    value.doctor.speciality = response.data;
-                                })
+                            if(value.doctor.status == 0){
+                                value.created_at = new Date(value.created_at);
+                                specialityServices.getSpecialByDoctor(value.doctor.id)
+                                    .then(function (response) {
+                                        value.doctor.speciality = response.data;
+                                    });
+                                $scope.doctors.push(value);
+                            }
+                            checkRequestExist()
                         });
                         $scope.loading = false;
                     },
@@ -87,11 +95,11 @@ app.controller('staffController', ['$scope', '$location', '$http', 'userServices
                 .then(function (response) {
                     $scope.req = response.data;
                     angular.forEach($scope.req, function (value, key) {
+                        $scope.totalRequest++;
                         $scope.userCreatedDate.push(new Date(value.user.created_at));
                     });
                     customCalendar();
                     $scope.loadNotification();
-                    $scope.loadRequestStat();
                     $scope.loadDoctorInfo();
                     $scope.loading = false;
                 }, function (e) {
@@ -102,26 +110,7 @@ app.controller('staffController', ['$scope', '$location', '$http', 'userServices
         $scope.convertDate = function (date) {
             return new Date(date)
         };
-
-        $scope.loadRequestStat = function () {
-            angular.forEach($scope.req, function (value, key) {
-                $scope.totalRequest++;
-                var date = new Date(value.user.created_at);
-                var firstDay = today.getDate() - today.getDay() + 2;
-                var lastDay = firstDay + 6;
-                var firstDate = new Date(today.setDate(firstDay));
-                var lastDate = new Date(today.setDate(lastDay));
-                if (date.getFullYear() == today.getFullYear()) {
-                    $scope.reqYear++;
-                    if (today.getDate() == date.getDate())
-                        $scope.reqToday++;
-                    if (firstDate.getTime() < date.getTime() < lastDate.getTime())
-                        $scope.reqWeek++;
-                    if (date.getMonth() == today.getMonth())
-                        $scope.reqMonth++;
-                }
-            })
-        };
+        
 
         $scope.loadDoctorInfo = function () {
             doctorServices.getAllDoc()
@@ -168,31 +157,37 @@ app.controller('staffController', ['$scope', '$location', '$http', 'userServices
             return specList;
         };
 
-        $scope.selectRequest = function (doctor) {             
-            $state.go('reviewDoctor', {doctor: doctor});
+        $scope.selectRequest = function (user) {
+            doctorServices.findByUser(user.id)
+                .then(function(res){
+                    user.doctor = res.data.doctor;
+                    $state.go('reviewDoctor', {doctor: user});
+                });
         };
 
         $scope.loadRequestDetails = function () {
             $scope.doctor = $stateParams.doctor;
+            console.log($scope.doctor)
             $scope.checkRequest();
         };
 
-        $scope.approveRequest = function () {
-            doctorServices.approveRequest($scope.doctor.id)
+        $scope.approveRequest = function (doctorname) {
+            doctorServices.approveRequest($scope.doctor.doctor.id)
                 .then(function (data) {
+                    console.log(doctorname)
                     $state.go('viewRequest');
-                    $mdToast.show($mdToast.simple().textContent('Doctor ' + $scope.doctor.user.name + ' is ' +
+                    $mdToast.show($mdToast.simple().textContent('Doctor ' + doctorname.name + ' is ' +
                         'actived!!'));
                 }, function (e) {
                     console.log(e);
                 })
         };
 
-        $scope.rejectRequest = function () {
-            doctorServices.rejectRequest($scope.doctor.id)
+        $scope.rejectRequest = function (doctorname) {
+            doctorServices.rejectRequest($scope.doctor.doctor.id)
                 .then(function (data) {
                     $state.go('viewRequest');
-                    $mdToast.show($mdToast.simple().textContent('Doctor ' + $scope.doctor.name + ' is ' +
+                    $mdToast.show($mdToast.simple().textContent('Doctor ' + doctorname.name + ' is ' +
                         'rejected!!'));
                     $scope.checkRequest();
                 }, function (e) {
@@ -202,7 +197,7 @@ app.controller('staffController', ['$scope', '$location', '$http', 'userServices
 
 
         $scope.downloadZip = function () {
-            var filename = 'doctorID-' + $scope.doctor.id + '.zip';
+            var filename = 'doctorID-' + $scope.doctor.doctor.id + '.zip';
             downloadServices.downloadZip(filename)
                 .then(function (response) {
                     var blob = new Blob([response.data]);
@@ -212,7 +207,7 @@ app.controller('staffController', ['$scope', '$location', '$http', 'userServices
                     else {
                         var file = window.document.createElement('a');
                         file.href = window.URL.createObjectURL(blob);
-                        file.download = "Dr." + $scope.doctor.user.name + '-Certification.zip';
+                        file.download = "Dr." + $scope.doctor.name + '-Certification.zip';
                         document.body.appendChild(file);
                         file.click();
                         document.body.removeChild(file);

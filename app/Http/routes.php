@@ -46,7 +46,8 @@ Route::group(array('prefix' => 'api'), function() {
     Route::resource('appointment', 'AppointmentsController');
     Route::get('doctorappoint/{doctor}', 'AppointmentsController@findByDoctor');
     Route::get('doctorappoint2/{doctor}', 'AppointmentsController@findByDoctor2');
-
+    Route::get('checkAppointExist/{room}', 'AppointmentsController@checkAppointmentExist');
+    Route::get('patbyid/{pat}', 'AppointmentsController@findByID');
 
     Route::resource('examination', 'ExaminationController');
     Route::get('specialbydoctor/{doctor}', 'SpecialityController@findSpeciaByDoctor');
@@ -60,6 +61,7 @@ Route::group(array('prefix' => 'api'), function() {
     Route::put('rejectrequest/{doctor}','DoctorsController@rejectRequest');
     Route::get('downloadZip/{doctor}','DoctorsController@downloadZip');
     Route::get('getalldoc','DoctorsController@getAllDoctor');
+    Route::get('ratedoctor/{doctor}','DoctorsController@rateDoctor');
 
 
 

@@ -10,12 +10,19 @@ app.controller('manageExamController', ['$scope', '$http', '$window', 'doctorSer
         $scope.examDocList = [];
         // Initialize components
         $scope.loadExamination = function () {
+            $scope.loading = true;
             examinationServices.getExamByPatient($rootScope.patUser.id)
                 .then(function (exam) {
                     $scope.examList = exam.data;
-                    angular.forEach($scope.examList, function (value, key) {
-                        value.examination.date = new Date(value.examination.date);
-                    })
+                    if($scope.examList.length == 0){
+                        $scope.noExam = true;
+                        $scope.loading = false;
+                    }else{
+                        angular.forEach($scope.examList, function (value, key) {
+                            value.examination.date = new Date(value.examination.date);
+                        })
+                        $scope.loading = false;
+                    }
                 }, function (e) {
                     console.log(e)
                 })

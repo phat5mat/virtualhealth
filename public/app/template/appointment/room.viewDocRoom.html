@@ -31,6 +31,18 @@
             <input st-search="startDate"
                    class="input-sm form-control"/>
         </th>
+        <th>
+            <input st-search="roomSize"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="available"
+                   class="input-sm form-control"/>
+        </th>
+        <th>
+            <input st-search="status"
+                   class="input-sm form-control"/>
+        </th>
     </tr>
     </thead>
     <tbody>
@@ -45,6 +57,13 @@
     </tr>
 
     </tbody>
+    <tfoot>
+    <tr class="text-center">
+        <td colspan="6">
+            <div st-items-by-page="10" st-pagination="" st-template="pagination.html"></div>
+        </td>
+    </tr>
+    </tfoot>
 </table>
 
 <script type="text/ng-template" id="makeAppointmentDialog.html">
@@ -63,9 +82,14 @@
 
             <md-dialog-content>
                 <div class="md-dialog-content">
-                    <div class="container" style="width:400px;height:100px;">
+                    <div class="container" style="width:500px;height:150px;">
                         <div ng-hide="roomDetails.available <= 0 || roomDetails.status == 'Closed'" class="alert alert-success text-center" role="alert">
-                            <h4><b>Are you sure to make an appoint?</b></h4>
+                            <h4><b>Are you sure to make an appointment?</b></h4>
+                            <textarea cols="50" rows="4"
+                                      placeholder="Provide your conditon early so we can help you better!"
+                                      ng-model="condition">
+
+                            </textarea>
                         </div>
                         <div ng-show="roomDetails.available <= 0" class="alert alert-danger text-center" role="alert">
                             <h4><b>This room is full.</b></h4>

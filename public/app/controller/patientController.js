@@ -139,13 +139,13 @@ app.controller('patientController', ['$scope', '$location',
                             var lastDay = firstDay + 6;
                             var firstDate = new Date(today.setDate(firstDay));
                             var lastDate = new Date(today.setDate(lastDay));
-                            if (date.getFullYear() == today.getFullYear()) {
+                            if (date.getFullYear() == new Date().getFullYear()) {
                                 $scope.examYear++;
-                                if (today.getDate() == date.getDate())
+                                if (new Date().toDateString() == date.toDateString())
                                     $scope.examToday++;
                                 if (firstDate.getTime() < date.getTime() < lastDate.getTime())
                                     $scope.examWeek++;
-                                if (date.getMonth() == today.getMonth())
+                                if (date.getMonth() == new Date().getMonth())
                                     $scope.examMonth++;
                             }
                         }
@@ -159,6 +159,7 @@ app.controller('patientController', ['$scope', '$location',
         $scope.loadNotification = function () {
             $scope.appointNotification = [];
             angular.forEach($scope.appointmentList, function (value, key) {
+                
                 selectedDate = new Date($scope.cal.dt.toDateString());
                 var roomDate = new Date(value.room.startDate);
                 var roomDateDay = new Date(roomDate.toDateString());
@@ -176,6 +177,7 @@ app.controller('patientController', ['$scope', '$location',
                 if (roomDateDay.getTime() == selectedDate.getTime()
                     && new Date(selectedDate).toDateString() == new Date().toDateString()) {
                     if (value.status == 0 || value.status == 1) {
+                        console.log(value)
                         if (roomDate.getTime() <= $scope.cal.dt.getTime() && value.status == 0)
                             value.isTime = true;
                         if (roomDate.getTime() > $scope.cal.dt.getTime() && value.status == 0)
@@ -220,8 +222,14 @@ app.controller('patientController', ['$scope', '$location',
         $scope.loadLastExamination = function () {
             examinationServices.getLastExamByPatient($rootScope.patUser.id)
                 .then(function (response) {
-                    response.data.examination.date = new Date(response.data.examination.date)
-                    $scope.lastExam = response.data
+                    if(response.data)
+                    {
+                        response.data.examination.date = new Date(response.data.examination.date)
+                        $scope.lastExam = response.data;
+                    }
+                    else{
+                        $scope.lastExam = false;
+                    }
                 })
         };
 

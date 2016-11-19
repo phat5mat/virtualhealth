@@ -15,6 +15,13 @@ app.service('appointmentServices',function($http,API_URL){
             return $http.get(API_URL + "room");
         },
 
+        findbyid: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "patbyid/" + id,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
         
         doctorappoint: function(id){
             return $http({
@@ -74,6 +81,15 @@ app.service('appointmentServices',function($http,API_URL){
 
             });
         },
+        
+        checkExist: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "checkAppointExist/" + id,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
+        
         save : function(appData){
             return $http({
                 method: 'POST',

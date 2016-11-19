@@ -373,6 +373,10 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                                     user: contactObj.id,
                                     room: localStorage.getItem('chatRoom')
                                 };
+                                if(contactObj.avatar == 1)
+                                    contactObj.avatarSrc =  "assets/img/avatar-" + contactObj.username + ".jpg";
+                                else
+                                    contactObj.avatarSrc = "assets/img/no-avatar.png";
 
                                 getNumber(slot);
 
@@ -409,7 +413,10 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                         user: contactObj.id,
                         room: localStorage.getItem('chatRoom')
                     };
-
+                    if(contactObj.avatar == 1)
+                        contactObj.avatarSrc =  "assets/img/avatar-" + contactObj.username + ".jpg";
+                    else
+                        contactObj.avatarSrc = "assets/img/no-avatar.png";
                     getNumber(slot);
 
                     // Update contacts list
@@ -616,14 +623,42 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                         if (currentUser.role == 1)
                             leaveDoctor(currentUser);
                         if (currentUser.role == 0) {
-                            examinationServices.getExamByAppointment($stateParams.selectedAppoint)
-                                .then(function (exam) {
-                                    leaveDoctor(currentUser);
-                                    leaveRoom(currentUser);
-                                    $timeout(function () {
-                                        $state.go('examDetails', {selectedExam: exam.data[0]});
-                                    }, 1000)
+                            $mdDialog.show({
+                                    locals: {
+                                        passPat: $scope.roomPatients,
+                                        passRoom: $stateParams.selectedRoom.name
+                                    },
+                                    controller: rateDoctorController,
+                                    templateUrl: 'rateDoctor.html',
+                                    parent: angular.element(document.body),
+                                    clickOutsideToClose: true
                                 })
+                                .then(function (response) {
+                                    if(response.rate != null || response.comment != null){
+                                        doctorServices.rateDoctor($stateParams.selectedRoom.doctor.id,response)
+                                            .then(function(){
+                                                examinationServices.getExamByAppointment($stateParams.selectedAppoint)
+                                                    .then(function (exam) {
+                                                        leaveDoctor(currentUser);
+                                                        leaveRoom(currentUser);
+                                                        $timeout(function () {
+                                                            $state.go('examDetails', {selectedExam: exam.data[0]});
+                                                        }, 1000)
+                                                    })
+                                            })
+                                    }else{
+                                        examinationServices.getExamByAppointment($stateParams.selectedAppoint)
+                                            .then(function (exam) {
+                                                leaveDoctor(currentUser);
+                                                leaveRoom(currentUser);
+                                                $timeout(function () {
+                                                    $state.go('examDetails', {selectedExam: exam.data[0]});
+                                                }, 1000)
+                                            })
+                                    }
+                                  
+                                })
+                            
 
                         }
                     }
@@ -722,6 +757,11 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                                                 var age = new Date().getFullYear() -
                                                     pat.data[0].dateofbirth.substring(0, 4);
                                                 $scope.patDetails.age = age;
+                                                appointmentServices.findbyid(message['patAppoint'])
+                                                    .then(function(response){
+                                                        var patData = response.data;
+                                                        $scope.patDetails.condition = patData.condition;
+                                                    })
                                             }, function (e) {
                                                 console.log(e);
                                             })
@@ -836,6 +876,10 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
             $timeout(function () {
                 $scope.medicines = passPres;
                 $scope.patDetails = passPat;
+                if($scope.patDetails.avatar == 1)
+                    $scope.patDetails.avatarSrc =  "assets/img/avatar-" +  $scope.patDetails.username + ".jpg";
+                else
+                    $scope.patDetails.avatarSrc = "assets/img/no-avatar.png";
             });
 
             $scope.checkPres = function () {
@@ -906,6 +950,37 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
             };
 
             
+        }
+
+        function rateDoctorController($scope,$mdDialog){
+            $scope.hoveringOver = function(value) {
+                $scope.overStar = value;
+                $timeout(function(){
+                    if(value == 1){
+                        $scope.rateDes = 'Terrible';
+                    }
+                    if(value == 2){
+                        $scope.rateDes = 'Bad';
+                    }
+                    if(value == 3){
+                        $scope.rateDes = 'OK';
+                    }
+                    if(value == 4){
+                        $scope.rateDes = 'Good';
+                    }
+                    if(value == 5){
+                        $scope.rateDes = 'Very good';
+                    }
+                })
+            };
+            $scope.doneRate = function(){
+                $scope.feedback = {
+                    rate : $scope.overStar,
+                    comment : $scope.comment
+                };
+                $mdDialog.hide($scope.feedback);
+            };
+            $scope.doc = $stateParams.selectedRoom.doctor.user.username;
         }
 
 

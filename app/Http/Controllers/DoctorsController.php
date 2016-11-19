@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Doctor;
+use App\Feedback;
 use App\User;
-use PhpParser\Comment\Doc;
 use Response;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -43,6 +43,34 @@ class DoctorsController extends Controller
     public function getAllDoctor(){
         $doctor = Doctor::all();
         return $doctor;
+    }
+
+    public function rateDoctor($id,Request $request){
+        $doc = Doctor::where('id',$id)->first();
+        $newFeedback = $request->all();
+        $feedback = new Feedback;
+        $feedback->comment = $newFeedback->comment;
+        if(isset($newFeedback->rate))
+        {
+            $feedback->rate = $newFeedback->rate;
+        }else{
+            $feedback->rate = 0;
+        }
+        $feedback->doctor = $id;
+        $feedback->save();
+        $newRate = 0;
+        $totalFeedback = Feedback::where('doctor',$id)
+            ->where('rate','!=',0)
+            ->get();
+        foreach($totalFeedback as $value)
+        {
+            $newRate = $newRate + $value->rate;
+        }
+        $newRate = $newRate / count($totalFeedback);
+        $doc->rate = round($newRate);
+        $doc->save();
+        return $newRate;
+
     }
 
     public function findDocByUser($id)
@@ -85,16 +113,16 @@ class DoctorsController extends Controller
 
     public function approveRequest($id)
     {
-        $doctor = Doctor::find($id);
+        $doctor = Doctor::where('id',$id)->first();
         $doctor->status = 1;
         $doctor->save();
-        return "Sucess updating doctor ";
+        return 'Approve Successful';
     }
 
 
     public function rejectRequest($id)
     {
-        $doctor = Doctor::find($id);
+        $doctor = Doctor::where('id',$id)->first();
         $doctor->status = 2;
         $doctor->save();
         return "Sucess updating doctor ";

@@ -27,9 +27,9 @@
 <script src="../bower_components/angular-material/angular-material.js"></script>
 <script src="../bower_components/angular-messages/angular-messages.js"></script>
 <script src="../bower_components/ng-file-upload/ng-file-upload.js"></script>
-<script  src="../bower_components/footable/js/footable.js"></script>
-<script  src="../bower_components/angular-footable/dist/angular-footable.js"></script>
-<script  src="../bower_components/angular-responsive-tables/release/angular-responsive-tables.js"></script>
+<script src="../bower_components/footable/js/footable.js"></script>
+<script src="../bower_components/angular-footable/dist/angular-footable.js"></script>
+<script src="../bower_components/angular-responsive-tables/release/angular-responsive-tables.js"></script>
 <script src="../bower_components/chart.js/dist/Chart.min.js"></script>
 <script src="../bower_components/angular-chart.js/dist/angular-chart.js"></script>
 <script src="../bower_components/angular-ui-clock/dist/angular-clock.js"></script>

@@ -1,16 +1,22 @@
 <h3>View Request</h3>
+<div ng-show="noRequest">
+    <div class="alert alert-info text-center">
+        <h3><b>You do not have any doctor request</b></h3>
+        <button class="btn btn-info btn-lg" ui-sref="home">Back to home
+            <span><i class="fa fa-user-md" aria-hidden="true"></i></span></button>
+    </div>
+</div>
 
-
-<table style="width: 100%" st-table="displayedCollection" st-safe-src="doctors">
+<table ng-hide="noRequest" style="width: 100%" st-table="displayedCollection" st-safe-src="doctors">
     <tr>
         <th><input st-search="" class="form-control" placeholder="global search ..." type="text"/></th>
     </tr>
 
 </table>
 
-<table class="table hoverTable table-striped"
+<table ng-hide="noRequest" class="table hoverTable table-striped"
        st-table="displayedCollection"
-       st-safe-src="users" wt-responsive-table class="table table-striped"
+       st-safe-src="doctors" wt-responsive-table class="table table-striped"
        ng-init="loadRequest()">
     <thead>
     <tr>
@@ -69,7 +75,15 @@
         <td data-title="Date">{{ doctor.created_at | date:"MM/dd/yyyy 'at' h:mma" }}</td>
     </tr>
     </tbody>
+    <tfoot>
+    <tr class="text-center">
+        <td colspan="6">
+            <div st-items-by-page="10" st-pagination="" st-template="pagination.html"></div>
+        </td>
+    </tr>
+    </tfoot>
 </table>
+
 
 
 

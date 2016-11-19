@@ -26,6 +26,15 @@ app.factory('doctorServices',function($http,API_URL){
                 url: API_URL + "docbyrequest"
             })
         },
+        
+        rateDoctor: function(id,rate){
+            return $http({
+                method: 'POST',
+                url: API_URL + "ratedoctor/" + id, 
+                data:  $.param(rate),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
 
 
         checkRequest : function(){

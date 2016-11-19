@@ -133,6 +133,17 @@
                         </div>
                     </md-input-container>
 
+                    <md-input-container class="md-block">
+                        <label>Health Insurance</label>
+                        <input type="number" name="insurance" ng-model="user.insurance">
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Credit Card</label>
+                        <input type="number" name="credit" ng-model="user.credit">
+
+                    </md-input-container>
+
                     <div class="row" style="padding-left: 15px">
                         <button class="btn btn-danger" ng-click="backForm()">Cancel
                         </button>
@@ -346,7 +357,7 @@
             </div>
             <div class="row">
                 <h3>Thank you for registering as doctor, now you can login into Virtual Healthcare
-                    but you can not access Doctor's functions yet until your Doctor request is approved by staff. </h3>
+                    but you can not access any doctor functions yet until your request is approved by our staff. </h3>
             </div>
             <div class="row">
                 <button class="btn btn-primary btn-lg" ui-sref="login">Login</button>

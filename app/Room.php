@@ -19,5 +19,6 @@ class Room extends Model
 
     protected $table = 'room';
     protected $primaryKey = 'id';
+    protected $fillable = ['doctor', 'speciality','startDate','roomSize','available','status'];
     public $timestamps = false;
 }

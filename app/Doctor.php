@@ -25,5 +25,7 @@ class Doctor extends Model
     protected $table = 'doctors';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    
+    protected $fillable = ['users', 'biography','status','certification','experience'];
+
+
 }
