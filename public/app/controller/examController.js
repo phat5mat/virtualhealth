@@ -51,6 +51,33 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                 });
 
                 ctrl = window.ctrl = CONTROLLER(phone);
+                phone.ready(function () {
+                    console.log($rootScope.currentUser.username + " Video Ready!!")
+
+                });
+                phone.receive(function (session) {
+                    console.log('video here')
+
+                    session.connected(function (session) {
+                        $timeout(function () {
+                            session.video.className += "videoBlock";
+                            videoBox.appendChild(session.video);
+                            $scope.video = true;
+                        })
+                    });
+                    session.ended(function (session) {
+                        $timeout(function () {
+                            $scope.video = false;
+                            ctrl.getVideoElement(session.number).remove();
+                        })
+
+                    });
+                });
+
+                phone.unable(function (details) {
+                    console.log("Phone is unable to initialize.");
+                    console.log("Try reloading, or give up.");
+                });
                 $rootScope.alreadySubscribed = true;
 
             }
@@ -165,39 +192,10 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
         };
 
         // User subcribe to video call function channel and enable webcam device
-        $scope.subcribePhone = function () {
 
-            ctrl.ready(function () {
-                console.log($rootScope.currentUser.username + " Video Ready!!")
-
-            });
-            ctrl.receive(function (session) {
-
-                session.connected(function (session) {
-                    $timeout(function () {
-                        session.video.className += "videoBlock";
-                        videoBox.appendChild(session.video);
-                        $scope.video = true;
-                    })
-                });
-                session.ended(function (session) {
-                    $timeout(function () {
-                        $scope.video = false;
-                        ctrl.getVideoElement(session.number).remove();
-                    })
-
-                });
-            });
-
-            ctrl.unable(function (details) {
-                console.log("Phone is unable to initialize.");
-                console.log("Try reloading, or give up.");
-            });
-        };
 
         // Subcribe to video call channel and send request video to patient
         $scope.sendVideo = function () {
-            $scope.subcribePhone();
             if (currentUser.role == 1) {
                 pubnub.publish({
                     channel: 'doc' + $stateParams.selectedRoom.doctor.user.username + '-' + $stateParams.selectedRoom.id,
@@ -213,10 +211,9 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
 
         // Make a call to partner
         $scope.makeCall = function () {
-            console.log('doc call pat');
             var patData = JSON.parse(window.localStorage['patInfo']);
-            ctrl.dial(patData['username']);
-            console.log('call' + patData['username'])
+            phone.dial(patData['username']);
+            console.log('call ' + patData['username'])
         };
 
         // End current video call session
@@ -579,7 +576,6 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                     if (message['videoCall']) {
                         console.log('video request');
                         if (currentUser.role == 0) {
-                            $scope.subcribePhone();
                             var confirm = $mdDialog.confirm()
                                 .title('Doctor is calling you!!!')
                                 .textContent('Please choose your option.')
