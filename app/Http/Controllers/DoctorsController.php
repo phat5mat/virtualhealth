@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Doctor;
 use App\Feedback;
 use App\User;
+use PhpParser\Comment\Doc;
 use Response;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -14,7 +15,7 @@ class DoctorsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('jwt.auth', ['except' => ['findRequest']]);
+        $this->middleware('jwt.auth', ['except' => ['findRequest','getHighRateDoctor']]);
     }
 
 
@@ -49,28 +50,55 @@ class DoctorsController extends Controller
         $doc = Doctor::where('id',$id)->first();
         $newFeedback = $request->all();
         $feedback = new Feedback;
-        $feedback->comment = $newFeedback->comment;
-        if(isset($newFeedback->rate))
+        $newRate = 0;
+
+        if(isset($newFeedback['comment'])){
+            $feedback->comment = $newFeedback['comment'];
+        }else{
+            $feedback->comment = null;
+        }
+        if(isset($newFeedback['rate']))
         {
-            $feedback->rate = $newFeedback->rate;
+            $feedback->rate = $newFeedback['rate'];
         }else{
             $feedback->rate = 0;
         }
         $feedback->doctor = $id;
         $feedback->save();
-        $newRate = 0;
-        $totalFeedback = Feedback::where('doctor',$id)
-            ->where('rate','!=',0)
-            ->get();
-        foreach($totalFeedback as $value)
-        {
-            $newRate = $newRate + $value->rate;
-        }
-        $newRate = $newRate / count($totalFeedback);
-        $doc->rate = round($newRate);
-        $doc->save();
-        return $newRate;
 
+        $totalFeedback = Feedback::where('doctor',$id)
+            ->where('rate','<>',0)
+            ->get();
+        if(count($totalFeedback) == 0)
+        {
+            if(isset($newFeedback['rate']))
+            {
+                $doc->rating = $newFeedback['rate'];
+                $doc->save();
+            }
+        }else{
+            foreach($totalFeedback as $value)
+            {
+                $newRate = $newRate + $value->rate;
+            }
+            $newRate = $newRate / count($totalFeedback);
+            $doc->rating = round($newRate);
+            $doc->save();
+        }
+
+        return $totalFeedback;
+
+    }
+
+    public function getHighRateDoctor(){
+        $doctor = Doctor::whereNotNull('rating')
+            ->orderBy('rating','DESC')
+            ->with('user')
+            ->with('feedback')
+            ->with('professional.speciality')
+            ->take(5)
+            ->get();
+        return $doctor;
     }
 
     public function findDocByUser($id)
@@ -93,10 +121,16 @@ class DoctorsController extends Controller
         }
     }
 
+    public function getFeedback($id){
+        $feedback = Feedback::where('doctor',$id)->whereNotNull('comment')->get();
+        return $feedback;
+    }
 
     public function findRequest()
     {
-        $requestDoc = User::where('role', 1)->with('doctor')->get();
+        $requestDoc = User::where('role', 1)->with('doctor')
+            ->with('doctor.professional.speciality')
+            ->get();
         return $requestDoc;
     }
 
@@ -138,44 +172,7 @@ class DoctorsController extends Controller
         return response()->download($file, $filename, $headers);
 
     }
-
-
-    public function store(Request $request)
-    {
-        $newDoc = $request->all();
-        $doc = new Doctor;
-        $doc->docpassword = $newDoc['docpassword'];
-        $doc->docname = $newDoc['docname'];
-        $doc->docemail = $newDoc['docemail'];
-        $doc->docphone = $newDoc['docphone'];
-        $doc->docid = $newDoc['docid'];
-
-        $doc->save();
-        return Response::json(array('success' => true));
-    }
-
-
-    public function update(Request $request, $id)
-    {
-        $updateDoc = $request->all();
-        $doctor = Doctor::find($id);
-        $doctor->docid = $updateDoc['docid'];
-        $doctor->docname = $updateDoc['docname'];
-        $doctor->docpassword = $updateDoc['docpassword'];
-        $doctor->docemail = $updateDoc['docemail'];
-        $doctor->docphone = $updateDoc['docphone'];
-        $doctor->save();
-
-        return "Sucess updating doctor ";
-    }
-
-
-    public function destroy($id)
-    {
-        $doctor = Doctor::find($id);
-        $doctor->delete();
-        return Response::json(array('success' => true));
-    }
+    
 
 
 }

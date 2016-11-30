@@ -116,12 +116,22 @@ class AppointmentsController extends Controller
     }
 
 
-    public function checkAppointmentExist($id){
-        $app = Appointment::where('room',$id)->first();
+    public function checkAppointmentExist(Request $request){
+        $req = $request->all();
+        $app = Appointment::where('room',$req['room'])
+            ->where('patients',$req['patient'])
+            ->first();
         if(empty($app))
             return 'false';
         else
             return 'true';
+    }
+
+    public function findByExamination($id){
+        $app = Appointment::where('examination',$id)
+            ->with('room.doctor.user')
+            ->first();
+        return $app;
     }
 
     public function update(Request $request, $id)

@@ -15,7 +15,7 @@ class PatientsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('jwt.auth');
+        $this->middleware('jwt.auth',['except' => ['store']]);
     }
     
     
@@ -65,6 +65,7 @@ class PatientsController extends Controller
            ->get();
        return $pat;
    }
+
 
     public function findByUserWithUser($id){
         $user = User::where('id',$id)->with('patient')->get();

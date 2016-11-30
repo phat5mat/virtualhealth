@@ -52,16 +52,16 @@
         <tbody>
         <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
         <tr ng-repeat="exam in displayedCollection" ng-hide="loading" ng-click="selectExam(exam)" >
-            <td>{{ exam.examination.id }}</td>
-            <td>{{ exam.examination.date | date:"MM/dd/yyyy 'at' h:mma" }}</td>
-            <td>{{ exam.room.doctor.user.name }}</td>
-            <td>{{ exam.room.name }}</td>
-            <td>{{ exam.room.speciality.name }}</td>
+            <td data-title="ID">{{ exam.examination.id }}</td>
+            <td data-title="Date">{{ exam.examination.date | date:"MM/dd/yyyy 'at' h:mma" }}</td>
+            <td data-title="Doctor">{{ exam.room.doctor.user.name }}</td>
+            <td data-title="Room">{{ exam.room.name }}</td>
+            <td data-title="Speciality">{{ exam.room.speciality.name }}</td>
         </tr>
         </tbody>
         <tfoot>
         <tr class="text-center">
-            <td colspan="6">
+            <td colspan="5">
                 <div st-items-by-page="10" st-pagination="" st-template="pagination.html"></div>
             </td>
         </tr>

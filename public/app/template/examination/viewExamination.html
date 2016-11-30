@@ -6,7 +6,7 @@
 
 </table>
 <table st-table="displayedCollection"
-       st-safe-src="examList" wt-responsive-table class="table table-striped hoverTable"
+       st-safe-src="examDocList"  class="table table-striped hoverTable" wt-responsive-table
        ng-init="loadExamByDoctor()" >
     <thead>
     <tr>
@@ -43,14 +43,21 @@
     </thead>
     <tbody>
     <p class="text-center" ng-show="loading"><span class="fa fa-meh-o fa-5x fa-spin"></span></p>
-    <tr ng-repeat="appoint in displayedCollection" ng-hide="loading" ng-click="selectExam       (appoint)" >
+    <tr ng-repeat="appoint in displayedCollection" ng-hide="loading" ng-click="selectExam(appoint)" >
         <td class="text-center">{{ appoint.examination.id }}</td>
         <td>{{ appoint.examination.date | date:"MM/dd/yyyy 'at' h:mma" }}</td>
         <td>{{ appoint.patient.user.name }}</td>
-        <td>{{ appoint.examination.room }}</td>
+        <td>{{ appoint.room.name }}</td>
         <td>{{ appoint.examination.spec }}</td>
     </tr>
     </tbody>
+    <tfoot>
+    <tr class="text-center">
+        <td colspan="5">
+            <div st-items-by-page="10" st-pagination="" st-template="pagination.html"></div>
+        </td>
+    </tr>
+    </tfoot>
 </table>
 
 

@@ -27,13 +27,10 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                     value.statusColor = 'startingColor';
                 }
                 if (value.status == 2) {
-                    value.status = 'Finished';
-                    value.statusColor = 'finishedColor';
-                }
-                if (value.status == 3) {
                     value.status = 'Closed';
                     value.statusColor = 'canceledColor';
                 }
+
             })
         };
 
@@ -43,12 +40,16 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                 roomServices.findroombydoctor($rootScope.docUser.doctor.id)
                     .then(function (roomData) {
 
+                        if(roomData.data.length == 0){
+                            $scope.roomNum = 0;
+                        }else{
+                            $scope.roomNum = 1;
                             angular.forEach(roomData.data, function (value, key) {
                                 if (value.status == 0) {
                                     var today = new Date();
                                     var roomDate = new Date(value.startDate);
                                     if (today.setHours(0, 0, 0, 0) > roomDate.setHours(0, 0, 0, 0)) {
-                                        roomServices.updateStatus(value.id, 3)
+                                        roomServices.updateStatus(value.id, 2)
                                             .then(function () {
                                                 appointmentServices.updateAppointmentStatusExpired(value.id, 3)
                                                     .then(function () {
@@ -64,6 +65,8 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                                 }
                             });
                             handleStatusColor(roomData.data);
+                        }
+
                         },
                         function (e) {
                             $scope.error = e;
@@ -78,7 +81,9 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
 
         // Load selected doctor's room list
         $scope.loadRoombyDoctor = function () {
+            $scope.doctorDetails = $stateParams.selectedDoc;
             try {
+                
                 $selectedDoc = $stateParams.selectedDoc.doctor;
                 roomServices.findroombydoctor($selectedDoc['id'])
                     .then(function (roomData) {
@@ -90,10 +95,20 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
             }
             catch (e) {
                 // go to home page when error occur or user refresh the page
-                $state.go('home');
+                $state.go('viewDoctor');
 
             }
 
+        };
+
+        $scope.loadSpeciality = function (spec) {
+            console.log(spec)
+            var specList = '';
+            angular.forEach(spec, function (value, key) {
+                specList = specList + value.speciality.name + ', ';
+            });
+            specList = specList.substring(0, specList.length - 2);
+            return specList;
         };
 
         $scope.closeRoom = function (room) {
@@ -196,8 +211,16 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
 
 
         $scope.showMakeAppointmentDialog = function (ev, room) {
+            if(!$rootScope.currentUser)
+            {
+                $mdToast.show($mdToast.simple().textContent('You have to logged in for making an appointment!'));
+            }
             if(room.status == 'Waiting' || room.status == 'Open'){
-                appointmentServices.checkExist(room.id)
+                var checkExistData = {
+                    room: room.id,
+                    patient: $rootScope.patUser['id']
+                };
+                appointmentServices.checkExist(checkExistData)
                     .then(function(response){
                         if(response.data == 'false')
                         {
@@ -271,13 +294,18 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                         .cancel('BACK');
 
                     $mdDialog.show(confirm).then(function () {
-                        roomServices.updateStatus(room.id, 1)
-                            .then(function (response) {
-                                appointmentServices.updateStatus(room.id, 1)
-                                    .then(function () {
-                                        enterRoom();
-                                    });
-                            })
+                        if(localStorage.getItem('chatRoom'))
+                        {
+                            $mdToast.show($mdToast.simple().textContent('You cannot open two rooms at the same time!'));
+                        }else{
+                            roomServices.updateStatus(room.id, 1)
+                                .then(function (response) {
+                                    appointmentServices.updateStatus(room.id, 1)
+                                        .then(function () {
+                                            enterRoom();
+                                        });
+                                })
+                        }
                     });
                 }
 
@@ -326,13 +354,10 @@ app.controller('roomController', ['$scope', '$mdDialog', 'roomServices', '$mdMed
                                     value.statusColor = 'startingColor';
                                 }
                                 if (value.status == 2) {
-                                    value.status = 'Finished';
-                                    value.statusColor = 'finishedColor';
-                                }
-                                if (value.status == 3) {
                                     value.status = 'Canceled';
                                     value.statusColor = 'canceledColor';
                                 }
+                             
 
                             });
                             $scope.loading = false;

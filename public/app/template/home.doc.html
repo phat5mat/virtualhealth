@@ -55,16 +55,16 @@
                         </div>
                         <div class="info-box-content">
                             <p><b>{{waitingRoom}}</b> Waiting Room(s)</p>
-                            <p><b>{{closedRoom}}</b> Closed Room(s)</p>
-                            <p><b>{{finishedRoom}}</b> Finished Room(s)</p>
                             <p><b>{{openRoom}}</b> Open Room(s)</p>
+                            <p><b>{{closedRoom}}</b> Closed Room(s)</p>
+
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 col-sm-12 col-xs-12">
                 <div class="info-box">
-                    <span  ui-sref="viewPatient" class="info-icon" style="background-color: #49d092">
+                    <span  class="info-icon" style="background-color: #49d092">
                         <i class="fa fa-user"></i>
                     </span>
                     <div class="info-content-container">
@@ -75,7 +75,6 @@
                                    uib-popover="Number of patients that you have examined!"
                                    popover-trigger="'mouseenter'"
                                    aria-hidden="true"></i>
-
                             </span>
                         </div>
                         <div class="info-box-content" ng-repeat="s in specList">
@@ -157,6 +156,31 @@
                 <ds-widget-clock show-digital theme="blue-light"
                                  digital-format="'hh:mm:ss a'">
                 </ds-widget-clock>
+            </div>
+        </div>
+        <div class="row" ng-init="getHighDoctor()" style="width: 306px; height: 234px">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Top Doctors</b>
+                </div>
+                <div class="roomPatientsBlock" style="width: 306px; height: 234px" >
+                    <table class="table contactsContent">
+                        <tbody ng-repeat="doc in highdoctor "
+                               ng-click="selectDoctor(doc.user)">
+                        <tr>
+                            <td><img class="avatarCircle" ng-src="{{doc.user.avatarSrc}}"></td>
+                            <td colspan="2">
+                                <h4><b>{{ doc.user.name }}</b></h4>
+                                <h4><span read-only="true" uib-rating ng-model="doc.rating" max="5"
+                                          aria-labelledby="default-rating" style="width: 200px; height: 100px">
+                    </span>
+                                </h4>
+                                <h4><b>{{doc.lastComment}}</b></h4>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -38,6 +38,7 @@ class ExaminationController extends Controller
             ->with('appointment.patient.user')
             ->with('speciality')
             ->with('appointment.examination.prescription.drug')
+            ->with('doctor.user')
             ->get();
         return $exam;
     }
@@ -70,6 +71,7 @@ class ExaminationController extends Controller
             ->with('examination.prescription.drug')
             ->with('room.speciality')
             ->with('patient.user')
+            ->with('room.doctor.user')
             ->orderBy('id','desc')
             ->first();
         return $exam;

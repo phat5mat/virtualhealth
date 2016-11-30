@@ -1,77 +1,213 @@
+<script>
+    // This example requires the Places library. Include the libraries=places
+    // parameter when you first load the API. For example:
+    // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+    var map;
+    var infowindow;
+
+    function initMap() {
+        var position
+        var corords
+        var location = {lat: 10.800411, lng: 106.711541};
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: location,
+            zoom: 16
+        });
+
+        infowindow = new google.maps.InfoWindow();
+        var service = new google.maps.places.PlacesService(map);
+        service.nearbySearch({
+            location: location,
+            radius: 1000,
+            type: ['pharmacy']
+        }, callback);
+
+        // Get current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                infowindow.setPosition(pos);
+                infowindow.setContent('Location found.');
+                map.setCenter(pos);
+            }, function() {
+                handleLocationError(true, infowindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infowindow, map.getCenter());
+        }
+
+        function handleLocationError(browserHasGeolocation, infowindow, pos) {
+            infowindow.setPosition(pos);
+            infowindow.setContent(browserHasGeolocation ?
+                    'Error: The Geolocation service failed.' :
+                    'Error: Your browser doesn\'t support geolocation.');
+        }
+    }
+
+    function callback(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+                createMarker(results[i]);
+            }
+        }
+    }
+
+    function createMarker(place) {
+        var placeLoc = place.geometry.location;
+        var marker = new google.maps.Marker({
+            map: map,
+            position: place.geometry.location
+        });
+
+        google.maps.event.addListener(marker, 'click', function() {
+            infowindow.setContent(place.name);
+            infowindow.open(map, this);
+        });
+    }
+
+</script>
 <div class="container" ng-init="loadExamDetails()">
         <div class="col-md-6">
-            <table class="table">
-                <tbody>
-                <tr>
-                    <td class="col-md-2">
-                        Name
-                    </td>
-                    <td class="col-md-4">
-                        {{ patDetails.user.name }}
-                    </td>
-                </tr>
+            <div class="panel panel-default">
+                <div class="panel-heading text-center" style="background-color: lightsteelblue">
+                    <b>Examination Details</b>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td class="col-md-2">
+                                <b>Doctor</b>
+                            </td>
+                            <td class="col-md-4">
+                                {{ doctorExam.user.name }}
+                            </td>
+                        </tr>
 
-                <tr>
-                    <td class="col-md-2">
-                        Age
-                    </td>
-                    <td class="col-md-4">
-                        {{ patDetails.age}}
-                    </td>
-                </tr>
+                        <tr>
+                            <td class="col-md-2">
+                                <b>Phone Number</b>
+                            </td>
+                            <td class="col-md-4">
+                                {{ doctorExam.user.phone }}
+                            </td>
+                        </tr>
 
-                <tr>
-                    <td class="col-md-2">
-                        Condition
-                    </td>
-                    <td class="col-md-4">
-                        {{ patDetails.condition }}
-                    </td>
-                </tr>
+                        <tr>
+                            <td class="col-md-2">
+                                <b>Email</b>
+                            </td>
+                            <td class="col-md-4">
+                                {{ doctorExam.user.email }}
+                            </td>
+                        </tr>
 
+                        <tr>
+                            <td class="col-md-2">
+                                <b>Room</b>
+                            </td>
+                            <td class="col-md-4">
+                                {{ roomExam.name }}
+                            </td>
+                        </tr>
 
-                </tbody>
-            </table>
-        </div>
-    <div class="col-md-6">
-        <div class="row">
-            <h4><strong style="color: green;">Examination Result</strong></h4>
-        </div>
-        <div class="row">
-            <textarea disabled ng-model="examResult" rows="4" cols="60" style="max-width: 450px; max-height: 300px;"></textarea>
-        </div>
-        <div class="row " style="width: 300px" ng-init="showDownloadBtn = true;" style="margin-top: 10px">
-            <button ng-click="downLog()" ng-show="showDownloadBtn" class="btn btn-primary">
-                <i class="fa fa-download" aria-hidden="true"></i>
-                Download Text Log
-            </button>
-            <button ng-hide="showDownloadBtn" ng-disabled="!showDownloadBtn" class="btn btn-warning">
-                <i class="fa fa-download" aria-hidden="true"></i>
-                No text log found
-            </button>
-        </div>
-    </div>
-    <div class="row col-md-12">
-        <div ng-show="medicines.length == 0"
-             class="alert alert-warning text-center" role="alert">
-            <b>This examination has no prescription.</b>
-        </div>
-            <div class="presTable row" ng-show="medicines.length > 0">
-                <table class="table table-bordered ">
-                    <thead>
-                    <th style="width: 10%">#</th>
-                    <th style="width: 70%">Name</th>
-                    <th style="width: 20%">Quantity</th>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="m in medicines">
-                        <td><strong>{{ $index+1 }}</strong></td>
-                        <td><strong>{{ m.name }}</strong></td>
-                        <td><strong>{{ m.quantity }}</strong></td>
-                    </tr>
-                    </tbody>
-                </table>
+                        <tr>
+                            <td class="col-md-2">
+                                <b>Date Issued</b>
+                            </td>
+                            <td class="col-md-4">
+                                {{ exam.date | date:"MM/dd/yyyy 'at' h:mma"}}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="col-md-2">
+                                <b>Condition</b>
+                            </td>
+                            <td class="col-md-4">
+                                <div ng-show="condition">{{ condition }}</div>
+                                <div ng-hide="condition">N/a</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
 
         </div>
+        <div class="col-md-6" style="height: 335px">
+        <div class="panel panel-default" style="height: 100%">
+            <div class="panel-heading text-center" style="background-color: #49d092">
+                <b>Examination Result</b>
+            </div>
+            <div class="panel-body" style="position: relative;">
+                <div class="row text-center">
+                    <textarea disabled ng-model="exam.result" rows="4" cols="60" style="max-width: 450px; max-height: 300px;"></textarea>
+                </div>
+                <div class="row" style="padding-top: 20px">
+                    <div ng-show="medicines.length == 0"
+                         class="alert alert-warning text-center" style="padding-left: 50px">
+                        <b>This examination has no prescription.</b>
+                    </div>
+                    <div style="padding-left: 20px;" class="presTable2 row" ng-show="medicines.length > 0">
+                        <table st-table="displayedCollection" st-safe-src="medicines" class="table table-bordered" style="width: 99%;">
+                            <thead>
+                            <tr>
+                                <th colspan="5" style="width: 100%;background-color: lightgray"><b>Medicines</b></th>
+                            </tr>
+                            <tr>
+                                <th>#</th>
+                                <th colspan="3">Name</th>
+                                <th>Quantity</th>
+                            </tr>
+
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="m in displayedCollection">
+                                <td class="text-center"><strong>{{ $index+1 }}</strong></td>
+                                <td colspan="3"><strong>{{ m.name }}</strong></td>
+                                <td class="text-center"><strong>{{ m.quantity }}</strong></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<div class="row col-md-12" ng-init="showDownloadBtn = true;" style="margin-top: 10px">
+    <div style="float: right;">
+        <button ng-click="downLog()" ng-show="showDownloadBtn" class="btn btn-primary">
+            <i class="fa fa-download" aria-hidden="true"></i>
+            Download Text Log
+        </button>
+        <button ng-hide="showDownloadBtn" ng-disabled="!showDownloadBtn" class="btn btn-warning">
+            <i class="fa fa-download" aria-hidden="true"></i>
+            No text log found
+        </button>
+    </div>
+
+</div>
+<div class="row col-md-12">
+    <div class="panel panel-defaul">
+        <div class="panel-heading text-center" style="background-color: orange">
+            <b>FIND A MEDICINE STORE</b>
+        </div>
+        <div class="panel-body">
+            <div id="map" class="googleMap2"></div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAApemJeOsiJJZWX5h2NP4j0CL-mwSZjAo&libraries=places&callback=initMap"
+        type="text/javascript" async defer></script>

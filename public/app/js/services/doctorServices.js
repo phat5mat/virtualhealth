@@ -27,13 +27,27 @@ app.factory('doctorServices',function($http,API_URL){
             })
         },
         
-        rateDoctor: function(id,rate){
+        rateDoctor: function(id,data){
             return $http({
                 method: 'POST',
                 url: API_URL + "ratedoctor/" + id, 
-                data:  $.param(rate),
+                data:  $.param(data),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
+        },
+        
+        getHighDoctor: function(){
+            return $http({
+                method: 'GET',
+                url: API_URL + "highdoctor"
+            })
+        },
+        
+        getFeedback: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "getfeedback/" + id
+            })
         },
 
 

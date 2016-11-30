@@ -71,6 +71,7 @@ class UsersController extends Controller
                     'experience' => $addExp,
                     'users' => $user->id,
                     'status' => 0,
+                    'certification' => $newUser['certification']
                 ]
             );
             foreach($newUser['speciality'] as $value)
@@ -86,13 +87,16 @@ class UsersController extends Controller
             $pat = new Patient;
             $pat->users = $user->id;
             if(isset($newUser['insurance']))
-                $pat->health_insurance = $newUser->insurance;
+                $pat->health_insurance = $newUser['insurance'];
             if(isset($newUser['credit']))
-                $pat->credit_card = $newUser->credit;
+                $pat->credit_card = $newUser['credit'];
             $pat->save();
         }
 
-        return $docID;
+        if($newUser['role'] == 0)
+            return 'success';
+        if($newUser['role'] == 1)
+            return $docID;
     }
 
     public function checkUsername($username){
@@ -180,8 +184,6 @@ class UsersController extends Controller
             $destinationPath = 'app/zip';
             $fileName = "doctorID-".$doc->id.".zip";
             Input::file('file')->move($destinationPath, $fileName);
-            $doc->certification = 1;
-            $doc->save();
             return 'Upload Zip Successful';
         }
         else {

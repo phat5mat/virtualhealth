@@ -1,3 +1,78 @@
+<script>
+    // This example requires the Places library. Include the libraries=places
+    // parameter when you first load the API. For example:
+    // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+    var map;
+    var infowindow;
+
+    function initMap() {
+        var position
+        var corords
+        var location = {lat: 10.800411, lng: 106.711541};
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: location,
+            zoom: 16
+        });
+
+        infowindow = new google.maps.InfoWindow();
+        var service = new google.maps.places.PlacesService(map);
+        service.nearbySearch({
+            location: location,
+            radius: 1000,
+            type: ['pharmacy']
+        }, callback);
+
+        // Get current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                infowindow.setPosition(pos);
+                infowindow.setContent('Location found.');
+                map.setCenter(pos);
+            }, function() {
+                handleLocationError(true, infowindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infowindow, map.getCenter());
+        }
+
+        function handleLocationError(browserHasGeolocation, infowindow, pos) {
+            infowindow.setPosition(pos);
+            infowindow.setContent(browserHasGeolocation ?
+                    'Error: The Geolocation service failed.' :
+                    'Error: Your browser doesn\'t support geolocation.');
+        }
+    }
+
+    function callback(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+                createMarker(results[i]);
+            }
+        }
+    }
+
+    function createMarker(place) {
+        var placeLoc = place.geometry.location;
+        var marker = new google.maps.Marker({
+            map: map,
+            position: place.geometry.location
+        });
+
+        google.maps.event.addListener(marker, 'click', function() {
+            infowindow.setContent(place.name);
+            infowindow.open(map, this);
+        });
+    }
+
+</script>
 <div style="height: 320px">
     <div uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides">
         <div uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
@@ -9,7 +84,7 @@
     </div>
 </div>
 
-<div ng-if="!currentUser">
+<div ng-cloak ng-if="!currentUser">
     <div class="row text-center">
         <h3><b>HOW CAN WE HELP YOU?</b></h3>
     </div>
@@ -22,7 +97,7 @@
                 <div class="panel-body">
                     <p>We provide health care services for patients and working for doctors.</p>
                     <p><b>As a patient</b>, you won't need to go to hospital, clinic to get doctor's advices,
-                        all you need is a computer with internet then you can have communicate with doctors.
+                        all you need is a computer with internet then you can have communication with doctors.
                         Furthermore, you can manage your examinations and prescriptions easily.</p>
                     <p><b>As a doctor</b>, you won't be in trouble because lacking of experience and unemployment,
                         we believe that all of doctor like you does not deserved that and here is the place
@@ -47,21 +122,35 @@
             </div>
         </div>
 
-        <div class="col-md-4 col-sm-12 col-xs-12" ng-init="loadGoogleMap()">
+        <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="panel panel-default">
                 <div class="panel-heading text-center" style="background-color: orange">
                     <b>FIND A MEDICINE STORE</b>
                 </div>
                 <div class="panel-body">
-                    <ng-map default-style="true" center="current-location" zoom="14">
-                        <info-window position="current-location">
-                            <span>Loation found using HTML5.</span>
-                        </info-window>
-                    </ng-map>
+                    <div id="map" class="googleMap"></div>
                 </div>
             </div>
         </div>
-
+    </div>
+    <div class="row col-md-12" style="overflow-x: scroll;display: inline-table;" ng-init="getHighDoctor()">
+        <div ng-repeat="doc in highdoctor">
+            <table ng-click="selectDoctor(doc.user)" class="table borderless col-md-2 highDoctorContainer" style="width:20%;">
+                <tr style="height:100px">
+                    <td class="text-center" style="width: 50%;">
+                        <img class="avatarCircle" ng-src="{{doc.user.avatarSrc}}">
+                        <h4><b>{{ doc.user.name }}</b></h4>
+                        <h4><span read-only="true" uib-rating ng-model="doc.rating" max="5"
+                                  aria-labelledby="default-rating" style="width: 200px; height: 100px">
+                    </span>
+                        </h4>
+                        <h4><b>{{doc.lastComment}}</b></h4>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAApemJeOsiJJZWX5h2NP4j0CL-mwSZjAo&libraries=places&callback=initMap"
+        type="text/javascript" async defer></script>
 <div ng-if="currentUser" ui-view></div>

@@ -46,9 +46,11 @@ Route::group(array('prefix' => 'api'), function() {
     Route::resource('appointment', 'AppointmentsController');
     Route::get('doctorappoint/{doctor}', 'AppointmentsController@findByDoctor');
     Route::get('doctorappoint2/{doctor}', 'AppointmentsController@findByDoctor2');
-    Route::get('checkAppointExist/{room}', 'AppointmentsController@checkAppointmentExist');
+    Route::post('checkAppointExist', 'AppointmentsController@checkAppointmentExist');
     Route::get('patbyid/{pat}', 'AppointmentsController@findByID');
+    Route::get('examappoint/{exam}', 'AppointmentsController@findByExamination');
 
+    
     Route::resource('examination', 'ExaminationController');
     Route::get('specialbydoctor/{doctor}', 'SpecialityController@findSpeciaByDoctor');
 
@@ -61,15 +63,14 @@ Route::group(array('prefix' => 'api'), function() {
     Route::put('rejectrequest/{doctor}','DoctorsController@rejectRequest');
     Route::get('downloadZip/{doctor}','DoctorsController@downloadZip');
     Route::get('getalldoc','DoctorsController@getAllDoctor');
-    Route::get('ratedoctor/{doctor}','DoctorsController@rateDoctor');
-
-
+    Route::post('ratedoctor/{doctor}','DoctorsController@rateDoctor');
+    Route::get('highdoctor','DoctorsController@getHighRateDoctor');
+    Route::get('getfeedback/{doctor}','DoctorsController@getFeedback');
 
     Route::get('patbyuser/{user}','PatientsController@findByUser');
     Route::get('patbyuserwith/{user}','PatientsController@findByUserWithUser');
     Route::get('patbyroom/{room}','PatientsController@findByRoom');
-
-
+    
     Route::get('findroombydoctor/{doctor}','RoomController@findByDoctor');
 
     Route::get('exambypatient/{pat}','ExaminationController@findByPatient');

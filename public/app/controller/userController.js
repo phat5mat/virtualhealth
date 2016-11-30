@@ -62,9 +62,7 @@ app.controller('userController', ['$scope', '$location',
         for (var i = 0; i < 7; i++) {
             $scope.addSlide();
         }
-
-        // Randomize logic below
-
+        
         function assignNewIndexesToSlides(indexes) {
             for (var i = 0, l = slides.length; i < l; i++) {
                 slides[i].id = indexes.pop();
@@ -79,7 +77,6 @@ app.controller('userController', ['$scope', '$location',
             return shuffle(indexes);
         }
 
-        // http://stackoverflow.com/questions/962802#962890
         function shuffle(array) {
             var tmp, current, top = array.length;
 
@@ -109,6 +106,26 @@ app.controller('userController', ['$scope', '$location',
             $scope.userDetails.dateofbirth = new Date($scope.userDetails.dateofbirth);
             $scope.userDetails.created_at = new Date($scope.userDetails.created_at);
             $scope.userDetails.updated_at = new Date($scope.userDetails.updated_at);
+            if($scope.userDetails.role == 1){
+                $timeout(function(){
+                    if($rootScope.docUser.doctor.status == 0)
+                    {
+                        $scope.statColor = 'alert alert-warning text-center';
+                        $scope.statDetails = 'Pending';
+                    }
+                    if($rootScope.docUser.doctor.status == 1)
+                    {
+                        $scope.statColor = 'alert alert-success text-center';
+                        $scope.statDetails = 'Active';
+                    }
+                    if($rootScope.docUser.doctor.status == 2)
+                    {
+                        $scope.statColor = 'alert alert-danger text-center';
+                        $scope.statDetails = 'Rejected';
+                    }
+                });
+
+            }
             if ($scope.userDetails.avatar == 0) {
                 if($scope.userDetails.role == 1)
                     $scope.imgSrc = 'assets/img/no-avatarDoctor.png';
@@ -359,24 +376,25 @@ app.controller('userController', ['$scope', '$location',
             $scope.user.email = $scope.validatedEmail;
             userServices.save($scope.user)
                 .then(function (res) {
+                    if($scope.user.role == 0){
+                        $scope.patForm = false;
+                        $scope.docForm = false;
+                        $scope.loading = false;
+                        $scope.successPatient = true;
+                    }else{
                         userServices.saveZip($scope.fileinfo, res.data)
                             .then(function (response) {
                                 $scope.validateUsername = true;
                                 $scope.patForm = false;
                                 $scope.docForm = false;
-                                if ($scope.user.role == 0)
-                                {
-                                    $scope.loading = false;
-                                    $scope.successPatient = true;
-                                }
-                                if ($scope.user.role == 1)
-                                {
-                                    $scope.loading = false;
-                                    $scope.successDoctor = true;
-                                }
+                                $scope.loading = false;
+                                $scope.successDoctor = true;
+
                             }, function (e) {
                                 console.log(e)
                             });
+                    }
+
                     },
                     function (e) {
                         console.log(e);
@@ -419,6 +437,7 @@ app.controller('userController', ['$scope', '$location',
         };
 
         $scope.loadDoctors = function () {
+            $scope.loading = true;
             doctorServices.findByRequest()
                 .then(function (response) {
                 $scope.doctors = response.data;
@@ -452,28 +471,65 @@ app.controller('userController', ['$scope', '$location',
                         .then(function(response){
                             value.speciality = response.data;
                         })
-                })
-            }, function (e) {
+                });
+                    $scope.loading = false;
+
+                }, function (e) {
                 console.log(e);
             })
         };
+        
+        $scope.showFeedback = function(){
+            $timeout(function(){
+                $scope.showfeed = true;
+                $scope.showinformation = false;
+                $scope.loadFeedback();
+            })
+        };
 
-
-        $scope.selectDoctor = function (ev, doctor) {
-            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
-            $mdDialog.show({
-                    locals: {passDoctor: doctor},
-                    controller: viewDoctorDialogController,
-                    templateUrl: 'viewDoctorDetailsDialog.html',
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: useFullScreen
-
+        $scope.loadFeedback = function(){
+            doctorServices.getFeedback($rootScope.docUser.doctor.id)
+                .then(function(response){
+                    $timeout(function(){
+                        $scope.feedbacks = response.data;
+                        angular.forEach($scope.feedbacks,function(value,key){
+                            value.date_issued = new Date(value.date_issued);
+                        });
+                    });
                 })
-                .then(function (answer) {
-                }, function () {
-                });
+        };
+
+        $scope.getHighDoctor = function(){
+            doctorServices.getHighDoctor()
+                .then(function(response){
+                    $timeout(function(){
+                        $scope.highdoctor = response.data;
+                        angular.forEach($scope.highdoctor,function(value, key){
+                            value.user.doctor = value;
+                            if(value.user.avatar == 1)
+                            {
+                                value.user.avatarSrc = "assets/img/avatar-" + value.user.username + ".jpg";
+                            }else{
+                                value.user.avatarSrc = "assets/img/no-avatarDoctor.png";
+
+                            }
+                            angular.forEach(value.feedback,function(value2,key2){
+                                if(value2.comment != null)
+                                {
+                                    value.lastComment = '"'+value2.comment+'"';
+                                }
+                            })
+                        });
+                        console.log($scope.highdoctor)
+
+                    });
+                })
+        };
+        
+        $scope.selectDoctor = function (doctor) {
+            $state.go('room.viewDocRoom',{
+                selectedDoc: doctor
+            })
         };
 
         $scope.loadSpeciality = function (spec) {
@@ -484,28 +540,7 @@ app.controller('userController', ['$scope', '$location',
             specList = specList.substring(0, specList.length - 2);
             return specList;
         };
-
-        function viewDoctorDialogController($scope, $mdDialog, $state, passDoctor) {
-            // Dialog toggle
-            $scope.doctorDetails = passDoctor;
-            $scope.cancel = function () {
-                $mdDialog.cancel();
-            };
-
-            $scope.loadSpeciality = function (spec) {
-                var specList = '';
-                angular.forEach(spec, function (value, key) {
-                    specList = specList + value.speciality.name + ', ';
-                });
-                specList = specList.substring(0, specList.length - 2);
-                return specList;
-            };
-
-            $scope.makeAppointment = function () {
-                $mdDialog.cancel();
-                $state.go('room.viewDocRoom', {selectedDoc: passDoctor});
-            }
-        }
+        
     }]);
 
 

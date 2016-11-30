@@ -15,13 +15,19 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div ng-include="'app/template/navbar.html'" ng-controller="authController" ></div>
 </head>
-<body>
-<div class="container">
-    <div class="ng-cloak" ui-view></div>
-</div>
+<body layout="column">
+<md-content>
+    <div class="container">
+        <div class="row" ng-controller="authController">
+            <div class="ng-cloak" ui-view></div>
+        </div>
+    </div>
+</md-content>
+
 <script src="app/js/jquery.min.js"></script>
 <script src="node_modules/angular/angular.js"></script>
 <script src="../bower_components/angular-aria/angular-aria.js"></script>
+<script src="../bower_components/ngmap/build/scripts/ng-map.min.js"></script>
 <script src="../bower_components/angular-smart-table/dist/smart-table.js"></script>
 <script src="../bower_components/angular-animate/angular-animate.js"></script>
 <script src="../bower_components/angular-material/angular-material.js"></script>
@@ -33,9 +39,7 @@
 <script src="../bower_components/chart.js/dist/Chart.min.js"></script>
 <script src="../bower_components/angular-chart.js/dist/angular-chart.js"></script>
 <script src="../bower_components/angular-ui-clock/dist/angular-clock.js"></script>
-<script src="../bower_components/ngmap/build/scripts/ng-map.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAApemJeOsiJJZWX5h2NP4j0CL-mwSZjAo"
-        type="text/javascript" async defer></script>
+
 
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
 

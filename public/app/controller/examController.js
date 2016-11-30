@@ -148,7 +148,7 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                 bubbleSpeech = 'patSpeech';
 
             pubnub.publish({
-                channel: 'doc' + $stateParams.selectedRoom.doctor.user.username,
+                channel: 'doc' + $stateParams.selectedRoom.doctor.user.username + '-' + $stateParams.selectedRoom.id,
                 message: {
                     textMessages: $scope.messageContent,
                     userName: currentUser.name,
@@ -200,7 +200,7 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
             $scope.subcribePhone();
             if (currentUser.role == 1) {
                 pubnub.publish({
-                    channel: 'doc' + $stateParams.selectedRoom.doctor.user.username,
+                    channel: 'doc' + $stateParams.selectedRoom.doctor.user.username + '-' + $stateParams.selectedRoom.id,
                     message: {
                         videoCall: true
                     },
@@ -285,12 +285,13 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                         clickOutsideToClose: true
                     })
                     .then(function () {
-                        roomServices.updateStatus($stateParams.selectedRoom.id,3)
+                        roomServices.updateStatus($stateParams.selectedRoom.id,2)
                             .then(function(response){
                                 appointmentServices.updateStatus($stateParams.selectedRoom.id,3)
                                     .then(function(){
                                         sendRoomMessage({closeRoom: true});
                                         $mdToast.show($mdToast.simple().textContent('Room is closed'));
+                                        localStorage.removeItem('chatRoom');
                                         $state.go('room.manageRoom')
                                     });
                             })
@@ -305,12 +306,13 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                     .cancel('Reject');
 
                 $mdDialog.show(confirm).then(function () {
-                    roomServices.updateStatus($stateParams.selectedRoom.id,3)
+                    roomServices.updateStatus($stateParams.selectedRoom.id,2)
                         .then(function(response){
                             appointmentServices.updateStatus($stateParams.selectedRoom.id,3)
                                 .then(function(){
                                     $mdToast.show($mdToast.simple().textContent('Room is closed'));
                                     $state.go('room.manageRoom')
+                                    localStorage.removeItem('chatRoom');
                                 });
                         })
                 }, function () {
@@ -319,32 +321,11 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
             }
             
         };
-        
-        $scope.showHealth = function(){
-            $mdDialog.show({
-                    locals: {
-                        passPat: $scope.roomPatients,
-                        passRoom: $stateParams.selectedRoom.name
-                    },
-                    controller: healthStatisticController,
-                    templateUrl: 'healthStatistic.html',
-                    parent: angular.element(document.body),
-                    clickOutsideToClose: true
-                })
-                .then(function () {
-                    roomServices.updateStatus($stateParams.selectedRoom.id,2)
-                        .then(function(response){
-                            appointmentServices.updateStatus($stateParams.selectedRoom.id,3)
-                                .then(function(){
-                                    sendRoomMessage({closeRoom: true});
-                                    $mdToast.show($mdToast.simple().textContent('Room is closed'));
-                                    $state.go('room.manageRoom')
-                                });
-                        })
-                }, function () {
 
-                })
+        $scope.kickPatient = function(){
+            sendDocMessage({kickPatient: true})
         };
+
 
 
         // function that is called when user join room
@@ -549,7 +530,7 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
 
             sendRoomMessage({finishExam: true});
             pubnub.unsubscribe({
-                channel: 'doc' + $stateParams.selectedRoom.doctor.user.username
+                channel: 'doc' + $stateParams.selectedRoom.doctor.user.username + '-' + $stateParams.selectedRoom.id
             });
 
             $timeout(function () {
@@ -568,13 +549,14 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
             if (currentUser.role == 0) {
                 $scope.patLoadingText = true;
                 $scope.video = false;
+                $scope.enteredPat = false;
             }
         };
 
         // subcribe to doctor channel to begin examination
         var subcribeDoc = function () {
             pubnub.subscribe({
-                channel: 'doc' + $stateParams.selectedRoom.doctor.user.username,
+                channel: 'doc' + $stateParams.selectedRoom.doctor.user.username + '-' + $stateParams.selectedRoom.id,
                 presence: function (m) {
                     var action = m.action;
                     if (action == 'join') {
@@ -593,7 +575,7 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                 },
                 message: function (message, env, channel) {
                     // RECEIVED A MESSAGE.
-
+                    console.log(message)
                     if (message['videoCall']) {
                         console.log('video request');
                         if (currentUser.role == 0) {
@@ -631,12 +613,14 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                                     controller: rateDoctorController,
                                     templateUrl: 'rateDoctor.html',
                                     parent: angular.element(document.body),
-                                    clickOutsideToClose: true
+                                    clickOutsideToClose: false
                                 })
                                 .then(function (response) {
+                                    console.log(response)
                                     if(response.rate != null || response.comment != null){
                                         doctorServices.rateDoctor($stateParams.selectedRoom.doctor.id,response)
-                                            .then(function(){
+                                            .then(function(res){
+                                                console.log(res.data)
                                                 examinationServices.getExamByAppointment($stateParams.selectedAppoint)
                                                     .then(function (exam) {
                                                         leaveDoctor(currentUser);
@@ -662,9 +646,27 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
 
                         }
                     }
-                    $timeout(function () {
-                        $scope.chatContent.push(message);
-                    });
+
+                    if(message['kickPatient']){
+                        if(currentUser.role == 1){
+                            leaveDoctor(currentUser);
+                        }
+                        if(currentUser.role == 0){
+                            leaveDoctor(currentUser);
+                            leaveRoom(currentUser);
+                            $timeout(function () {
+                                $state.go('appoint');
+                                alert('You have been kicked out of the room due to inactivity')
+                            }, 1000)
+                        }
+                    }
+
+                    if (message['textMessages']) {
+                        $timeout(function () {
+                            $scope.chatContent.push(message);
+                        });
+                    }
+
                 },
                 connect: function () {
                     if (currentUser.role == 1) {
@@ -858,7 +860,7 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
         // send message to doctor channel
         var sendDocMessage = function (msg) {
             pubnub.publish({
-                channel: 'doc' + $stateParams.selectedRoom.doctor.user.username,
+                channel: 'doc' + $stateParams.selectedRoom.doctor.user.username + '-' + $stateParams.selectedRoom.id,
                 message: msg,
                 callback: function (m) {
                     console.log(m)
@@ -953,6 +955,10 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
         }
 
         function rateDoctorController($scope,$mdDialog){
+            $scope.feedback = {
+                rate: 0,
+                comment: null
+            };
             $scope.hoveringOver = function(value) {
                 $scope.overStar = value;
                 $timeout(function(){
@@ -974,10 +980,6 @@ app.controller('examController', ['$scope', '$http', '$window', 'doctorServices'
                 })
             };
             $scope.doneRate = function(){
-                $scope.feedback = {
-                    rate : $scope.overStar,
-                    comment : $scope.comment
-                };
                 $mdDialog.hide($scope.feedback);
             };
             $scope.doc = $stateParams.selectedRoom.doctor.user.username;

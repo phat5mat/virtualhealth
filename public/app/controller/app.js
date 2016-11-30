@@ -7,8 +7,11 @@
 
 angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
         , 'ui.bootstrap', 'ngMessages', 'ngFileUpload','ngSanitize','chart.js','ds.clock','ngMap'])
-    .config(function ($stateProvider, $urlRouterProvider, $authProvider, $httpProvider, $provide) {
+    .config(function ($stateProvider, $urlRouterProvider, $authProvider, $httpProvider, $provide,$mdThemingProvider) {
 
+        $mdThemingProvider
+            .theme('default')
+            .backgroundPalette('blue-grey');
 
         function logoutRedirect($q, $injector) {
             return {
@@ -139,31 +142,7 @@ angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
             .state('room', {
                 url: '/room',
                 templateUrl: '../public/app/template/appointment/room.html',
-                controller: 'roomController',
-                onEnter: function ($rootScope, $state, $timeout) {
-                    if ($rootScope.currentUser == null) {
-                        $state.go('login');
-                    } else {
-                        if ($rootScope.currentUser['role'] == 1) {
-                            if($rootScope.docUser.doctor['status'] == 1){
-                                $timeout(function () {
-                                    $state.go('room.manageRoom');
-                                });
-                            }else{
-                                $timeout(function () {
-                                    $state.go('home');
-                                });
-                            }
-
-                        }
-                        if ($rootScope.currentUser['role'] == 2) {
-                            $timeout(function () {
-                                $state.go('home.staff');
-                            });
-                        }
-
-                    }
-                }
+                controller: 'roomController'
 
             })
 
@@ -183,11 +162,28 @@ angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
                 url: '/manageRoom',
                 templateUrl: '../public/app/template/appointment/room.manageRoom.html',
                 controller: 'roomController',
-                onEnter: function ($rootScope, $state, $timeout) {
-                    if ($rootScope.currentUser['role'] == 0) {
-                        $timeout(function () {
-                            $state.go('home.pat');
-                        });
+                onEnter: function ($rootScope, $state, $timeout,$mdToast) {
+                    if ($rootScope.currentUser == null) {
+                            $state.go('login');
+                    }else{
+                        if ($rootScope.currentUser['role'] == 0) {
+                            $timeout(function () {
+                                $state.go('home.pat');
+                            });
+                        }
+                        if($rootScope.currentUser['role'] == 1){
+                            if($rootScope.docUser.doctor.status == 1)
+                            {
+                                $timeout(function(){
+                                    $state.go('room.manageRoom');
+                                })
+                            }else{
+                                $timeout(function(){
+                                    $state.go('home');
+                                    $mdToast.show($mdToast.simple().textContent('You need to be activated to use this function!'));
+                                })
+                            }
+                        }
                     }
                 }
 
@@ -201,6 +197,11 @@ angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
                     selectedRoom: null,
                     selectedAppoint: null
                 },
+                onEnter: function ($rootScope, $state, $timeout) {
+                    if ($rootScope.currentUser == null) {
+                        $state.go('login');
+                    }
+                }
 
             })
 
@@ -258,7 +259,12 @@ angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
             .state('viewRequest', {
                 url: '/viewRequest',
                 templateUrl: '../public/app/template/user/viewRequest.html',
-                controller: 'staffController'
+                controller: 'staffController',
+                onEnter: function ($rootScope, $state, $timeout) {
+                    if ($rootScope.currentUser == null) {
+                        $state.go('login');
+                    }
+                }
 
             })
 
@@ -268,13 +274,23 @@ angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
                 controller: 'staffController',
                 params: {
                     doctor: null
+                },
+                onEnter: function ($rootScope, $state, $timeout) {
+                    if ($rootScope.currentUser == null) {
+                        $state.go('login');
+                    }
                 }
             })
 
             .state('examList', {
                 url: '/manageExam',
                 templateUrl: '../public/app/template/examination/examList.html',
-                controller: 'manageExamController'
+                controller: 'manageExamController',
+                onEnter: function ($rootScope, $state, $timeout) {
+                    if ($rootScope.currentUser == null) {
+                        $state.go('login');
+                    }
+                }
             })
 
             .state('examDetails', {
@@ -282,25 +298,58 @@ angular.module('authModule', ['ui.router', 'satellizer', 'ngMaterial'
                 controller: 'manageExamController',
                 params: {
                     selectedExam: null
+                },
+                onEnter: function ($rootScope, $state, $timeout) {
+                    if ($rootScope.currentUser == null) {
+                        $state.go('login');
+                    }
                 }
             })
 
             .state('viewPatient', {
                 url: '/viewPatient',
                 templateUrl: '../public/app/template/user/viewPatient.html',
-                controller: 'doctorController'
+                controller: 'doctorController',
+                onEnter: function ($rootScope, $state, $timeout) {
+                    if ($rootScope.currentUser == null) {
+                        $state.go('login');
+                    }
+                }
             })
 
             .state('viewAppointment', {
                 url: '/viewAppointment',
                 templateUrl: '../public/app/template/appointment/viewAppointment.html',
-                controller: 'roomController'
+                controller: 'roomController',
+                onEnter: function ($rootScope, $state, $timeout) {
+                    if ($rootScope.currentUser == null) {
+                        $state.go('login');
+                    }
+                }
             })
 
             .state('viewExamination', {
                 url: '/viewExamination',
                 templateUrl: '../public/app/template/examination/viewExamination.html',
-                controller: 'manageExamController'
+                controller: 'manageExamController',
+                onEnter: function ($rootScope, $state, $timeout,$mdToast) {
+                    if ($rootScope.currentUser == null) {
+                        $state.go('login');
+                    }
+                    if($rootScope.currentUser['role'] == 1){
+                        if($rootScope.docUser.doctor.status == 1)
+                        {
+                            $timeout(function(){
+                                $state.go('viewExamination');
+                            })
+                        }else{
+                            $timeout(function(){
+                                $state.go('home');
+                                $mdToast.show($mdToast.simple().textContent('You need to be activated to use this function!'));
+                            })
+                        }
+                    }
+                }
             })
 
             .state('viewDoctor', {

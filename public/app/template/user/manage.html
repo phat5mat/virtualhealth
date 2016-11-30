@@ -1,6 +1,5 @@
-<h3>Manage Account</h3>
 <h3>Manage Doctor Account</h3>
-<div class="container">
+<div class="container" ng-init="showinformation = true;showfeed = false">
     <div class="col-md-4 text-center tableUser">
         <div class="row avatarContainer">
             <span>
@@ -9,15 +8,23 @@
             </span>
         </div>
         <div class="row">
-            <h3>{{ userDetails.name }}</h3>
+            <h3><span ng-if="docUser">Dr. </span> {{ userDetails.name }}</h3>
+        </div>
+        <div class="row">
+            <div ng-show="docUser" ng-class="statColor" style="border-radius: 40px">
+                <b>{{ statDetails }}</b>
+            </div>
         </div>
         <div class="row controlRow">
-            <button class="btn btn-default controlButton">Information</button>
+            <button class="btn btn-default controlButton" ng-click="showinformation = true;showfeed= false;">Information</button>
+        </div>
+        <div class="row controlRow" ng-show="docUser">
+            <button ng-click="showFeedback()" class="btn btn-default controlButton">Feedback</button>
         </div>
 
 
     </div>
-    <div id="informationTab" class="col-md-8 pull-left">
+    <div id="informationTab" class="col-md-8 pull-left" ng-show="showinformation">
         <div class="row" style="padding-left: 15px">
             <button class="btn btn-warning" ng-click="showUpdate()" ng-disabled="updateToggle">Edit</button>
             <button class="btn btn-warning" ng-click="showChangePassword()" ng-disabled="changePasswordToggle">Change
@@ -31,9 +38,10 @@
                 </div>
                 <div class="panel-body">
                     <md-input-container class="md-block">
-                        <md-icon md-svg-src="app/imgs/ic_person_24px.svg" class="email"></md-icon>
+                        <md-icon md-svg-src="app/imgs/ic_person_24px.svg"></md-icon>
                         <label>Name</label>
-                        <input required md-minlength="8" md-maxlength="30" name="updateName" ng-model="updateUser.updateName">
+                        <input required md-minlength="8" md-maxlength="30" name="updateName"
+                               ng-model="updateUser.updateName">
                         <div ng-messages="updateForm.updateName.$error">
                             <div ng-message="required">Name is required.</div>
                             <div ng-message="md-maxlength">Maximum characters is 30.</div>
@@ -42,7 +50,7 @@
                     </md-input-container>
 
                     <md-input-container class="md-block">
-                        <md-icon md-svg-src="app/imgs/ic_email_24px.svg" class="email"></md-icon>
+                        <md-icon md-svg-src="app/imgs/ic_email_24px.svg"></md-icon>
                         <label>Email</label>
                         <input required type="email" name="email" ng-model="updateUser.email">
                         <div ng-messages="updateForm.email.$error">
@@ -52,7 +60,7 @@
                     </md-input-container>
 
                     <md-input-container class="md-block">
-                        <md-icon md-svg-src="app/imgs/ic_local_phone_24px.svg" class="email"></md-icon>
+                        <md-icon md-svg-src="app/imgs/ic_local_phone_24px.svg"></md-icon>
                         <label>Phone number</label>
                         <input required name="phone" ng-model="updateUser.phone">
                         <div ng-messages="updateForm.phone.$error">
@@ -61,7 +69,7 @@
                     </md-input-container>
 
                     <md-input-container class="md-block">
-                        <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg" ></md-icon>
+                        <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg"></md-icon>
                         <label>Date of Birth</label>
                         <input type="text" class="form-control" uib-datepicker-popup="{{format}}"
                                name="dateofbirth" style="width: 30%" ng-click="openDatePicker()"
@@ -75,29 +83,29 @@
                     </md-input-container>
 
                     <md-input-container class="md-block" ng-if="patUser">
-                        <md-icon md-svg-src="app/imgs/ic_credit_card_24px.svg" ></md-icon>
+                        <md-icon md-svg-src="app/imgs/ic_credit_card_24px.svg"></md-icon>
                         <label>Credit Card</label>
-                        <input  class="form-control"
-                                  name="credit"
-                                  ng-model="updateUser.credit">
+                        <input class="form-control"
+                               name="credit"
+                               ng-model="updateUser.credit">
                         </input>
                     </md-input-container>
 
                     <md-input-container class="md-block" ng-if="patUser">
-                        <md-icon md-svg-src="app/imgs/ic_card_membership_24px.svg" ></md-icon>
+                        <md-icon md-svg-src="app/imgs/ic_card_membership_24px.svg"></md-icon>
                         <label>Health Insurance</label>
-                        <input  class="form-control"
-                                  name="insurance"
-                                  ng-model="updateUser.insurance">
+                        <input class="form-control"
+                               name="insurance"
+                               ng-model="updateUser.insurance">
                         </input>
                     </md-input-container>
 
                     <md-input-container class="md-block" ng-if="docUser">
-                        <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg" ></md-icon>
+                        <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg"></md-icon>
                         <label>Biography</label>
                         <textarea type="text" class="form-control"
-                               name="bio"
-                               ng-model="updateUser.bio">
+                                  name="bio"
+                                  ng-model="updateUser.bio">
                         </textarea>
                     </md-input-container>
 
@@ -225,11 +233,10 @@
 
                     <tr ng-if="docUser">
                         <td class="col-md-4">
-                            <span style="width: 24px;height: 24px">
-                                <i  class="fa fa-graduation-cap"
-                                   aria-hidden="true"></i>
-                            </span>
-                            <span style="margin-left: 6px;">Experience</span>
+
+                                <md-icon md-svg-src="app/imgs/ic_folder_special_black_24px.svg" ></md-icon>
+
+                            <span style="margin-left: 2px;">Experience</span>
                         </td>
                         <td class="col-md-8">
                             {{ docUser.doctor.experience }}
@@ -238,7 +245,26 @@
 
                     <tr ng-if="docUser">
                         <td class="col-md-4">
-                            <md-icon md-svg-src="app/imgs/ic_chat_24px.svg" ></md-icon>
+                    <span style="width: 24px;height: 24px">
+                                <i  class="fa fa-graduation-cap"
+                                    aria-hidden="true"></i>
+                    </span>
+                            <span style="margin-left: 6px;">Certification</span>
+                        </td>
+                        <td>{{ docUser.doctor.certification }}</td>
+                    </tr>
+
+                    <tr ng-if="docUser">
+                        <td class="col-md-4">
+                            <md-icon md-svg-src="app/imgs/ic_thumb_up_black_24px.svg" ></md-icon>
+                            Speciality
+                        </td>
+                        <td>{{ loadSpeciality(docUser.doctor.professional) }}</td>
+                    </tr>
+
+                    <tr ng-if="docUser">
+                        <td class="col-md-4">
+                            <md-icon md-svg-src="app/imgs/ic_chat_24px.svg"></md-icon>
                             Biography
                         </td>
                         <td class="col-md-8">
@@ -258,7 +284,7 @@
 
                     <tr ng-if="patUser">
                         <td class="col-md-4">
-                            <md-icon md-svg-src="app/imgs/ic_card_membership_24px.svg" ></md-icon>
+                            <md-icon md-svg-src="app/imgs/ic_card_membership_24px.svg"></md-icon>
                             Health Insurance
                         </td>
                         <td class="col-md-8">
@@ -268,7 +294,7 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg" class="email"></md-icon>
+                            <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg"></md-icon>
                             Created Date
                         </td>
                         <td class="col-md-8">
@@ -278,7 +304,7 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg" class="email"></md-icon>
+                            <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg"></md-icon>
                             Last Updated
                         </td>
                         <td class="col-md-8">
@@ -288,6 +314,38 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+    <div id="feedTab" class="col-md-8" ng-show="showfeed">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><b>Feedback</b></h3>
+            </div>
+
+                <table class="table" st-safe-src="feedbacks" st-table="displayedCollection" wt-responsive-table>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th colspan="2">Comment</th>
+                        <th colspan="3">Date Issued</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="feed in displayedCollection">
+                        <td class="text-center" data-title="#"><b>{{$index+1}}</b></td>
+                        <td colspan="2" data-title="Comment">{{feed.comment}}</td>
+                        <td colspan="3" class="text-center" data-title="Date Issued">{{feed.date_issued | date:"MM/dd/yyyy 'at' h:mma"}}</td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr class="text-center">
+                        <td colspan="6">
+                            <div st-items-by-page="10" st-pagination="" st-template="pagination.html"></div>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+
         </div>
     </div>
 </div>
@@ -309,14 +367,14 @@
                 <div class="container" style="width:620px;height:200px;">
                     <div class="col-md-5">
                         <b>Preview:</b><br/>
-                        <img  width="165px" height="160px" ng-src="{{imageSrc}}"/><br/>
+                        <img width="165px" height="160px" ng-src="{{imageSrc}}"/><br/>
                     </div>
                     <div class="col-md-7 pull-left uploadAvatarContainer">
                         <form>
                             <label for="uploadAvatar" class="uploadButton">
                                 <i class="fa fa-cloud-upload"></i> Upload Avatar
                             </label>
-                            <input id="uploadAvatar"  type="file" accept="image/*"
+                            <input id="uploadAvatar" type="file" accept="image/*"
                                    ng-file-select="$file" img-read="imageSrc"
                                    img-file="fileinfo" validate-size="validateSize"
                                    wrong-file="wrongFile">
@@ -331,7 +389,7 @@
                         </div>
                         <div ng-show="imageSrc && validateSize">
                             <div><b>Name:</b> {{ fileinfo.name }}</div>
-                            <div><b>Size:</b> {{fileinfo.sizeOutput}} </div>
+                            <div><b>Size:</b> {{fileinfo.sizeOutput}}</div>
                             <div><b>Type:</b> {{ fileinfo.type }}</div>
                         </div>
                     </div>

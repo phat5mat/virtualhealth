@@ -8,10 +8,20 @@
 angular
     .module('mainApp')
     .controller('authController',['$scope','$auth','$state','$location','$http','$rootScope','$window',
-        'patientServices','doctorServices','$mdToast','$timeout',
+        'patientServices','doctorServices','$mdToast','$timeout','$mdSidenav',
         function ($scope,$auth,$state,$location,$http,$rootScope,$window,patientServices,doctorServices,
-                  $mdToast,$timeout){
-    
+                  $mdToast,$timeout,$mdSidenav){
+
+            $scope.toggleLeft = buildToggler('left');
+            $scope.toggleRight = buildToggler('right');
+
+            function buildToggler(componentId) {
+                return function() {
+                    $mdSidenav(componentId).toggle();
+                }
+            }
+
+
             $scope.login = function() {
                 $timeout(function(){
                     $scope.loading = true;

@@ -148,6 +148,31 @@
                 </ds-widget-clock>
             </div>
         </div>
+        <div class="row" ng-init="getHighDoctor()" style="width: 306px; height: 234px">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Top Doctors</b>
+                </div>
+                <div class="roomPatientsBlock" style="width: 306px; height: 234px" >
+                    <table class="table contactsContent">
+                        <tbody ng-repeat="doc in highdoctor "
+                               ng-click="selectDoctor(doc.user)">
+                        <tr>
+                            <td><img class="avatarCircle" ng-src="{{doc.user.avatarSrc}}"></td>
+                            <td colspan="2">
+                                <h4><b>{{ doc.user.name }}</b></h4>
+                                <h4><span read-only="true" uib-rating ng-model="doc.rating" max="5"
+                                          aria-labelledby="default-rating" style="width: 200px; height: 100px">
+                    </span>
+                                </h4>
+                                <h4><b>{{doc.lastComment}}</b></h4>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

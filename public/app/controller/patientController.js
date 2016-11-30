@@ -171,6 +171,10 @@ app.controller('patientController', ['$scope', '$location',
                         value.isTime = false;
                         $scope.appointNotification.push(value);
                     }
+                    if (value.status == 1) {
+                        value.isOpen = true;
+                        $scope.appointNotification.push(value);
+                    }
                 }
 
                 //if selected day is today
@@ -202,21 +206,11 @@ app.controller('patientController', ['$scope', '$location',
         };
 
 
-        $scope.selectDoctor = function (ev, doctor) {
-            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
-            $mdDialog.show({
-                    locals: {passDoctor: doctor},
-                    controller: viewDoctorDialogController,
-                    templateUrl: 'viewDoctorDetailsDialog.html',
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: useFullScreen
-
-                })
-                .then(function (answer) {
-                }, function () {
-                });
+        $scope.selectDoctor = function (doctor) {
+            console.log(doctor)
+           $state.go('room.viewDocRoom',{
+               selectedDoc: doctor
+           })
         };
 
         $scope.loadLastExamination = function () {
@@ -233,8 +227,34 @@ app.controller('patientController', ['$scope', '$location',
                 })
         };
 
+        
+        $scope.getHighDoctor = function(){
+            doctorServices.getHighDoctor()
+                .then(function(response){
+                    $timeout(function(){
+                        $scope.highdoctor = response.data;
+                        angular.forEach($scope.highdoctor,function(value, key){
+                            value.user.doctor = value;
+                            if(value.user.avatar == 1)
+                            {
+                                value.user.avatarSrc = "assets/img/avatar-" + value.user.username + ".jpg";
+                            }else{
+                                value.user.avatarSrc = "assets/img/no-avatarDoctor.png";
 
-     
+                            }
+                            angular.forEach(value.feedback,function(value2,key2){
+                                if(value2.comment != null)
+                                {
+                                    value.lastComment = '"'+value2.comment+'"';
+                                }
+                            })
+                        });
+                        console.log($scope.highdoctor)
+
+                    });
+                })
+        }
+
 
 
     }]);

@@ -82,13 +82,18 @@
         </tbody>
     </table>
     <div class="col-md-4" ng-hide="doctor.doctor.status == 'Actived' || doctor.doctor.status == 'Rejected'">
-        <button
-                class="btn btn-primary center-block btn-lg" ng-click="approveRequest(doctor)">Approve
+
+        <button class="btn btn-primary center-block btn-lg" ng-click="approveRequest(doctor)">
+            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+            Approve
         </button>
     </div>
 
     <div class="col-md-4" ng-hide="doctor.doctor.status == 'Actived' || doctor.doctor.status == 'Rejected' ">
-        <button class="btn btn-warning center-block btn-lg" ng-click="rejectRequest(doctor)">Reject</button>
+
+        <button class="btn btn-warning center-block btn-lg" ng-click="rejectRequest(doctor)">
+            <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+            Reject</button>
     </div>
 
 </div>

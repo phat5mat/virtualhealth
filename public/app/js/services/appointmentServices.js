@@ -47,6 +47,14 @@ app.service('appointmentServices',function($http,API_URL){
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },
+        
+        examappoint: function(id){
+            return $http({
+                method: 'GET',
+                url: API_URL + "examappoint/" + id,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            });
+        },
 
         getslotnumber: function(slot){
             return $http({
@@ -82,10 +90,11 @@ app.service('appointmentServices',function($http,API_URL){
             });
         },
         
-        checkExist: function(id){
+        checkExist: function(existData){
             return $http({
-                method: 'GET',
-                url: API_URL + "checkAppointExist/" + id,
+                method: 'POST',
+                url: API_URL + "checkAppointExist",
+                data:  $.param(existData),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             });
         },

@@ -11,15 +11,16 @@
     </tr>
 
 </table>
-<table ng-hide="noAppoint" class="table hoverTable" st-table="displayedCollection"
-       st-safe-src="appointments" wt-responsive-table class="table table-striped"
+<table ng-hide="noAppoint" class="table hoverTable table-striped" st-table="displayedCollection"
+       st-safe-src="appointments" wt-responsive-table
        ng-init="loadAppointment()" >
     <thead>
     <tr>
-        <th class="sortable" st-sort="id" style="width: 10%">ID</th>
-        <th class="sortable" st-sort="room.doctor.user.name" style="width: 20%">Doctor</th>
+        <th class="sortable" st-sort="id" style="width: 5%">ID</th>
+        <th class="sortable" st-sort="room.doctor.user.name" style="width: 15%">Doctor</th>
         <th class="sortable" st-sort="room.name" style="width: 15%">Room</th>
         <th class="sortable" st-sort="room.startDate" style="width: 20%">Start Date</th>
+        <th class="sortable" st-sort="condition" style="width: 20%">Condition</th>
         <th class="sortable" st-sort="slot" style="width: 10%">Slot</th>
         <th class="sortable" st-sort="status" style="width: 15%">Status</th>
         <th style="width: 10%"></th>
@@ -43,6 +44,10 @@
                    class="input-sm form-control" />
         </th>
         <th >
+            <input st-search="condition"
+                   class="input-sm form-control" />
+        </th>
+        <th >
             <input st-search="slot"
                    class="input-sm form-control" />
         </th>
@@ -57,10 +62,11 @@
     <tbody>
     <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
     <tr ng-repeat="appoint in displayedCollection" ng-hide="loading" >
-        <td class="text-center" data-title="ID">{{ appoint.id }}</td>
+        <td class="text-center" >{{ appoint.id }}</td>
         <td data-title="Doctor">{{ appoint.room.doctor.user.name }}</td>
         <td data-title="Room">{{ appoint.room.name }}</td>
-        <td data-title="Start Date">{{ appoint.room.startDate | date:"MM/dd/yyyy 'at' h:mma" }}</td>
+        <td class="text-center" data-title="Start Date">{{ appoint.room.startDate | date:"MM/dd/yyyy 'at' h:mma" }}</td>
+        <td data-title="Condition">{{ appoint.condition }}</td>
         <td class="slotRow" data-title="Slot Number">{{ appoint.slot }}</td>
         <td ng-class="appoint.statusColor" data-title="Status"><b>{{ appoint.status }}</b></td>
         <td data-title="Action" class="text-center">
@@ -75,7 +81,7 @@
     </tbody>
     <tfoot>
     <tr class="text-center">
-        <td colspan="6">
+        <td colspan="7">
             <div st-items-by-page="10" st-pagination="" st-template="pagination.html"></div>
         </td>
     </tr>

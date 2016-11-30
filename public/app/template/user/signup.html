@@ -275,6 +275,18 @@
                     </md-input-container>
                     <div style="height: 10px;"></div>
 
+                    <md-input-container class="md-block">
+                        <label>Certification</label>
+                        <input required md-maxlength="50"
+                               name="cert" ng-model="user.certification">
+                        <div ng-messages="doctorForm.cert.$error">
+                            <div ng-message="required"
+                                 ng-show="doctorForm.name.$touched">Certification is required.
+                            </div>
+                            <div ng-message="md-maxlength">Maximum characters is 50.</div>
+                        </div>
+                    </md-input-container>
+                    <div style="height: 10px;"></div>
 
                     <label for="uploadAvatar" class="uploadButton">
                         <i class="fa fa-cloud-upload"></i> Upload Certification

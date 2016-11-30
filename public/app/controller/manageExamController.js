@@ -30,28 +30,57 @@ app.controller('manageExamController', ['$scope', '$http', '$window', 'doctorSer
 
         $scope.selectExam = function (examDetails) {
             $state.go('examDetails', {selectedExam: examDetails})
+            console.log(examDetails)
+
         };
 
-     
+        var $table = $('table.scroll'),
+            $bodyCells = $table.find('tbody tr:first').children(),
+            colWidth;
+
+// Adjust the width of thead cells when window resizes
+        $(window).resize(function() {
+            // Get the tbody columns width array
+            colWidth = $bodyCells.map(function() {
+                return $(this).width();
+            }).get();
+
+            // Set the width of thead columns
+            $table.find('thead tr').children().each(function(i, v) {
+                $(v).width(colWidth[i]);
+            });
+        }).resize(); // Trigger resize handler
 
         $scope.loadExamDetails = function () {
-            var selectedExam = $stateParams.selectedExam;
-            $scope.patDetails = selectedExam.patient;
-            $scope.medicines = selectedExam.examination.prescription.drug;
-            $scope.examResult = selectedExam.examination.result;
-            var age = new Date().getFullYear() -
-                selectedExam.patient.user.dateofbirth.substring(0, 4);
-            $scope.patDetails.age = age;
-            var log = JSON.parse(selectedExam.examination.logs);
-            $timeout(function () {
-                if (log.length > 0)
-                    $scope.showDownloadBtn = true;
-                else
-                    $scope.showDownloadBtn = false;
-            })
+            try{
+                $scope.medicines = [];
+                var selectedExam = $stateParams.selectedExam;
+                $scope.patDetails = selectedExam.patient;
+                $scope.doctorExam = selectedExam.room.doctor;
+                $scope.roomExam = selectedExam.room;
+                $scope.exam = selectedExam.examination;
+                $scope.exam.date = new Date($scope.exam.date);
+                $scope.condition = selectedExam.condition;
+
+                var age = new Date().getFullYear() -
+                    selectedExam.patient.user.dateofbirth.substring(0, 4);
+                $scope.patDetails.age = age;
+                var log = JSON.parse(selectedExam.examination.logs);
+                $timeout(function () {
+                    if (log.length > 0)
+                        $scope.showDownloadBtn = true;
+                    else
+                        $scope.showDownloadBtn = false;
+                });
+                $scope.medicines = selectedExam.examination.prescription.drug;
+
+            }catch(e){
+                console.log(e)
+            }
+
 
         };
-
+        
         $scope.downLog = function () {
             var selectedExam = $stateParams.selectedExam;
             var log = JSON.parse(selectedExam.examination.logs);
@@ -87,32 +116,32 @@ app.controller('manageExamController', ['$scope', '$http', '$window', 'doctorSer
 
         $scope.loadExamByDoctor = function () {
             examinationServices.getExamByDoctor($rootScope.docUser.doctor.id)
-                .then(function (exam) {
-                    angular.forEach(exam.data, function (room, rkey) {
+                .then(function (response) {
+                    angular.forEach(response.data, function (room, key) {
                         if (room.appointment.length > 1) {
+                            console.log(room)
                             angular.forEach(room.appointment, function (appoint, appkey) {
                                 if (appoint.examination != null)
                                 {
                                     appoint.examination.date = new Date(appoint.examination.date);
                                     appoint.examination.spec = room.speciality.name;
-                                    appoint.examination.room = room.name;
+                                    appoint.room = room;
                                     $scope.examDocList.push(appoint);
                                 }
                             })
                         } else {
-                            if (room.appointment[0] && room.appointment[0].examination != null)
+                            if (room.appointment[0] != null && room.appointment[0].examination != null)
                             {
+                                console.log(room)
                                 room.appointment[0].examination.date =
                                     new Date(room.appointment[0].examination.date);
                                 room.appointment[0].examination.spec = room.speciality.name;
-                                room.appointment[0].examination.room = room.name;
+                                room.appointment[0].room = room;
 
                                 $scope.examDocList.push(room.appointment[0]);
                             }
-
                         }
                     });
-                    console.log($scope.examDocList)
                 }, function (e) {
                     console.log(e)
                 })

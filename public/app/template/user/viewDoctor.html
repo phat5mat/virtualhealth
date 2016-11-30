@@ -39,7 +39,7 @@
     </tr>
     </thead>
     <tbody>
-    <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
+    <p class="text-center" ng-show="loading" ng-init="loading = true"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
     <tr ng-repeat="doctor in displayedCollection" ng-hide="loading" ng-click="selectDoctor($event,doctor)">
         <td><img class="avatarCircle" ng-src="{{doctor.avatarSrc}}"></td>
         <td data-title="Name">{{ doctor.name }}</td>
@@ -50,18 +50,16 @@
     </tr>
     </tbody>
 </table>
-
 <table id="docTable" st-table="displayedCollection"
        st-safe-src="doctors" wt-responsive-table class="table table-striped"
-       ng-show="!staffUser"
->
+       ng-show="!staffUser">
     <thead>
     <tr>
         <th style="width: 10%"></th>
         <th style="width: 25%" class="sortable" st-sort="name">Name</th>
-        <th style="width: 25%">Email</th>
+        <th style="width: 25%" class="sortable" st-sort="doctor.certification">Certification</th>
         <th style="width: 20%" class="sortable" st-sort="doctor.professional">Speciality</th>
-        <th style="width: 20%">Experience</th>
+        <th style="width: 20%" class="sortable" st-sort="doctor.rating">Rating</th>
     </tr>
     <tr>
         <th>
@@ -71,7 +69,7 @@
                    class="input-sm form-control"/>
         </th>
         <th>
-            <input st-search="email"
+            <input st-search="doctor.certification"
                    class="input-sm form-control"/>
         </th>
         <th>
@@ -79,24 +77,28 @@
                    class="input-sm form-control"/>
         </th>
         <th>
-            <input st-search="doctor.experience"
+            <input st-search="doctor.rating"
                    class="input-sm form-control"/>
         </th>
     </tr>
     </thead>
     <tbody>
     <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-pulse fa-3x fa-fw"></span></p>
-    <tr ng-repeat="doctor in displayedCollection" ng-hide="loading" ng-click="selectDoctor($event,doctor)">
+    <tr ng-repeat="doctor in displayedCollection" ng-hide="loading" ng-click="selectDoctor(doctor)">
         <td><img class="avatarCircle" ng-src="{{doctor.avatarSrc}}"></td>
         <td data-title="Name">{{ doctor.name }}</td>
-        <td data-title="Email">{{ doctor.email }}</td>
+        <td data-title="Certification">{{ doctor.doctor.certification }}</td>
         <td data-title="Professional">{{ loadSpeciality(doctor.speciality) }}</td>
-        <td data-title="Status">{{ doctor.doctor.experience }}</td>
+        <td data-title="Rating" class="text-center">
+            <span read-only="true" uib-rating ng-model="doctor.doctor.rating" max="5"
+                  aria-labelledby="default-rating" style="width: 200px; height: 100px">
+            </span>
+        </td>
     </tr>
     </tbody>
     <tfoot>
     <tr class="text-center">
-        <td colspan="6">
+        <td colspan="5">
             <div st-items-by-page="10" st-pagination="" st-template="pagination.html"></div>
         </td>
     </tr>

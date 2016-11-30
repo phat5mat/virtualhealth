@@ -22,6 +22,10 @@ class Doctor extends Model
         return $this->hasMany('App\Professional','doctor');
     }
 
+    public function feedback(){
+        return $this->hasMany('App\Feedback','doctor');
+    }
+
     protected $table = 'doctors';
     protected $primaryKey = 'id';
     public $timestamps = false;

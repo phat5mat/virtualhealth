@@ -260,15 +260,24 @@
                         <div class="col-md-6 videoContainer" ng-show="video" ng-init="video = false"
                              id="videoBox"></div>
                         <div class="col-md-2">
-                            <button class="btn btn-info" ng-show="!loadChat && !video && docUser" ng-click="sendVideo()">
+                            <button class="btn btn-info" ng-show="!loadChat && !video && docUser"
+                                    ng-click="sendVideo()">
+                                <md-icon md-svg-src="app/imgs/ic_camera_alt_black_24px.svg" ></md-icon>
                                 <strong>Video Call</strong>
                             </button>
-                            <button class="btn btn-info" ng-show="video" ng-click="endCall()">
+                            <button style="padding-top: 10px" class="btn btn-info" ng-show="video" ng-click="endCall()">
+                                <md-icon md-svg-src="app/imgs/ic_stop_black_24px.svg" ></md-icon>
                                 <strong>End Call</strong>
                             </button>
-                            <button class="btn btn-success" ng-show="!loadChat && docUser"
+                            <button style="padding-top: 10px" class="btn btn-success" ng-show="!loadChat && docUser"
                                     ng-click="showReviewExamDialog()">
+                                <md-icon md-svg-src="app/imgs/ic_assignment_black_24px.svg" ></md-icon>
                                 <strong>Finish</strong>
+                            </button>
+                            <button style="padding-top: 10px" class="btn btn-warning" ng-show="!loadChat && docUser"
+                                    ng-click="kickPatient()">
+                                <md-icon md-svg-src="app/imgs/ic_skip_next_black_24px.svg" ></md-icon>
+                                <strong>Kick</strong>
                             </button>
                         </div>
 
@@ -332,15 +341,6 @@
                                 </td>
                                 <td class="col-md-3">
                                     {{ patDetails.age}}
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="col-md-1">
-                                    Age
-                                </td>
-                                <td class="col-md-3">
-                                    {{ patDetails.condition}}
                                 </td>
                             </tr>
 
@@ -481,46 +481,6 @@
     </md-dialog>
 </script>
 
-<script type="text/ng-template" id="healthStatistic.html">
-    <md-dialog aria-label="Create New Room">
-        <form class="form-group"
-              ng-submit="createRoom()" name="roomForm">
-            <md-toolbar>
-                <div class="md-toolbar-tools">
-                    <h2>{{pat.name}}</h2>
-                    <span flex></span>
-                    <md-button class="md-icon-button" ng-click="cancel()">
-                        X
-                    </md-button>
-                </div>
-            </md-toolbar>
-
-            <md-dialog-content>
-                <div class="container" style="width: 600px;height: 400px">
-                    <uib-accordion close-others="oneAtATime">
-                        <div uib-accordion-group class="panel-default" is-open="status.open">
-                            <uib-accordion-heading>
-                                I can have markup, too! <i class="pull-right glyphicon"
-                                                           ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-                            </uib-accordion-heading>
-                            This is just some content to illustrate fancy headings.
-                        </div>
-                    </uib-accordion>
-                </div>
-            </md-dialog-content>
-            <md-dialog-actions layout="row">
-                <span flex></span>
-                <md-button class="md-raised md-warn" ng-click="cancel()" style="margin-right:20px;">
-                    BACK
-                </md-button>
-            </md-dialog-actions>
-        </form>
-    </md-dialog>
-
-    </form>
-    </md-dialog>
-</script>
-
 
 <script type="text/ng-template" id="rateDoctor.html">
     <md-dialog aria-label="Doctor Rating">
@@ -529,22 +489,31 @@
             <md-toolbar>
                 <div class="md-toolbar-tools">
                     <h2 align="center">Thank You</h2>
-                    <h2>Rate Dr.{{doc}}</h2>
                     <span flex></span>
                 </div>
             </md-toolbar>
 
             <md-dialog-content>
                 <div class="container" style="width: 400px;height: 200px">
-                    <span  uib-rating ng-model="rate" max="5"
-                          on-hover="hoveringOver(value)" on-leave="overStar = null"
-                          aria-labelledby="default-rating" style="color: yellow; width: 200px; height: 100px">
+                    <div class="row text-center">
+                        <span uib-rating ng-model="feedback.rate" max="5"
+                              on-hover="hoveringOver(value)" on-leave="overStar = 0"
+                              aria-labelledby="default-rating" style="width: 200px; height: 100px">
                     </span>
-                    <div ng-show="overStar">
-                        <h3><b>{{rateDes}}</b></h3>
+
                     </div>
-                    <textarea cols="30" rows="4" ng-model="comment"
-                              placeholder="What do you think about this doctor?"></textarea>
+
+                    <div class="row text-center">
+                        <div ng-show="overStar">
+                            <h3><b>{{rateDes}}</b></h3>
+                        </div>
+                    </div>
+
+
+                    <div class="row text-center">
+                           <textarea cols="40" rows="5" ng-model="feedback.comment"
+                                     placeholder="What do you think about this doctor?"></textarea>
+                    </div>
                 </div>
             </md-dialog-content>
             <md-dialog-actions layout="row" class="text-center">

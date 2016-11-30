@@ -20,7 +20,6 @@ app.controller('doctorController', ['$scope', '$http', '$window', 'doctorService
 
         $scope.waitingRoom = 0;
         $scope.closedRoom = 0;
-        $scope.finishedRoom = 0;
         $scope.openRoom = 0;
         $scope.waitingAppoint = 0;
         $scope.canceledAppoint = 0;
@@ -70,7 +69,39 @@ app.controller('doctorController', ['$scope', '$http', '$window', 'doctorService
             return '';
         }
 
+        $scope.getHighDoctor = function(){
+            doctorServices.getHighDoctor()
+                .then(function(response){
+                    $timeout(function(){
+                        $scope.highdoctor = response.data;
+                        angular.forEach($scope.highdoctor,function(value, key){
+                            value.user.doctor = value;
+                            if(value.user.avatar == 1)
+                            {
+                                value.user.avatarSrc = "assets/img/avatar-" + value.user.username + ".jpg";
+                            }else{
+                                value.user.avatarSrc = "assets/img/no-avatarDoctor.png";
 
+                            }
+                            angular.forEach(value.feedback,function(value2,key2){
+                                if(value2.comment != null)
+                                {
+                                    value.lastComment = '"'+value2.comment+'"';
+                                }
+                            })
+                        });
+    
+                    });
+                })
+        };
+
+        $scope.selectDoctor = function (doctor) {
+            console.log(doctor)
+            $state.go('room.viewDocRoom',{
+                selectedDoc: doctor
+            })
+        };
+        
         $scope.today = function () {
             $scope.cal.dt = new Date();
             $scope.loadNotification();
@@ -162,8 +193,6 @@ app.controller('doctorController', ['$scope', '$http', '$window', 'doctorService
                         if (value.status == 1)
                             $scope.openRoom++;
                         if (value.status == 2)
-                            $scope.finishedRoom++;
-                        if (value.status == 3)
                             $scope.closedRoom++;
                         appointmentServices.doctorappoint(value.id)
                             .then(function (response) {
@@ -181,51 +210,7 @@ app.controller('doctorController', ['$scope', '$http', '$window', 'doctorService
                     $scope.loadNotification();
                 })
         };
-
-        $scope.loadPatientList = function () {
-            patientServices.findByDoctor($rootScope.docUser.doctor.id)
-                .then(function (response) {
-                    angular.forEach(response.data, function (value, key) {
-                        if (value.appointment.length >= 1) {
-                            angular.forEach(value.appointment, function (value2, key2) {
-                                if (value2.examination != null) {
-                                    if ($scope.patList.length > 0) {
-                                        angular.forEach($scope.patList, function (value3, key3) {
-                                            if (value3.user.username != value2.patient.user.username) {
-                                                $scope.patList.push(value2.patient);
-                                            }
-                                        })
-                                    } else {
-                                        $scope.patList.push(value2.patient);
-                                    }
-
-                                }
-                            })
-                        }
-                        else {
-                            if (value.appointment.examination != null) {
-                                if ($scope.patList.length > 0) {
-                                    angular.forEach($scope.patList, function (value3, key3) {
-                                        if (value3.user.username != value2.patient.user.username) {
-                                            $scope.patList.push(value.appointment.patient)
-                                        }
-                                    })
-                                } else {
-                                    $scope.patList.push(value.appointment.patient)
-                                }
-                            }
-                        }
-                    });
-                    angular.forEach($scope.patList, function (value, key) {
-                        if (value.user.avatar == 0)
-                            value.user.avatarSrc = 'assets/img/no-avatar.png';
-                        else
-                            value.user.avatarSrc = "assets/img/avatar-" + value.user.username + ".jpg?cb=" + random;
-                    });
-
-                })
-        };
-
+        
 
         $scope.loadNotification = function () {
             $scope.roomNotification = [];
@@ -240,6 +225,11 @@ app.controller('doctorController', ['$scope', '$http', '$window', 'doctorService
                     if (value.status == 0)
                     {
                         value.isTime = false;
+                        $scope.roomNotification.push(value);
+                    }
+                    if(value.status == 1)
+                    {
+                        value.isOpen = true;
                         $scope.roomNotification.push(value);
                     }
                 }
@@ -294,19 +284,20 @@ app.controller('doctorController', ['$scope', '$http', '$window', 'doctorService
         }
 
         function loadAppointmentInfo(app) {
-            if (app.status == 0) {
+
+            if (app == 0) {
                 $scope.totalAppointment++;
                 $scope.waitingAppoint++;
             }
-            if (app.status == 1) {
+            if (app == 1) {
                 $scope.totalAppointment++;
                 $scope.openAppoint++;
             }
-            if (app.status == 2) {
+            if (app == 2) {
                 $scope.totalAppointment++;
                 $scope.finishedAppoint++;
             }
-            if (app.status == 3) {
+            if (app == 3) {
                 $scope.totalAppointment++;
                 $scope.canceledAppoint++;
 

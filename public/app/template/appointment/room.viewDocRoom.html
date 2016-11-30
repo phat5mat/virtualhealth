@@ -1,4 +1,79 @@
-<h3>Patient Room Page</h3>
+<h3>Dr.{{doctorDetails.name}} Details</h3>
+
+<div ng-init="loadRoombyDoctor()" class="container" >
+    <div class="col-md-4 text-center">
+        <div class="row">
+            <img width="170px" height="200px" ng-src="{{doctorDetails.avatarSrc}}">
+        </div>
+        <div class="row">
+            <h4><b>{{ doctorDetails.name }}</b></h4>
+        </div>
+        <div class="row">
+            <span read-only="true" uib-rating ng-model="doctorDetails.doctor.rating" max="5"
+                  aria-labelledby="default-rating" style="width: 400px; height: 200px">
+            </span>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <table class="table">
+            <tbody>
+            <tr>
+                <td class="col-md-3">
+                    <md-icon md-svg-src="app/imgs/ic_date_range_24px.svg" ></md-icon>
+                    Date of Birth
+                </td>
+                <td>{{ doctorDetails.dateofbirth }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-3">
+                    <md-icon md-svg-src="app/imgs/ic_email_24px.svg"></md-icon>
+                    Email
+                </td>
+                <td>{{ doctorDetails.email }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-3">
+                    <md-icon md-svg-src="app/imgs/ic_local_phone_24px.svg"></md-icon>
+                    Phone
+                </td>
+                <td>{{ doctorDetails.phone }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-3">
+                    <span style="width: 24px;height: 24px">
+                                <i  class="fa fa-graduation-cap"
+                                    aria-hidden="true"></i>
+                    </span>
+                    Certification
+                </td>
+                <td>{{ doctorDetails.doctor.certification }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-3">
+                    <md-icon md-svg-src="app/imgs/ic_thumb_up_black_24px.svg" ></md-icon>
+                    Speciality
+                </td>
+                <td>{{ loadSpeciality(doctorDetails.doctor.professional) }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-3">
+                    <md-icon md-svg-src="app/imgs/ic_folder_special_black_24px.svg" ></md-icon>
+                    Experience
+                </td>
+                <td>{{ doctorDetails.doctor.experience }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-3">
+                    <md-icon md-svg-src="app/imgs/ic_chat_24px.svg" ></md-icon>
+                    Biography
+                </td>
+                <td>{{ doctorDetails.doctor.biography }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row alert alert-info text-center"><h4><b>ROOM LIST</b></h4></div>
 
 <table style="width: 100%" st-table="displayedCollection" st-safe-src="rooms">
     <tr>
@@ -8,7 +83,7 @@
 </table>
 <table class="table hoverTable" st-table="displayedCollection"
        st-safe-src="rooms" wt-responsive-table class="table table-striped"
-       ng-init="loadRoombyDoctor()">
+       >
     <thead>
     <tr>
         <th class="sortable" st-sort="id" style="width: 10%">ID</th>
@@ -50,7 +125,7 @@
     <tr ng-repeat="room in displayedCollection" ng-hide="loading" ng-click="showMakeAppointmentDialog($event,room)">
         <td class="text-center" data-title="ID">{{ room.id }}</td>
         <td data-title="Name">{{ room.name }}</td>
-        <td data-title="Start Date">{{ room.startDate | date:"MM/dd/yyyy 'at' h:mma" }}</td>
+        <td class="text-center" data-title="Start Date">{{ room.startDate | date:"MM/dd/yyyy 'at' h:mma" }}</td>
         <td class="text-center" data-title="Room Size">{{ room.roomSize }}</td>
         <td class="text-center" data-title="Available">{{ room.available }}</td>
         <td ng-class="room.statusColor" data-title="Status">{{ room.status }}</td>
